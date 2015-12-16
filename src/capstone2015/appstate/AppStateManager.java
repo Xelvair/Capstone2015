@@ -1,4 +1,4 @@
-package capstone2015.AppState;
+package capstone2015.appstate;
 
 import java.util.ArrayList;
 import java.util.Iterator;

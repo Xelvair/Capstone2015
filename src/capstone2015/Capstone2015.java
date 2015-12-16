@@ -1,51 +1,26 @@
 package capstone2015;
 
-import capstone2015.AppState.*;
+import capstone2015.appstate.*;
+import capstone2015.geom.*;
+import java.util.LinkedList;
 
 public class Capstone2015 {
     public static void main(String[] args) throws Exception {
         AppStateManager asm = new AppStateManager();
         
-        asm.pushState(new AppState(){
-
-            @Override
-            protected void onTick(double timeDelta) {
-                if(this.isFocus()){
-                    System.out.println("State #1 updating!");
-                }
-                
-                System.out.println("State #1 drawing!");
-                this.kill();
-            }
-
-            @Override
-            protected void onEvent(AppStateEvent event) {
-                System.out.println("State #1 event: " + event.toString());
-            }
-
-        });
+        Vector2i vec1 = new Vector2i(3, 5);
+        Vector2i vec2 = new Vector2i(7, 12);
         
-        asm.pushState(new AppState(){
-
-            @Override
-            protected void onTick(double timeDelta) {
-                if(this.isFocus()){
-                    System.out.println("State #2 updating!");
-                }
-                
-                System.out.println("State #2 drawing!");
-            }
-
-            @Override
-            protected void onEvent(AppStateEvent event) {
-                System.out.println("State #2 event: " + event.toString());
-            }
-
-        });
+        LinkedList<Vector2i> line = Geom.lineToPoints(
+            new Vector2i(3, 2), 
+            new Vector2i(7, 8)
+        );
+        
+        for(Vector2i vec : line){
+            System.out.println(vec);
+        }
         
         while(!asm.isEmpty()){
-            asm.tick(0.f);
-            System.out.println();
             Thread.sleep(1000);
         }
     }

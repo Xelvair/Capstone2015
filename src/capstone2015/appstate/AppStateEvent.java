@@ -1,4 +1,4 @@
-package capstone2015.AppState;
+package capstone2015.appstate;
 
 public enum AppStateEvent {
     NONE,

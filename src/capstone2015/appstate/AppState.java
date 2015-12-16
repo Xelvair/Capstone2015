@@ -1,4 +1,4 @@
-package capstone2015.AppState;
+package capstone2015.appstate;
 
 public abstract class AppState {    
     private boolean isAlive = true;
