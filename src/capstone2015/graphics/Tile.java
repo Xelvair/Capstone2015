@@ -28,4 +28,10 @@ public class Tile {
     public char getCharacter(){return this.character;}
     public Color getFGColor(){return this.fgColor;}
     public Color getBGColor(){return this.bgColor;}
+    
+    public boolean equals(Tile rhs){
+        return (   this.getCharacter() == rhs.getCharacter()
+                && this.getFGColor() == rhs.getFGColor()
+                && this.getBGColor() == rhs.getBGColor());
+    }
 }

@@ -5,6 +5,7 @@ import capstone2015.util.Array2DInterface;
 import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.terminal.Terminal;
+import com.googlecode.lanterna.terminal.Terminal.Color;
 import com.googlecode.lanterna.terminal.Terminal.ResizeListener;
 import com.googlecode.lanterna.terminal.TerminalSize;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Screen implements Array2DInterface<Tile>{
     private int width;
     private int height;
     private int membuf = 0;
+    private boolean scheduleRealloc = false;
     
     public Screen(){
         this.terminal = TerminalFacade.createSwingTerminal();
@@ -46,7 +48,7 @@ public class Screen implements Array2DInterface<Tile>{
     }
     
     private void onTerminalResize(){
-        reallocBuffers();
+        scheduleRealloc = true;
     }
 
     private void reallocBuffers(){
@@ -58,24 +60,51 @@ public class Screen implements Array2DInterface<Tile>{
     }
     
     public void flip(){      
-        membuf = (membuf + 1) % 2; //switch buffers
-        
-        terminal.clearScreen();
+        if(scheduleRealloc){
+            reallocBuffers();
+            scheduleRealloc = false;
+        }
         
         //TODO: make more efficient
-        for(int i = 0; i < height; i++){
-            for(int j = 0; j < width; j++){
-                Tile tile = buffers.get(getScreenBufId()).get(j, i);
-                
-                if(tile != null){
-                    terminal.moveCursor(j, i);
-                    terminal.applyForegroundColor(tile.getFGColor());
-                    terminal.applyBackgroundColor(tile.getBGColor());
-                    terminal.putCharacter(tile.getCharacter());
+        try{   
+            for(int i = 0; i < height; i++){
+                for(int j = 0; j < width; j++){
+                    Tile s_tile = buffers.get(getMemBufId()).get(j, i);
+                    if(s_tile != null && shouldRedraw(j, i)){
+                        terminal.moveCursor(j, i);
+                        terminal.applyForegroundColor(s_tile.getFGColor());
+                        terminal.applyBackgroundColor(s_tile.getBGColor());
+                        terminal.putCharacter(s_tile.getCharacter());
+                    }
                 }
             }
+        } catch(ArrayIndexOutOfBoundsException e){
+            System.out.println("WARN: OutOfBounds on terminal write!");
+        }
+        
+        membuf = (membuf + 1) % 2; //switch buffers
+       
+    }
+    
+    private boolean shouldRedraw(int x, int y){
+        Tile membuf_tile = buffers.get(getMemBufId()).get(x, y);
+        Tile screenbuf_tile = buffers.get(getScreenBufId()).get(x, y);
+        
+        if(membuf_tile == null){ 
+            //If there is no tile in the membuf, dont draw
+            return false;
+        } else if(screenbuf_tile == null){ 
+            //If the screenbuf tile was not written to yet, draw
+            return true;
+        } else if(membuf_tile.equals(screenbuf_tile)){
+            //If tiles are the same, skip draw
+            return false;
+        } else {
+            //If tiles are different, redraw
+            return true;
         }
     }
+    
     private int getScreenBufId(){return (membuf + 1) % 2;}
     private int getMemBufId(){return membuf;}
     private Tile getScreenBuf(int x, int y){

@@ -8,6 +8,7 @@ import capstone2015.graphics.Screen;
 import capstone2015.graphics.Tile;
 import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.terminal.Terminal.Color;
+import java.time.Clock;
 
 public class Capstone2015 {
     
@@ -16,14 +17,16 @@ public class Capstone2015 {
     
     public static void main(String[] args) throws Exception {
         AppStateManager asm = new AppStateManager();
-        
         Screen screen = new Screen();
+
+        
         
         asm.pushState(new AppState(){
             @Override
             protected void onTick(double timeDelta) {
+                screen.insert(0, 0, Panel.fillPanel(screen.width(), screen.height(), new Tile(' ', Color.BLACK, Color.BLACK)));
                 screen.insert(0, 0, Panel.textPanel("hi", Color.WHITE, Color.CYAN));
-                screen.insert(20, 20, Panel.textPanel("Test123 123\nmultiline Textpanel", Color.BLUE, Color.GREEN));
+                screen.insert(20, (int)(System.currentTimeMillis() % 1000000) / 100 % 20, Panel.textPanel("Test123 123\nmultiline Textpanel", Color.BLUE, Color.GREEN));
                 screen.insert(10, 3, Panel.fillPanel(10, 10, new Tile('X', Color.MAGENTA, Color.RED)));
             }
 
