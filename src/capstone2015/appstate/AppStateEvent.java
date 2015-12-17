@@ -4,5 +4,6 @@ public enum AppStateEvent {
     NONE,
     FOCUS,
     BLUR,
+    TERMINATE,
     KILL
 }

@@ -23,16 +23,53 @@ public class AppStateManager {
         state.setFocus();
     }
     
+    /*******
+     * Sends terminate event to states
+     * states are expected to call terminate() themselves
+     * and can wait for an asynchronous process to finish by delaying
+     * the terminate() call
+     */
+    public void terminateStates(){
+        for(AppState state : states){
+            state.onEvent(AppStateEvent.TERMINATE);
+        }
+        cleanStates();
+    }
+    
+    /******
+     * Sends kill event to states and kills states
+     * instantly after. States may not be able to finish 
+     * asynchronous processes
+     */
+    public void killStates(){
+        for(AppState state : states){
+            state.onEvent(AppStateEvent.KILL);
+            state.terminate();
+        }
+        cleanStates();
+    }
+    
+    private void cleanStates(){
+        Iterator<AppState> it = states.iterator();
+        
+        while(it.hasNext()){
+            AppState state = it.next();
+            if(!state.isAlive()){
+                it.remove();
+            }
+        }
+    }
+    
     /**********
      * Replace all states currently in the state stack with this one
      * @param state
      */
     public void emplaceState(AppState state){
         /**
-         * Send kill event to all current states
+         * Send terminate event to all current states
          */
         for(AppState it : states){
-            it.onEvent(AppStateEvent.KILL);
+            it.onEvent(AppStateEvent.TERMINATE);
         }
         states.clear();
         
@@ -46,6 +83,12 @@ public class AppStateManager {
      * @param timeDelta time since the last tick
      */
     public void tick(double timeDelta){
+        this.cleanStates();
+        
+        if(states.isEmpty()){
+            return;
+        }
+        
         Iterator<AppState> it = states.iterator();
         
         /**
@@ -55,9 +98,6 @@ public class AppStateManager {
             AppState state = it.next();
             if(state.isAlive()){
                 state.onTick(timeDelta);
-            } else {
-                state.onEvent(AppStateEvent.KILL);
-                it.remove();
             }
         }
         

@@ -1,7 +1,6 @@
 package capstone2015.graphics;
 
 import capstone2015.Util;
-import capstone2015.geom.Vector2i;
 import capstone2015.util.Array2D;
 import com.googlecode.lanterna.terminal.Terminal.Color;
 
@@ -45,12 +44,13 @@ public class Panel extends Array2D<Tile>{
         int y = 0;
         for(String str : split_text){
             for(int x = 0; x < pwidth; x++){
+                Tile t;
                 if(x < str.length()){
-                    Tile t = new Tile(str.charAt(x), fgColor, bgColor);
-                    txtp.set(x, y, t);
+                    t = new Tile(str.charAt(x), fgColor, bgColor);                    
                 } else {
-                    txtp.set(x, y, new Tile());
+                    t = new Tile(' ', fgColor, bgColor);
                 }
+                txtp.set(x, y, t);
             }
             y++;
         }
@@ -62,6 +62,25 @@ public class Panel extends Array2D<Tile>{
     }
     public static Panel textPanel(String text){
         return textPanel(text, Color.BLACK);
+    }
+    
+    /*******
+     * Creates a panel filled with a single type of tile
+     * @param width width of the panel
+     * @param height height of the panel
+     * @param tile tile to fill panel with
+     * @return
+     */
+    public static Panel fillPanel(int width, int height, Tile tile){
+        Panel p = new Panel(width, height);
+        
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                p.set(j, i, tile);
+            }
+        }
+        
+        return p;
     }
     
 }

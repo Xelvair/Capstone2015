@@ -9,7 +9,7 @@ public abstract class AppState {
     
     public boolean isFocus(){return isFocus;}
     public boolean isBlur(){return !isFocus;}
-    protected final void kill(){this.isAlive = false;}
+    protected final void terminate(){this.isAlive = false;}
     public final boolean isAlive(){return this.isAlive;}
     
     /*********

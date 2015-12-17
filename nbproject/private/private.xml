@@ -4,6 +4,7 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/appstate/AppState.java</file>
+            <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/appstate/AppStateManager.java</file>
             <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/geom/Recti.java</file>
             <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/geom/Vector2i.java</file>
             <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/graphics/Panel.java</file>
@@ -11,7 +12,8 @@
             <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/Capstone2015.java</file>
             <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/geom/Geom.java</file>
             <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/graphics/Tile.java</file>
-            <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/graphics/PanelInterface.java</file>
+            <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/util/Array2D.java</file>
+            <file>file:/C:/Users/Marvin/Capstone2015/src/capstone2015/util/Array2DInterface.java</file>
         </group>
     </open-files>
 </project-private>
