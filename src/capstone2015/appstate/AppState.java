@@ -12,6 +12,10 @@ public abstract class AppState {
     protected final void kill(){this.isAlive = false;}
     public final boolean isAlive(){return this.isAlive;}
     
+    /*********
+     * Sets the AppState blurred
+     * meaning it is not at the top of the state stack anymore
+     */
     public final void setBlur(){
         if(this.isFocus){
             this.isFocus = false;
@@ -19,6 +23,10 @@ public abstract class AppState {
         }
     }
     
+    /*********
+     * Sets the AppState focussed
+     * meaning it is at the top of the state stack
+     */
     public final void setFocus(){
         if(!this.isFocus){
             this.isFocus = true;

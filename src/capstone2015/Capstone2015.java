@@ -1,35 +1,38 @@
 package capstone2015;
 
-import capstone2015.appstate.*;
-import capstone2015.geom.*;
-import capstone2015.graphics.Panel;
-import capstone2015.graphics.Tile;
-import java.util.LinkedList;
+import capstone2015.appstate.AppState;
+import capstone2015.appstate.AppStateEvent;
+import capstone2015.appstate.AppStateManager;
+import com.googlecode.lanterna.TerminalFacade;
+import com.googlecode.lanterna.terminal.Terminal;
 
 public class Capstone2015 {
+    
+    public static final int FRAME_RATE = 60;
+    public static final int FRAME_TIME = 1000 / FRAME_RATE;
+    
     public static void main(String[] args) throws Exception {
         AppStateManager asm = new AppStateManager();
-        
-        Vector2i vec1 = new Vector2i(3, 5);
-        Vector2i vec2 = new Vector2i(7, 12);
-        
-        LinkedList<Vector2i> line = Geom.lineToPoints(
-            new Vector2i(3, 2), 
-            new Vector2i(7, 8)
-        );
-        
-        for(Vector2i vec : line){
-            System.out.println(vec);
-        }
-        
-        Panel p = new Panel(new Vector2i(5, 5));
-        p.set(new Vector2i(2, 3), new Tile('A'));
-        Panel ptext = Panel.textPanel("fakbois");
-        
-        System.out.println(ptext);
-        
+        asm.pushState(new AppState(){
+
+            @Override
+            protected void onTick(double timeDelta) {
+                System.out.println("tick");
+            }
+
+            @Override
+            protected void onEvent(AppStateEvent event) {
+                System.out.println("event: " + event.toString());
+            }
+            
+        });
+        Terminal terminal = TerminalFacade.createSwingTerminal();
+        terminal.enterPrivateMode();
         while(!asm.isEmpty()){
-            Thread.sleep(1000);
+            terminal.clearScreen();
+            asm.tick(0.f);
+            Thread.sleep(FRAME_TIME);
         }
+        terminal.exitPrivateMode();
     }
 }
