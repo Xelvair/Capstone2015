@@ -31,7 +31,7 @@ public class Geom {
          * Determine the longer component of the vector
          * diff = end - start
          */
-        Vector2i diff = end.transform(start.invert());
+        Vector2i diff = end.translate(start.invert());
         
         /**
          * Generate points along longer component
@@ -42,14 +42,14 @@ public class Geom {
                 double coef = (double)i / (double)diff.getX();
                 int y_component = (int)Math.round((double)diff.getY() * coef);
                 Vector2i startOffset = new Vector2i(i, y_component);
-                linePoints.add(start.transform(startOffset));
+                linePoints.add(start.translate(startOffset));
             }
         } else {
             for(int i = 0; i <= diff.getY(); i++){
                 double coef = (double)i / (double)diff.getY();
                 int x_component = (int)Math.round((double)diff.getX() * coef);
                 Vector2i startOffset = new Vector2i(x_component, i);
-                linePoints.add(start.transform(startOffset));
+                linePoints.add(start.translate(startOffset));
             }
         }
         

@@ -33,14 +33,14 @@ public class Vector2i{
     };
     
     /***************************
-     * Transform vector by another vector
+     * Translate vector by another vector
      * This operation is essentially the same
      * as adding two vectors
-     * @param transform transform vector
-     * @return transformed vector
+     * @param translate translate vector
+     * @return translated vector
      */
-    public Vector2i transform(Vector2i transform){
-        return new Vector2i(this.x + transform.x, this.y + transform.y);
+    public Vector2i translate(Vector2i translate){
+        return new Vector2i(this.x + translate.x, this.y + translate.y);
     }
     
     /***************************
