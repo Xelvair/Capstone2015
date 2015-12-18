@@ -4,7 +4,7 @@ import capstone2015.Util;
 import capstone2015.util.Array2D;
 import com.googlecode.lanterna.terminal.Terminal.Color;
 
-public class Panel extends Array2D<Tile>{
+public class Panel extends Array2D<TerminalChar>{
   
     public Panel(int x, int y){
         super(x, y);
@@ -44,11 +44,11 @@ public class Panel extends Array2D<Tile>{
         int y = 0;
         for(String str : split_text){
             for(int x = 0; x < pwidth; x++){
-                Tile t;
+                TerminalChar t;
                 if(x < str.length()){
-                    t = new Tile(str.charAt(x), fgColor, bgColor);                    
+                    t = new TerminalChar(str.charAt(x), fgColor, bgColor);                    
                 } else {
-                    t = new Tile(' ', fgColor, bgColor);
+                    t = new TerminalChar(' ', fgColor, bgColor);
                 }
                 txtp.set(x, y, t);
             }
@@ -71,7 +71,7 @@ public class Panel extends Array2D<Tile>{
      * @param tile tile to fill panel with
      * @return
      */
-    public static Panel fillPanel(int width, int height, Tile tile){
+    public static Panel fillPanel(int width, int height, TerminalChar tile){
         Panel p = new Panel(width, height);
         
         for(int i = 0; i < height; i++){

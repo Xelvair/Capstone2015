@@ -10,10 +10,10 @@ import com.googlecode.lanterna.terminal.Terminal.ResizeListener;
 import com.googlecode.lanterna.terminal.TerminalSize;
 import java.util.ArrayList;
 
-public class Screen implements Array2DInterface<Tile>{
+public class Screen implements Array2DInterface<TerminalChar>{
 
     private Terminal terminal;
-    private final ArrayList<Array2D<Tile>> buffers = new ArrayList<>();
+    private final ArrayList<Array2D<TerminalChar>> buffers = new ArrayList<>();
     private int width;
     private int height;
     private int membuf = 0;
@@ -42,7 +42,7 @@ public class Screen implements Array2DInterface<Tile>{
         terminal.clearScreen();
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
-                buffers.get(getScreenBufId()).set(j, i, new Tile());
+                buffers.get(getScreenBufId()).set(j, i, new TerminalChar());
             }
         }
     }
@@ -69,7 +69,7 @@ public class Screen implements Array2DInterface<Tile>{
         try{   
             for(int i = 0; i < height; i++){
                 for(int j = 0; j < width; j++){
-                    Tile s_tile = buffers.get(getMemBufId()).get(j, i);
+                    TerminalChar s_tile = buffers.get(getMemBufId()).get(j, i);
                     if(s_tile != null && shouldRedraw(j, i)){
                         terminal.moveCursor(j, i);
                         terminal.applyForegroundColor(s_tile.getFGColor());
@@ -87,8 +87,8 @@ public class Screen implements Array2DInterface<Tile>{
     }
     
     private boolean shouldRedraw(int x, int y){
-        Tile membuf_tile = buffers.get(getMemBufId()).get(x, y);
-        Tile screenbuf_tile = buffers.get(getScreenBufId()).get(x, y);
+        TerminalChar membuf_tile = buffers.get(getMemBufId()).get(x, y);
+        TerminalChar screenbuf_tile = buffers.get(getScreenBufId()).get(x, y);
         
         if(membuf_tile == null){ 
             //If there is no tile in the membuf, dont draw
@@ -107,31 +107,31 @@ public class Screen implements Array2DInterface<Tile>{
     
     private int getScreenBufId(){return (membuf + 1) % 2;}
     private int getMemBufId(){return membuf;}
-    private Tile getScreenBuf(int x, int y){
+    private TerminalChar getScreenBuf(int x, int y){
         return buffers.get(getScreenBufId()).get(x, y);
     }
-    private Tile getMemBuf(int x, int y){
+    private TerminalChar getMemBuf(int x, int y){
         return buffers.get(getMemBufId()).get(x, y);
     }
-    private void setScreenBuf(int x, int y, Tile tile){
+    private void setScreenBuf(int x, int y, TerminalChar tile){
         buffers.get(getScreenBufId()).set(x, y, tile);
     }
-    private void setMemBuf(int x, int y, Tile tile){
+    private void setMemBuf(int x, int y, TerminalChar tile){
         buffers.get(getMemBufId()).set(x, y, tile);
     }
     
     @Override
-    public Tile get(int x, int y) {
+    public TerminalChar get(int x, int y) {
         return getScreenBuf(x, y);
     }
 
     @Override
-    public void set(int x, int y, Tile tile) {
+    public void set(int x, int y, TerminalChar tile) {
         setMemBuf(x, y, tile);
     }
 
     @Override
-    public void insert(int x, int y, Array2DInterface<Tile> data) {
+    public void insert(int x, int y, Array2DInterface<TerminalChar> data) {
         buffers.get(getMemBufId()).insert(x, y, data);
     }
 

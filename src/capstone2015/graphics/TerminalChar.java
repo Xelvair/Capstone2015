@@ -2,26 +2,26 @@ package capstone2015.graphics;
 
 import com.googlecode.lanterna.terminal.Terminal.Color;
 
-public class Tile {
+public class TerminalChar {
     private char    character;
     private Color   fgColor;
     private Color   bgColor;
 
-    public Tile(char character, Color fgColor, Color bgColor){
+    public TerminalChar(char character, Color fgColor, Color bgColor){
         this.character = character;
         this.fgColor = fgColor;
         this.bgColor = bgColor;
     }
     
-    public Tile(char character, Color fgColor){
+    public TerminalChar(char character, Color fgColor){
         this(character, fgColor, Color.BLACK);
     }
     
-    public Tile(char character){
+    public TerminalChar(char character){
         this(character, Color.WHITE, Color.BLACK);
     }
     
-    public Tile(){
+    public TerminalChar(){
         this(' ', Color.WHITE, Color.BLACK);
     }
     
@@ -29,7 +29,7 @@ public class Tile {
     public Color getFGColor(){return this.fgColor;}
     public Color getBGColor(){return this.bgColor;}
     
-    public boolean equals(Tile rhs){
+    public boolean equals(TerminalChar rhs){
         return (   this.getCharacter() == rhs.getCharacter()
                 && this.getFGColor() == rhs.getFGColor()
                 && this.getBGColor() == rhs.getBGColor());
