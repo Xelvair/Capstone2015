@@ -5,7 +5,9 @@ import capstone2015.appstate.AppStateEvent;
 import capstone2015.appstate.AppStateManager;
 import capstone2015.game.Entity;
 import capstone2015.game.Map;
+import capstone2015.game.MapRenderer;
 import capstone2015.game.Tile;
+import capstone2015.geom.Recti;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.graphics.TerminalChar;
@@ -33,6 +35,8 @@ public class Capstone2015 {
                 screen.insert(0, 0, Panel.textPanel("hi", Color.WHITE, Color.CYAN));
                 screen.insert(20, (int)(System.currentTimeMillis() % 1000000) / 1000 % 20, Panel.textPanel("Test123 123\nmultiline Textpanel", Color.BLUE, Color.GREEN));
                 screen.insert(10, 3, Panel.fillPanel(10, 10, new TerminalChar('X', Color.MAGENTA, Color.RED)));
+                
+                screen.insert(0, 0, MapRenderer.render(map, new Recti(0, 0, 80, 24)));
             }
 
             @Override

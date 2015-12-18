@@ -36,7 +36,7 @@ public class Map {
     
     for(int i = 0; i < height; i++){
       for(int j = 0; j < width; j++){
-        tilemap.set(j, j, Tile.create(Entity.ID_FLOOR));
+        tilemap.set(j, i, Tile.create(Entity.ID_FLOOR));
       }
     }
     
@@ -52,6 +52,7 @@ public class Map {
       //Special case for the enemy(dynamic obstacle)
       //the only dynamic thing that is stored on the map
       if(tile_id == Entity.ID_ENEMY){
+        tilemap.set(xcoord, ycoord, Tile.create(Entity.ID_FLOOR));
         //entities.add(SOMETHING??);
       } else {
         tilemap.set(xcoord, ycoord, Tile.create(tile_id));
@@ -73,12 +74,16 @@ public class Map {
       throw new ArrayIndexOutOfBoundsException();
     }
     
-    ArrayList<Entity> entities = new ArrayList<>();
+    ArrayList<Entity> local_entities = new ArrayList<>();
     
-    entities.add(tilemap.get(x, y));
+    local_entities.add(tilemap.get(x, y));
     
     //TODO: add positioned entities to entity list
     
-    return entities;
+    return local_entities;
+  }
+  
+  public boolean inBounds(int x, int y){
+    return tilemap.inBounds(x, y);
   }
 }
