@@ -62,11 +62,25 @@ public class Tile implements Entity{
     static Tile[] s_tiles;
     
     private static void initTiles(){
+        /**
+         * Error tile that will be displayed for things
+         * that shouldn't be a tile, but still have an entity id
+         */
+        Tile error_tile = new Tile();
+        error_tile = new Tile();
+        error_tile.solid = false;
+        error_tile.opaque = false;
+        error_tile.pickupBehavior = PickUpBehavior.STATIC;
+        error_tile.canPlace = false;
+        error_tile.representVisible = new TerminalChar('!', Color.BLACK, Color.RED);
+        error_tile.representInvisible = new TerminalChar('!', Color.BLACK, Color.RED);
+        
+        
         s_tiles = new Tile[50];
         int tile_id;
         
         //WALL
-        tile_id = 0;
+        tile_id = Entity.ID_WALL;
         s_tiles[tile_id] = new Tile();
         s_tiles[tile_id].solid = true;
         s_tiles[tile_id].opaque = true;
@@ -76,7 +90,7 @@ public class Tile implements Entity{
         s_tiles[tile_id].representInvisible = new TerminalChar(' ', Color.WHITE, Color.WHITE);
         
         //ENTRY
-        tile_id = 1;
+        tile_id = Entity.ID_ENTRY;
         s_tiles[tile_id] = new Tile();
         s_tiles[tile_id].solid = false;
         s_tiles[tile_id].opaque = false;
@@ -86,7 +100,7 @@ public class Tile implements Entity{
         s_tiles[tile_id].representInvisible = new TerminalChar('\u2343', Color.BLUE, Color.BLACK);
         
         //EXIT
-        tile_id = 2;
+        tile_id = Entity.ID_EXIT;
         s_tiles[tile_id] = new Tile();
         s_tiles[tile_id].solid = true;
         s_tiles[tile_id].opaque = true;
@@ -96,7 +110,7 @@ public class Tile implements Entity{
         s_tiles[tile_id].representInvisible = new TerminalChar('\u2344', Color.GREEN, Color.BLACK);
         
         //STATIC OBSTACLE
-        tile_id = 3;
+        tile_id = Entity.ID_STATIC_OBSTACLE;
         s_tiles[tile_id] = new Tile();
         s_tiles[tile_id].solid = true;
         s_tiles[tile_id].opaque = true;
@@ -106,9 +120,11 @@ public class Tile implements Entity{
         s_tiles[tile_id].representInvisible = new TerminalChar('\u2344', Color.GREEN, Color.BLACK);
         
         //DYNAMIC OBSTACLE IS NEVER A TILE
+        tile_id = Entity.ID_ENEMY;
+        s_tiles[tile_id] = new Tile(error_tile);
         
         //KEY
-        tile_id = 5;
+        tile_id = Entity.ID_KEY;
         s_tiles[tile_id] = new Tile();
         s_tiles[tile_id].solid = false;
         s_tiles[tile_id].opaque = false;
@@ -118,7 +134,7 @@ public class Tile implements Entity{
         s_tiles[tile_id].representInvisible = new TerminalChar('\u26bf', Color.YELLOW, Color.BLACK);
         
         //FLOOR
-        tile_id = 6;
+        tile_id = Entity.ID_FLOOR;
         s_tiles[tile_id] = new Tile();
         s_tiles[tile_id].solid = false;
         s_tiles[tile_id].opaque = false;

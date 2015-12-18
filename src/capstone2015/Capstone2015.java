@@ -29,6 +29,8 @@ public class Capstone2015 {
         
         
         asm.pushState(new AppState(){
+            private int render_x = 0;
+            private int render_y = 0;
             @Override
             protected void onTick(double timeDelta) {
                 screen.insert(0, 0, Panel.fillPanel(screen.width(), screen.height(), new TerminalChar(' ', Color.BLACK, Color.BLACK)));
@@ -36,7 +38,28 @@ public class Capstone2015 {
                 screen.insert(20, (int)(System.currentTimeMillis() % 1000000) / 1000 % 20, Panel.textPanel("Test123 123\nmultiline Textpanel", Color.BLUE, Color.GREEN));
                 screen.insert(10, 3, Panel.fillPanel(10, 10, new TerminalChar('X', Color.MAGENTA, Color.RED)));
                 
-                screen.insert(0, 0, MapRenderer.render(map, new Recti(100, 100, 150, 50)));
+                screen.insert(0, 0, MapRenderer.render(map, new Recti(render_x, render_y, 150, 50)));
+                
+                Key key;
+                while((key = screen.readInput()) != null){
+                    switch(key.getKind()){
+                        case ArrowLeft:
+                            render_x -= 5;
+                            break;
+                        case ArrowRight:
+                            render_x += 5;
+                            break;
+                        case ArrowUp:
+                            render_y -= 5;
+                            break;
+                        case ArrowDown:
+                            render_y += 5;
+                            break;
+                        case Escape:
+                            terminate();
+                            break;
+                    }
+                }
             }
 
             @Override
@@ -50,14 +73,14 @@ public class Capstone2015 {
         }); 
        
         while(!asm.isEmpty()){
-            Key key;
+            /*Key key;
             while((key = screen.readInput()) != null){
                 switch(key.getKind()){
                     case Escape:
                         asm.terminateStates();
                         break;
                 }
-            }
+            }*/
             screen.flip();
             asm.tick(0.f);
             Thread.sleep(FRAME_TIME);
