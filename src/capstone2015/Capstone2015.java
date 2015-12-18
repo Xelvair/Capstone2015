@@ -36,7 +36,7 @@ public class Capstone2015 {
                 screen.insert(20, (int)(System.currentTimeMillis() % 1000000) / 1000 % 20, Panel.textPanel("Test123 123\nmultiline Textpanel", Color.BLUE, Color.GREEN));
                 screen.insert(10, 3, Panel.fillPanel(10, 10, new TerminalChar('X', Color.MAGENTA, Color.RED)));
                 
-                screen.insert(0, 0, MapRenderer.render(map, new Recti(0, 0, 80, 24)));
+                screen.insert(0, 0, MapRenderer.render(map, new Recti(100, 100, 150, 50)));
             }
 
             @Override
