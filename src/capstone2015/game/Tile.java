@@ -1,15 +1,27 @@
-package capstone2015.map;
+package capstone2015.game;
 
 import capstone2015.graphics.TerminalChar;
 import com.googlecode.lanterna.terminal.Terminal.Color;
 
 public class Tile implements Entity{
+  
     protected boolean solid;
     protected boolean opaque;
     protected PickUpBehavior pickupBehavior;
     protected boolean canPlace;
     protected TerminalChar representVisible;
     protected TerminalChar representInvisible;
+    
+    protected Tile(){}
+    
+    public Tile(Tile t){
+      this.solid = t.solid;
+      this.opaque = t.opaque;
+      this.pickupBehavior = t.pickupBehavior;
+      this.canPlace = t.canPlace;
+      this.representVisible = t.representVisible;
+      this.representInvisible = t.representInvisible;
+    }
     
     @Override
     public void onEnter(Entity ent) {
@@ -116,13 +128,18 @@ public class Tile implements Entity{
         s_tiles[tile_id].representInvisible = new TerminalChar(' ', Color.WHITE, Color.BLACK);
     }
     
-    public static Tile get(int tileId){
+    public static Tile create(int tileId){
         if(s_tiles == null){
             initTiles();
         }
         if(tileId >= s_tiles.length || s_tiles[tileId] == null){
             System.out.println("ERR: Requested invalid tile #" + tileId);
         }
-        return s_tiles[tileId];
+        return new Tile(s_tiles[tileId]);
     }
+
+  @Override
+  public boolean isTerminate() {
+    return false; //Tiles never get terminated
+  }
 }

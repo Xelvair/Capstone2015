@@ -58,5 +58,13 @@ public class Array2D<T> implements Array2DInterface<T>{
         }
         return str;
     }
+
+  @Override
+  public boolean inBounds(int x, int y) {
+    return (   x >= 0
+            && x < width
+            && y >= 0
+            && y < height);
+  }
     
 }

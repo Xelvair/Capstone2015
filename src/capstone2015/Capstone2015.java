@@ -3,6 +3,9 @@ package capstone2015;
 import capstone2015.appstate.AppState;
 import capstone2015.appstate.AppStateEvent;
 import capstone2015.appstate.AppStateManager;
+import capstone2015.game.Entity;
+import capstone2015.game.Map;
+import capstone2015.game.Tile;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.graphics.TerminalChar;
@@ -17,6 +20,9 @@ public class Capstone2015 {
     public static void main(String[] args) throws Exception {
         AppStateManager asm = new AppStateManager();
         Screen screen = new Screen();
+        Map map = new Map();
+        
+        map.loadFromProperties("level.properties");
 
         
         

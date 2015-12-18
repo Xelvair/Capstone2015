@@ -1,4 +1,4 @@
-package capstone2015;
+package capstone2015.util;
 
 public class Util {
     public static int countChar(char c, String str){

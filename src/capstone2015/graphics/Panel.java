@@ -1,6 +1,6 @@
 package capstone2015.graphics;
 
-import capstone2015.Util;
+import capstone2015.util.Util;
 import capstone2015.util.Array2D;
 import com.googlecode.lanterna.terminal.Terminal.Color;
 
