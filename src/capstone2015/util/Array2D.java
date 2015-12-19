@@ -1,5 +1,7 @@
 package capstone2015.util;
 
+import capstone2015.graphics.Panel;
+
 public class Array2D<T> implements Array2DInterface<T>{
     
     private Object[] data;
@@ -23,7 +25,7 @@ public class Array2D<T> implements Array2DInterface<T>{
     }
 
     @Override
-    public void insert(int x, int y, Array2DInterface<T> data) {
+    public void insert(Array2DInterface<T> data, int x, int y) {
         int startx = Math.max(0, -x);
         int starty = Math.max(0, -y);
         
@@ -59,12 +61,31 @@ public class Array2D<T> implements Array2DInterface<T>{
         return str;
     }
 
-  @Override
-  public boolean inBounds(int x, int y) {
-    return (   x >= 0
-            && x < width
-            && y >= 0
-            && y < height);
-  }
+    @Override
+    public boolean inBounds(int x, int y) {
+      return (   x >= 0
+              && x < width
+              && y >= 0
+              && y < height);
+    }
+  
+    @Override
+    public void insertCenterHorizontally(Array2D<T> array, int y){
+        int x = (this.width() - array.width()) / 2;
+        this.insert(array, x, y);
+    }
+
+    @Override
+    public void insertCenterVertically(Array2D<T> array, int x){
+        int y = (this.height() - array.height()) / 2;
+        this.insert(array, x, y);
+    }
+
+    @Override
+    public void insertCenter(Array2D<T> array){
+        int y = (this.height() - array.height()) / 2;
+        int x = (this.width() - array.width()) / 2;
+        this.insert(array, x, y);
+    }
     
 }

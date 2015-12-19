@@ -1,6 +1,6 @@
 package capstone2015.graphics;
 
-import com.googlecode.lanterna.terminal.Terminal.Color;
+import java.awt.Color;
 
 public class TerminalChar {
     private char    character;

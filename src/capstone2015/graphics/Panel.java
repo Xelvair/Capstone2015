@@ -2,7 +2,7 @@ package capstone2015.graphics;
 
 import capstone2015.util.Util;
 import capstone2015.util.Array2D;
-import com.googlecode.lanterna.terminal.Terminal.Color;
+import java.awt.Color;
 
 public class Panel extends Array2D<TerminalChar>{
   

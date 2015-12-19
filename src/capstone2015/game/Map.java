@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.Properties;
 
 public class Map {
-  private Array2D<Tile> tilemap;
+  private Array2D<Entity> tilemap;
   private LinkedList<PositionedEntity> entities;
   
   public void loadFromProperties(String fileName){
@@ -36,7 +36,7 @@ public class Map {
     
     for(int i = 0; i < height; i++){
       for(int j = 0; j < width; j++){
-        tilemap.set(j, i, Tile.create(Entity.ID_FLOOR));
+        tilemap.set(j, i, new Entity(Entity.ID_FLOOR));
       }
     }
     
@@ -52,10 +52,10 @@ public class Map {
       //Special case for the enemy(dynamic obstacle)
       //the only dynamic thing that is stored on the map
       if(tile_id == Entity.ID_ENEMY){
-        tilemap.set(xcoord, ycoord, Tile.create(Entity.ID_FLOOR));
+        tilemap.set(xcoord, ycoord, new Entity(Entity.ID_FLOOR));
         //entities.add(SOMETHING??);
       } else {
-        tilemap.set(xcoord, ycoord, Tile.create(tile_id));
+        tilemap.set(xcoord, ycoord, new Entity(tile_id));
       }
     }
   }

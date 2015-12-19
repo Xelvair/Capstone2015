@@ -7,7 +7,7 @@ import capstone2015.util.Array2DInterface;
 import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.terminal.Terminal;
-import com.googlecode.lanterna.terminal.Terminal.Color;
+import java.awt.Color;
 import com.googlecode.lanterna.terminal.Terminal.ResizeListener;
 import com.googlecode.lanterna.terminal.TerminalSize;
 import java.util.ArrayList;
@@ -74,8 +74,12 @@ public class Screen implements Array2DInterface<TerminalChar>{
                     TerminalChar s_tile = buffers.get(getMemBufId()).get(j, i);
                     if(s_tile != null && shouldRedraw(j, i)){
                         terminal.moveCursor(j, i);
-                        terminal.applyForegroundColor(s_tile.getFGColor());
-                        terminal.applyBackgroundColor(s_tile.getBGColor());
+                        
+                        Color fgColor = s_tile.getFGColor();
+                        Color bgColor = s_tile.getBGColor();
+                        
+                        terminal.applyForegroundColor(fgColor.getRed(), fgColor.getGreen(), fgColor.getBlue());
+                        terminal.applyBackgroundColor(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue());
                         terminal.putCharacter(s_tile.getCharacter());
                     }
                 }
@@ -133,8 +137,8 @@ public class Screen implements Array2DInterface<TerminalChar>{
     }
 
     @Override
-    public void insert(int x, int y, Array2DInterface<TerminalChar> data) {
-        buffers.get(getMemBufId()).insert(x, y, data);
+    public void insert(Array2DInterface<TerminalChar> data, int x, int y) {
+        buffers.get(getMemBufId()).insert(data, x, y);
     }
 
     @Override
@@ -152,9 +156,24 @@ public class Screen implements Array2DInterface<TerminalChar>{
         terminal = null;
     }
 
-  @Override
-  public boolean inBounds(int x, int y) {
-    return new Recti(0, 0, width, height).contains(new Vector2i(x, y));
-  }
+    @Override
+    public boolean inBounds(int x, int y) {
+      return new Recti(0, 0, width, height).contains(new Vector2i(x, y));
+    }
+
+    @Override
+    public void insertCenterHorizontally(Array2D<TerminalChar> array, int y) {
+        buffers.get(getMemBufId()).insertCenterHorizontally(array, y);
+    }
+
+    @Override
+    public void insertCenterVertically(Array2D<TerminalChar> array, int x) {
+        buffers.get(getMemBufId()).insertCenterVertically(array, x);
+    }
+
+    @Override
+    public void insertCenter(Array2D<TerminalChar> array) {
+        buffers.get(getMemBufId()).insertCenter(array);
+    }
     
 }
