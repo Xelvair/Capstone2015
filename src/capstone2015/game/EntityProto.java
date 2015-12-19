@@ -1,11 +1,13 @@
 package capstone2015.game;
 
+import capstone2015.game.behavior.PlayerBehavior;
 import capstone2015.graphics.TerminalChar;
 import java.awt.Color;
 import java.util.ArrayList;
 
 public class EntityProto {
 
+    private final int id;
     private final boolean isOpaque;
     private final boolean isSolid;
     private final EntityBehavior behavior;
@@ -14,6 +16,7 @@ public class EntityProto {
     private final TerminalChar representInventory;
 
     public EntityProto(
+            int id,
             boolean isOpaque,
             boolean isSolid,
             EntityBehavior behavior,
@@ -21,12 +24,17 @@ public class EntityProto {
             TerminalChar representInvisible,
             TerminalChar representInventory
     ){
+        this.id = id;
         this.isOpaque = isOpaque;
         this.isSolid = isSolid;
         this.behavior = behavior;
         this.representVisible = representVisible;
         this.representInvisible = representInvisible;
         this.representInventory = representInventory;
+    }
+    
+    public int getId(){
+        return id;
     }
     
     public boolean isOpaque() {
@@ -68,6 +76,7 @@ public class EntityProto {
         
         //ID_WALL
         entityProtoList.add(new EntityProto(
+                Entity.ID_WALL,
                 true, //isSolid
                 true, //isOpaque
                 null, //behavior
@@ -78,6 +87,7 @@ public class EntityProto {
         
         //ID_ENTRY
         entityProtoList.add(new EntityProto(
+                Entity.ID_ENTRY,
                 false, //isSolid
                 false, //isOpaque
                 null, //behavior
@@ -88,6 +98,7 @@ public class EntityProto {
         
         //ID_EXIT
         entityProtoList.add(new EntityProto(
+                Entity.ID_EXIT,
                 false, //isSolid
                 false, //isOpaque
                 null, //behavior
@@ -98,6 +109,7 @@ public class EntityProto {
         
         //ID_STATIC_OBSTACLE
         entityProtoList.add(new EntityProto(
+                Entity.ID_STATIC_OBSTACLE,
                 true, //isSolid
                 false, //isOpaque
                 null, //behavior
@@ -108,6 +120,7 @@ public class EntityProto {
         
         //ID_ENEMY
         entityProtoList.add(new EntityProto(
+                Entity.ID_ENEMY,
                 false, //isSolid
                 false, //isOpaque
                 null, //behavior
@@ -118,6 +131,7 @@ public class EntityProto {
         
         //ID_KEY
         entityProtoList.add(new EntityProto(
+                Entity.ID_KEY,
                 false, //isSolid
                 false, //isOpaque
                 null, //behavior
@@ -128,12 +142,24 @@ public class EntityProto {
         
         //ID_FLOOR
         entityProtoList.add(new EntityProto(
+                Entity.ID_FLOOR,
                 false, //isSolid
                 false, //isOpaque
                 null, //behavior
                 new TerminalChar(' ', Color.WHITE, Color.DARK_GRAY), //representVis
                 new TerminalChar(' ', Color.WHITE, Color.BLACK),     //representInvis
                 new TerminalChar('.', Color.WHITE, Color.DARK_GRAY)  //representInv
+        ));
+        
+        //ID_PLAYER
+        entityProtoList.add(new EntityProto(
+                Entity.ID_PLAYER,
+                false, //isSolid
+                false, //isOpaque
+                new PlayerBehavior(), //behavior
+                new TerminalChar('@', Color.ORANGE, Color.DARK_GRAY), //representVis
+                new TerminalChar('@', Color.ORANGE, Color.BLACK),     //representInvis
+                new TerminalChar('@', Color.ORANGE, Color.DARK_GRAY)  //representInv
         ));
     }
     

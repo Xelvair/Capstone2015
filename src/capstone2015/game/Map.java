@@ -1,8 +1,5 @@
 package capstone2015.game;
 
-import capstone2015.geom.Recti;
-import capstone2015.geom.Vector2i;
-import capstone2015.graphics.Panel;
 import capstone2015.util.Array2D;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +10,28 @@ import java.util.Properties;
 public class Map {
   private Array2D<Entity> tilemap;
   private LinkedList<PositionedEntity> entities;
+  private PositionedEntity player; // for fast lookup;
+  
+  public Map(){
+      entities = new LinkedList<>();
+  }
+  
+  public void resetPlayer(int x, int y){
+      removePlayer();
+      player = new PositionedEntity(Entity.ID_PLAYER, x, y);
+      entities.add(player);
+  }
+  
+  public void removePlayer(){
+      if(player != null){
+        entities.remove(player);
+        player = null;
+      }
+  }
+  
+  public PositionedEntity getPlayer(){
+      return player;
+  }
   
   public void loadFromProperties(String fileName){
     Properties props = new Properties();
@@ -49,13 +68,21 @@ public class Map {
       
       int tile_id = Integer.parseInt(value);
       
-      //Special case for the enemy(dynamic obstacle)
-      //the only dynamic thing that is stored on the map
-      if(tile_id == Entity.ID_ENEMY){
-        tilemap.set(xcoord, ycoord, new Entity(Entity.ID_FLOOR));
-        //entities.add(SOMETHING??);
-      } else {
-        tilemap.set(xcoord, ycoord, new Entity(tile_id));
+      /**
+       * Special case for the enemy, key and static obstacle,
+       * as they will instead be added to the list of movable entities
+       * rather than static tiles.
+       */
+      switch(tile_id){
+          case Entity.ID_ENEMY:
+          case Entity.ID_KEY:
+          case Entity.ID_STATIC_OBSTACLE:
+              entities.add(new PositionedEntity(tile_id, xcoord, ycoord));
+              tilemap.set(xcoord, ycoord, new Entity(Entity.ID_FLOOR));
+              break;
+          default:
+              tilemap.set(xcoord, ycoord, new Entity(tile_id));
+              break;
       }
     }
   }
@@ -68,6 +95,34 @@ public class Map {
     return tilemap.height();
   }
   
+  public void tick(double timeDelta){
+      for(PositionedEntity entity : entities){
+          EntityAction action = entity.tick(timeDelta);
+          switch(action.getType()){
+              case MOVE_LEFT:
+                  entity.setXPos(entity.getXPos() - 1);
+                  break;
+              case MOVE_RIGHT:
+                  entity.setXPos(entity.getXPos() + 1);
+                  break;
+              case MOVE_UP:
+                  entity.setYPos(entity.getYPos() - 1);
+                  break;
+              case MOVE_DOWN:
+                  entity.setYPos(entity.getYPos() + 1);
+                  break;
+              case NONE:
+                  break;
+              case TERMINATE:
+                  break;
+          }
+      }
+  }
+  
+  public void add(PositionedEntity e){
+      entities.add(e);
+  }
+  
   public ArrayList<Entity> getEntitiesAt(int x, int y){
     if(!tilemap.inBounds(x, y)){
       System.out.println("Map index out of bounds");
@@ -78,7 +133,11 @@ public class Map {
     
     local_entities.add(tilemap.get(x, y));
     
-    //TODO: add positioned entities to entity list
+    for(PositionedEntity e : entities){
+        if(e.getXPos() == x && e.getYPos() == y){
+            local_entities.add(e);
+        }
+    }
     
     return local_entities;
   }

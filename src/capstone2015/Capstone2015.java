@@ -3,14 +3,14 @@ package capstone2015;
 import capstone2015.appstate.AppState;
 import capstone2015.appstate.AppStateEvent;
 import capstone2015.appstate.AppStateManager;
+import capstone2015.game.Entity;
+import capstone2015.game.PositionedEntity;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
+import capstone2015.game.panel.NotificationPanel;
 import capstone2015.geom.Recti;
-import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
-import capstone2015.graphics.TerminalChar;
 import com.googlecode.lanterna.input.Key;
-import java.awt.Color;
 
 public class Capstone2015 {
     
@@ -24,21 +24,20 @@ public class Capstone2015 {
         
         map.loadFromProperties("level.properties");
         
+        map.resetPlayer(3, 3);
+        map.add(new PositionedEntity(Entity.ID_KEY, 3, 3));
+        
+        System.out.println(map.getEntitiesAt(3, 3).size());
+        
         asm.pushState(new AppState(){
             private int render_x = 0;
             private int render_y = 0;
             @Override
             protected void onTick(double timeDelta) {
-                screen.insert(Panel.fillPanel(screen.width(), screen.height(), new TerminalChar(' ', Color.BLACK, Color.BLACK)), 0, 0);
-                screen.insert(Panel.textPanel("hi", Color.WHITE, Color.CYAN), 0, 0);
-                screen.insert(Panel.textPanel("Test123 123\nmultiline Textpanel", Color.BLUE, Color.GREEN), 20, (int)(System.currentTimeMillis() % 1000000) / 1000 % 20);
-                screen.insert(Panel.textPanel("Test123 123\nmultiline Textpanel", Color.BLUE, Color.GREEN), 10, 3);
+                map.tick(timeDelta);
                 
-                screen.insert(MapRenderer.render(map, new Recti(render_x, render_y, screen.width(), screen.height())), 0, 0);
-                
-                Panel guipanel = Panel.fillPanel(10, 10, new TerminalChar('X', Color.BLACK, Color.WHITE));
-                guipanel.insertCenter(Panel.fillPanel(8, 8, new TerminalChar(' ', Color.WHITE, Color.BLACK)));
-                screen.insertCenter(guipanel);
+                screen.insert(new NotificationPanel("Capstone2015 (C) Marvin Doerr", screen.width(), 1), 0, 0);
+                screen.insert(MapRenderer.renderPlayerCentered(map, screen.width(), screen.height()), 0, 0);
                 
                 Key key;
                 while((key = screen.readInput()) != null){
@@ -72,17 +71,12 @@ public class Capstone2015 {
             
         }); 
        
+        long lastClock = System.currentTimeMillis();
         while(!asm.isEmpty()){
-            /*Key key;
-            while((key = screen.readInput()) != null){
-                switch(key.getKind()){
-                    case Escape:
-                        asm.terminateStates();
-                        break;
-                }
-            }*/
+            long deltatime_msec = System.currentTimeMillis() - lastClock;
+            lastClock = System.currentTimeMillis();
             screen.flip();
-            asm.tick(0.f);
+            asm.tick((double)deltatime_msec / 1000.d);
             Thread.sleep(FRAME_TIME);
         }
         

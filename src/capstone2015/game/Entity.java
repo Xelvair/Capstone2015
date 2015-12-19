@@ -10,6 +10,7 @@ public class Entity {
     public static final int ID_ENEMY = 4;
     public static final int ID_KEY = 5;
     public static final int ID_FLOOR = 6;
+    public static final int ID_PLAYER = 7;
   
     private EntityProto proto;
     
@@ -19,13 +20,14 @@ public class Entity {
  
     //public boolean isTerminate();
     //public Inventory getInventory();
+    public int          getId(){return proto.getId();}
     public boolean      isSolid(){return proto.isSolid();}
     public boolean      isOpaque(){return proto.isOpaque();}
-    public EntityAction tick(){
+    public EntityAction tick(double timeDelta){
         if(proto.getBehavior() == null){
             return new EntityAction(EntityActionType.NONE);
         } else {
-            return proto.getBehavior().onTick();
+            return proto.getBehavior().onTick(timeDelta);
         }
     }
     public TerminalChar getRepresentVisible(){return proto.getRepresentVisible();}
