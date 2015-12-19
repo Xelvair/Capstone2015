@@ -24,11 +24,16 @@ public class Game extends AppState{
     
     private void handleMessage(Message m){
         switch(m.getType()){
+            case QuitToDesktop:
+                terminate();
+                break;
             case KeyEvent:
                 Key key = (Key)m.getMsgObject();
                 switch(key.getKind()){
                     case Escape:
-                        terminate();
+                        if(isFocus()){
+                            messageBus.enqueue(new Message(Message.Type.PushIngameMenuState));
+                        }
                         break;
                 }
                 break;
@@ -40,8 +45,10 @@ public class Game extends AppState{
         for(Message m : messageBus){
             handleMessage(m);
         }
-        
-        map.tick(timeDelta);
+
+        if(this.isFocus()){
+            map.tick(timeDelta);
+        } 
         
         screen.insert(NotificationPanel.render("Capstone2015 (C) Marvin Doerr", screen.width(), 1), 0, 0);
         screen.insert(MapRenderer.renderPlayerCentered(map, screen.width(), screen.height() - 1), 0, 1);

@@ -1,7 +1,9 @@
 package capstone2015;
 
+import capstone2015.appstate.AppState;
 import capstone2015.appstate.AppStateManager;
 import capstone2015.appstate.Game;
+import capstone2015.appstate.IngameMenu;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
@@ -27,6 +29,18 @@ public class Capstone2015 {
             long deltatime_msec = System.currentTimeMillis() - lastClock;
             lastClock = System.currentTimeMillis();
             
+            /****************************
+             * Handle messages on the buffer
+             */
+            for(Message m : messageBus){
+                switch(m.getType()){
+                    case PushIngameMenuState:
+                        asm.pushState(new IngameMenu(screen, messageBus));
+                        break;
+                    default:
+                        break;
+                }
+            }
             /****************************
              * Poll for key events and refresh message bus,
              * essentially loading the key events from this cycle
