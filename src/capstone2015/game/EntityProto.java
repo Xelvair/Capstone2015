@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class EntityProto {
 
     private final int id;
-    private final boolean isOpaque;
     private final boolean isSolid;
+    private final boolean isOpaque;
     private final EntityBehavior behavior;
     private final TerminalChar representVisible;
     private final TerminalChar representInvisible;
@@ -17,16 +17,16 @@ public class EntityProto {
 
     public EntityProto(
             int id,
-            boolean isOpaque,
             boolean isSolid,
+            boolean isOpaque,
             EntityBehavior behavior,
             TerminalChar representVisible,
             TerminalChar representInvisible,
             TerminalChar representInventory
     ){
         this.id = id;
-        this.isOpaque = isOpaque;
         this.isSolid = isSolid;
+        this.isOpaque = isOpaque;
         this.behavior = behavior;
         this.representVisible = representVisible;
         this.representInvisible = representInvisible;
@@ -124,9 +124,9 @@ public class EntityProto {
                 false, //isSolid
                 false, //isOpaque
                 null, //behavior
-                new TerminalChar('\u25CF', Color.WHITE, Color.DARK_GRAY), //representVis
-                new TerminalChar('\u25CF', Color.WHITE, Color.BLACK), //representInvis
-                new TerminalChar('\u25CF', Color.WHITE, Color.BLACK)  //representInv
+                new TerminalChar('\u08B0', Color.RED, Color.DARK_GRAY), //representVis
+                new TerminalChar('\u08B0', Color.RED, Color.BLACK), //representInvis
+                new TerminalChar('\u08B0', Color.RED, Color.BLACK)  //representInv
         ));
         
         //ID_KEY
@@ -157,9 +157,9 @@ public class EntityProto {
                 false, //isSolid
                 false, //isOpaque
                 new PlayerBehavior(), //behavior
-                new TerminalChar('@', Color.ORANGE, Color.DARK_GRAY), //representVis
-                new TerminalChar('@', Color.ORANGE, Color.BLACK),     //representInvis
-                new TerminalChar('@', Color.ORANGE, Color.DARK_GRAY)  //representInv
+                new TerminalChar('@', Color.CYAN, Color.DARK_GRAY), //representVis
+                new TerminalChar('@', Color.CYAN, Color.BLACK),     //representInvis
+                new TerminalChar('@', Color.CYAN, Color.DARK_GRAY)  //representInv
         ));
     }
     

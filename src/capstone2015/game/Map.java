@@ -1,5 +1,7 @@
 package capstone2015.game;
 
+import capstone2015.geom.Vector2i;
+import capstone2015.messaging.MessageBus;
 import capstone2015.util.Array2D;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,14 +13,16 @@ public class Map {
   private Array2D<Entity> tilemap;
   private LinkedList<PositionedEntity> entities;
   private PositionedEntity player; // for fast lookup;
+  private MessageBus messageBus;
   
-  public Map(){
+  public Map(MessageBus messageBus){
+      this.messageBus = messageBus;
       entities = new LinkedList<>();
   }
   
   public void resetPlayer(int x, int y){
       removePlayer();
-      player = new PositionedEntity(Entity.ID_PLAYER, x, y);
+      player = new PositionedEntity(Entity.ID_PLAYER, x, y, messageBus);
       entities.add(player);
   }
   
@@ -55,7 +59,7 @@ public class Map {
     
     for(int i = 0; i < height; i++){
       for(int j = 0; j < width; j++){
-        tilemap.set(j, i, new Entity(Entity.ID_FLOOR));
+        tilemap.set(j, i, new Entity(Entity.ID_FLOOR, null));
       }
     }
     
@@ -77,11 +81,11 @@ public class Map {
           case Entity.ID_ENEMY:
           case Entity.ID_KEY:
           case Entity.ID_STATIC_OBSTACLE:
-              entities.add(new PositionedEntity(tile_id, xcoord, ycoord));
-              tilemap.set(xcoord, ycoord, new Entity(Entity.ID_FLOOR));
+              entities.add(new PositionedEntity(tile_id, xcoord, ycoord, messageBus));
+              tilemap.set(xcoord, ycoord, new Entity(Entity.ID_FLOOR, null));
               break;
           default:
-              tilemap.set(xcoord, ycoord, new Entity(tile_id));
+              tilemap.set(xcoord, ycoord, new Entity(tile_id, null));
               break;
       }
     }
@@ -95,25 +99,46 @@ public class Map {
     return tilemap.height();
   }
   
+  private void onMove(PositionedEntity entity, Direction dir){
+      
+      Vector2i cur_pos = new Vector2i(entity.getXPos(), entity.getYPos());
+      Vector2i dest_pos = new Vector2i( cur_pos.getX() + dir.toVector().getX(), 
+                                        cur_pos.getY() + dir.toVector().getY());
+      
+      if(!tilemap.inBounds(dest_pos.getX(), dest_pos.getY())){
+          return;
+      }
+      
+      if(!isSolidAt(dest_pos.getX(), dest_pos.getY())){
+          entity.setXPos(dest_pos.getX());
+          entity.setYPos(dest_pos.getY());
+      }
+  }
+  
+  public boolean isSolidAt(int x, int y){
+      boolean is_solid = false;
+      
+      ArrayList<Entity> local_entities = getEntitiesAt(x, y);
+      for(Entity e : local_entities){
+          if(e.isSolid()){
+              is_solid = true;
+          }
+      }
+      return is_solid;
+  }
+  
   public void tick(double timeDelta){
       for(PositionedEntity entity : entities){
           EntityAction action = entity.tick(timeDelta);
           switch(action.getType()){
               case MOVE_LEFT:
-                  entity.setXPos(entity.getXPos() - 1);
-                  break;
               case MOVE_RIGHT:
-                  entity.setXPos(entity.getXPos() + 1);
-                  break;
               case MOVE_UP:
-                  entity.setYPos(entity.getYPos() - 1);
-                  break;
               case MOVE_DOWN:
-                  entity.setYPos(entity.getYPos() + 1);
-                  break;
-              case NONE:
-                  break;
+                  onMove(entity, action.getType().toDirection());
               case TERMINATE:
+                  break;
+              default:
                   break;
           }
       }

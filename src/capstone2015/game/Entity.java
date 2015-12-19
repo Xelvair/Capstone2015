@@ -1,6 +1,7 @@
 package capstone2015.game;
 
 import capstone2015.graphics.TerminalChar;
+import capstone2015.messaging.MessageBus;
 
 public class Entity {
     public static final int ID_WALL = 0;
@@ -13,9 +14,11 @@ public class Entity {
     public static final int ID_PLAYER = 7;
   
     private EntityProto proto;
+    protected MessageBus messageBus;
     
-    public Entity(int entityId){
+    public Entity(int entityId, MessageBus messageBus){
         this.proto = EntityProto.get(entityId);
+        this.messageBus = messageBus;
     }
  
     //public boolean isTerminate();
@@ -27,7 +30,7 @@ public class Entity {
         if(proto.getBehavior() == null){
             return new EntityAction(EntityActionType.NONE);
         } else {
-            return proto.getBehavior().onTick(timeDelta);
+            return proto.getBehavior().onTick(timeDelta, messageBus);
         }
     }
     public TerminalChar getRepresentVisible(){return proto.getRepresentVisible();}

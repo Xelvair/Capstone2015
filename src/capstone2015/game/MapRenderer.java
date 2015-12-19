@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class MapRenderer {
   public static final int ITEM_DISPLAY_SWITCHTIME = 500;
-    
+  
   public static Panel render(Map map, Recti renderRect){
     Panel p = new Panel(renderRect.getWidth(), renderRect.getHeight());
     
