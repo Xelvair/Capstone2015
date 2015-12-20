@@ -83,4 +83,14 @@ public class Panel extends Array2D<TerminalChar>{
         return p;
     }
     
+    public static Panel borderPanel(int width, int height, Color borderColor, Color bgColor){
+        TerminalChar border_char = new TerminalChar(' ', Color.WHITE, borderColor);
+        TerminalChar bg_char = new TerminalChar(' ', Color.WHITE, bgColor);
+        
+        Panel p = Panel.fillPanel(width, height, border_char);
+        p.insertCenter(Panel.fillPanel(width - 2, height - 2, bg_char));
+        
+        return p;
+    }
+    
 }

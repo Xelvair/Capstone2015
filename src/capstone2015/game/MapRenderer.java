@@ -3,7 +3,10 @@ package capstone2015.game;
 import capstone2015.geom.Recti;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.TerminalChar;
+import capstone2015.util.Array2D;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MapRenderer {
   public static final int ITEM_DISPLAY_SWITCHTIME = 500;
@@ -11,11 +14,13 @@ public class MapRenderer {
   public static Panel render(Map map, Recti renderRect){
     Panel p = new Panel(renderRect.getWidth(), renderRect.getHeight());
     
+    Array2D<Boolean> vision_mask = VisionMaskGenerator.generate(map, renderRect);
+
     for(int i = 0; i < renderRect.getHeight(); i++){
       for(int j = 0; j < renderRect.getWidth(); j++){
         int map_x = j + renderRect.getLeft();
         int map_y = i + renderRect.getTop();
-        if(map.inBounds(map_x, map_y)){
+        if(map.inBounds(map_x, map_y) && vision_mask.get(j, i) == true){
           ArrayList<Entity> entities = map.getEntitiesAt(map_x, map_y);
           if(entities.size() > 1){ //If we need to display something else than the tilemap
               int current_time_msec = (int)(System.currentTimeMillis() % Integer.MAX_VALUE);

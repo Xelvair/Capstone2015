@@ -5,6 +5,7 @@ public class Message {
         KeyEvent,
         GameEvent,
         PushIngameMenuState,
+        PushKeyPageState,
         QuitToDesktop;
     }
     

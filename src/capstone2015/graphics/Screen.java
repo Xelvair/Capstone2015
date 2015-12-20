@@ -1,7 +1,7 @@
 package capstone2015.graphics;
 
 import capstone2015.geom.Recti;
-import capstone2015.geom.Vector2i;
+import capstone2015.geom.Vec2i;
 import capstone2015.util.Array2D;
 import capstone2015.util.Array2DInterface;
 import com.googlecode.lanterna.TerminalFacade;
@@ -158,7 +158,7 @@ public class Screen implements Array2DInterface<TerminalChar>{
 
     @Override
     public boolean inBounds(int x, int y) {
-      return new Recti(0, 0, width, height).contains(new Vector2i(x, y));
+      return new Recti(0, 0, width, height).contains(new Vec2i(x, y));
     }
 
     @Override

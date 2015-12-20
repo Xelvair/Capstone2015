@@ -1,6 +1,9 @@
 package capstone2015.appstate;
 
 import capstone2015.game.panel.OptionPanel;
+import capstone2015.game.panel.PointListPanel;
+import capstone2015.geom.Geom;
+import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.graphics.TerminalChar;
@@ -35,6 +38,9 @@ public class IngameMenu extends AppState{
                     terminate();
                     break;
                 case KeyEvent:
+                    if(isBlur()){
+                        break; //Dont check key events if we're not the top state
+                    }
                     Key key = (Key)m.getMsgObject();
                     switch(key.getKind()){
                         case ArrowUp:
@@ -57,7 +63,7 @@ public class IngameMenu extends AppState{
                                     terminate();
                                     break;
                                 case 3:
-                                    terminate();
+                                    messageBus.enqueue(new Message(Message.Type.PushKeyPageState));
                                     break;
                                 case 4:
                                     terminate();

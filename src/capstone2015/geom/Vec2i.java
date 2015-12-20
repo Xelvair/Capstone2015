@@ -1,15 +1,15 @@
 package capstone2015.geom;
 
-public class Vector2i{
+public class Vec2i{
     private int x;
     private int y;
     
-    public Vector2i(int x, int y){
+    public Vec2i(int x, int y){
         this.x = x;
         this.y = y;
     }
     
-    public Vector2i(Vector2i rhs){
+    public Vec2i(Vec2i rhs){
         this.x = rhs.x;
         this.y = rhs.y;
     }
@@ -28,8 +28,8 @@ public class Vector2i{
      * @param scale scale factor
      * @return scaled vector
      */
-    public Vector2i scale(int scale){
-        return new Vector2i(this.x * scale, this.y * scale);
+    public Vec2i scale(int scale){
+        return new Vec2i(this.x * scale, this.y * scale);
     };
     
     /***************************
@@ -39,16 +39,16 @@ public class Vector2i{
      * @param translate translate vector
      * @return translated vector
      */
-    public Vector2i translate(Vector2i translate){
-        return new Vector2i(this.x + translate.x, this.y + translate.y);
+    public Vec2i translate(Vec2i translate){
+        return new Vec2i(this.x + translate.x, this.y + translate.y);
     }
     
     /***************************
      * Inverts or negates the vector
      * @return inverted vector
      */
-    public Vector2i invert(){
-        return new Vector2i(-this.x, -this.y);
+    public Vec2i invert(){
+        return new Vec2i(-this.x, -this.y);
     }
     
     /***************************
@@ -65,7 +65,30 @@ public class Vector2i{
      * @param rhs vector to compare to
      * @return TRUE if both are the equal, FALSE if not
      */
-    public boolean equals(Vector2i rhs){
+    public boolean equals(Vec2i rhs){
         return (this.x == rhs.x && this.y == rhs.y);
+    }
+    
+    @Override
+    public int hashCode(){
+        return this.x * this.y + (this.x - this.y) * (this.x ^ this.y);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vec2i other = (Vec2i) obj;
+        if (this.x != other.x) {
+            return false;
+        }
+        if (this.y != other.y) {
+            return false;
+        }
+        return true;
     }
 }

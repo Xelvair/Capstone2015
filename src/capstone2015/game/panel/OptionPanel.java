@@ -13,7 +13,7 @@ public class OptionPanel {
     public static final int BORDER_WIDTH = 1;
     public static final char SELECTOR_ICON = '>';
     public static final int OPTION_PADDING = 1;
-    public static final Color BACKGROUND_COLOR = Color.BLACK;
+    public static final Color BACKGROUND_COLOR = Color.DARK_GRAY;
     public static final Color BORDER_COLOR = Color.WHITE;
     public static final Color SELECTOR_COLOR = Color.WHITE;
     public static final Color OPTION_COLOR = Color.WHITE;

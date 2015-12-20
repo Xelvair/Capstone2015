@@ -1,6 +1,6 @@
 package capstone2015.game;
 
-import capstone2015.geom.Vector2i;
+import capstone2015.geom.Vec2i;
 import capstone2015.messaging.MessageBus;
 import capstone2015.util.Array2D;
 import java.io.File;
@@ -101,8 +101,8 @@ public class Map {
   
   private void onMove(PositionedEntity entity, Direction dir){
       
-      Vector2i cur_pos = new Vector2i(entity.getXPos(), entity.getYPos());
-      Vector2i dest_pos = new Vector2i( cur_pos.getX() + dir.toVector().getX(), 
+      Vec2i cur_pos = new Vec2i(entity.getXPos(), entity.getYPos());
+      Vec2i dest_pos = new Vec2i( cur_pos.getX() + dir.toVector().getX(), 
                                         cur_pos.getY() + dir.toVector().getY());
       
       if(!tilemap.inBounds(dest_pos.getX(), dest_pos.getY())){
@@ -125,6 +125,18 @@ public class Map {
           }
       }
       return is_solid;
+  }
+  
+  public boolean isOpaqueAt(int x, int y){
+      boolean is_opaque = false;
+      
+      ArrayList<Entity> local_entities = getEntitiesAt(x, y);
+      for(Entity e : local_entities){
+          if(e.isOpaque()){
+              is_opaque = true;
+          }
+      }
+      return is_opaque;
   }
   
   public void tick(double timeDelta){

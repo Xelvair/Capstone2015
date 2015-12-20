@@ -16,11 +16,17 @@ public class Array2D<T> implements Array2DInterface<T>{
     
     @Override
     public T get(int x, int y) {
+        if(!inBounds(x, y)){
+            throw new ArrayIndexOutOfBoundsException(x + "," + y);
+        }
         return (T)data[y * width + x];
     }
 
     @Override
     public void set(int x, int y, T data) {
+        if(!inBounds(x, y)){
+            throw new ArrayIndexOutOfBoundsException(x + "," + y);
+        }
         this.data[y * width + x] = data;
     }
 

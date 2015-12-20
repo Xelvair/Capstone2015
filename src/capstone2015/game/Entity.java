@@ -26,6 +26,7 @@ public class Entity {
     public int          getId(){return proto.getId();}
     public boolean      isSolid(){return proto.isSolid();}
     public boolean      isOpaque(){return proto.isOpaque();}
+    public int          getVisionRadius(){return proto.getVisionRadius();}
     public EntityAction tick(double timeDelta){
         if(proto.getBehavior() == null){
             return new EntityAction(EntityActionType.NONE);

@@ -42,6 +42,8 @@ public class Recti {
     public void setTop(int top){this.top = top;}
     public void setWidth(int width){this.width = width;}
     public void setHeight(int height){this.height = height;}
+    public int getRight(){return (this.left + this.width) - 1;}
+    public int getBottom(){return (this.top + this.height) - 1;}
     
     
     /**************************
@@ -57,7 +59,7 @@ public class Recti {
      * @param vector vector to be checked
      * @return TRUE if rectangle contains vector, else false
      */
-    public boolean contains(Vector2i vector){
+    public boolean contains(Vec2i vector){
         return (vector.getX() >= this.left &&
                 vector.getY() >= this.top &&
                 vector.getX() < this.left + this.width &&
@@ -78,7 +80,7 @@ public class Recti {
      * @param translate the translation vector
      * @return the translated rect
      */
-    public Recti translate(Vector2i translate){
+    public Recti translate(Vec2i translate){
         return new Recti(   this.left + translate.getX(), 
                             this.top + translate.getY(), 
                             this.width, this.height);
@@ -118,7 +120,7 @@ public class Recti {
      * @param crop crop vector
      * @return the cropped rectangle
      */
-    public Recti crop(Vector2i crop){
+    public Recti crop(Vec2i crop){
         return this.intersect(this.translate(crop));
     }
     
@@ -130,13 +132,21 @@ public class Recti {
      * @param factor growth factor
      * @return the grown rectangle
      */
-    public Recti grow(Vector2i factor){
+    public Recti grow(Vec2i factor){
         return new Recti(
                 this.left - factor.getX(),
                 this.top - factor.getY(),
                 this.width + 2 * factor.getX(),
                 this.height + 2 * factor.getY()
         );
+    }
+    
+    public Vec2i getRelative(Vec2i absolute){
+        return absolute.translate(new Vec2i(-this.getLeft(), -this.getTop()));
+    }
+    
+    public Vec2i getAbsolute(Vec2i relative){
+        return relative.translate(new Vec2i(this.getLeft(), this.getTop()));
     }
     
     /*******************************
