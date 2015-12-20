@@ -103,7 +103,7 @@ public class EntityProto {
                 0, //visionRadius
                 null, //behavior
                 new TerminalChar(' ', Color.WHITE, Color.WHITE), //representVis
-                new TerminalChar(' ', Color.WHITE, Color.WHITE), //representInvis
+                new TerminalChar(' ', Color.WHITE, new Color(20, 20, 20)), //representInvis
                 new TerminalChar(' ', Color.WHITE, Color.WHITE), //representInv
                 "Wall", //name
                   "Walls make up most of the dungeon. You can not\n"
@@ -150,16 +150,13 @@ public class EntityProto {
                 false, //isOpaque
                 0, //visionRadius
                 null, //behavior
-                new TerminalChar('\u25CF', Color.WHITE, Color.DARK_GRAY), //representVis
-                new TerminalChar('\u25CF', Color.WHITE, Color.BLACK), //representInvis
-                new TerminalChar('\u25CF', Color.WHITE, Color.BLACK),  //representInv
-                "Boulder", //name
-                  "These boulders are very heavy. Good thing you're \n"
-                + "a strong independent adventurer, who has - prior to \n"
-                + "signing up to this dungeon exploration mission - \n"
-                + "been lifting very heavy weights. You should be able to \n"
-                + "move a boulder around, as long as there is nothing else\n"
-                + "in front of it that might block it."
+                new TerminalChar('\u0751', new Color(255, 140, 0), Color.DARK_GRAY), //representVis
+                new TerminalChar('\u0751', new Color(255, 140, 0) , Color.BLACK), //representInvis
+                new TerminalChar('\u0751', new Color(255, 140, 0), Color.BLACK),  //representInv
+                "Bonfire", //name
+                  "A warm and cozy bonfire.\n"
+                + "Don't even think about stepping on it, it will burn you!"
+
         ));
         
         //ID_ENEMY
@@ -169,9 +166,9 @@ public class EntityProto {
                 false, //isOpaque
                 0, //visionRadius
                 null, //behavior
-                new TerminalChar('\u08B0', Color.RED, Color.DARK_GRAY), //representVis
-                new TerminalChar('\u08B0', Color.RED, Color.BLACK), //representInvis
-                new TerminalChar('\u08B0', Color.RED, Color.BLACK), //representInv
+                new TerminalChar('\u08B0', new Color(85, 107, 47), Color.DARK_GRAY), //representVis
+                new TerminalChar('\u08B0', new Color(85, 107, 47), Color.BLACK), //representInvis
+                new TerminalChar('\u08B0', new Color(85, 107, 47), Color.BLACK), //representInv
                 "Rattlesnake", //name
                   "This dangerous creature can become very deadly \n"
                 + "very quick if you come too close to it. Keep your\n"
@@ -191,7 +188,7 @@ public class EntityProto {
                 "Dungeon Key", //name
                   "This is the key you need to find in order to leave\n"
                 + "this dungeon. Once you have found this key, it will show\n"
-                + "up in your inventory, any you will be able to leave\n"
+                + "up in your inventory, and you will be able to leave\n"
                 + "through any of the numerous exits within this place."
         ));
         
@@ -203,7 +200,7 @@ public class EntityProto {
                 0, //visionRadius
                 null, //behavior
                 new TerminalChar(' ', Color.WHITE, Color.DARK_GRAY), //representVis
-                new TerminalChar(' ', Color.WHITE, Color.BLACK),     //representInvis
+                new TerminalChar(' ', Color.WHITE, new Color(10, 10, 10)),     //representInvis
                 new TerminalChar('.', Color.WHITE, Color.DARK_GRAY), //representInv
                 "Floor", //name
                   "\"If you fall, I'll be there.\" - Floor, 2015\n"
@@ -220,9 +217,19 @@ public class EntityProto {
                 new TerminalChar('@', Color.CYAN, Color.BLACK),     //representInvis
                 new TerminalChar('@', Color.CYAN, Color.DARK_GRAY), //representInv
                 "The Player", //name
-                  "That's you, a frightened individual running through a dungeon,\n"
-                + "screaming after passing every corner, afraid of what will happen next."
+                  "That's you, a frightened individual running through a\n"
+                + "dungeon, screaming after passing every corner, afraid\n"
+                + "of what will happen next."
         ));
     }
     
 }
+
+/*
+                   "These boulders are very heavy. Good thing you're \n"
+                + "a strong independent adventurer, who has - prior to \n"
+                + "signing up to this dungeon exploration mission - \n"
+                + "been lifting very heavy weights. You should be able to \n"
+                + "move a boulder around, as long as there is nothing else\n"
+                + "in front of it that might block it."
+ */

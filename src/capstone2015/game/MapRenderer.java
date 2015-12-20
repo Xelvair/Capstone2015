@@ -16,6 +16,8 @@ public class MapRenderer {
     
     Array2D<Boolean> vision_mask = VisionMaskGenerator.generate(map, renderRect);
 
+    map.applyVisionMask(vision_mask, renderRect.getLeft(), renderRect.getTop());
+    
     for(int i = 0; i < renderRect.getHeight(); i++){
       for(int j = 0; j < renderRect.getWidth(); j++){
         int map_x = j + renderRect.getLeft();
@@ -27,9 +29,11 @@ public class MapRenderer {
               int shownEntityIndex = 1 + (current_time_msec / ITEM_DISPLAY_SWITCHTIME) % (entities.size() - 1);
               
               p.set(j, i, entities.get(shownEntityIndex).getRepresentVisible());
-          } else {
+          }  else {
             p.set(j, i, entities.get(0).getRepresentVisible());
           }
+        } else if(map.inBounds(map_x, map_y) && map.isRevealed(map_x, map_y)){
+          p.set(j, i, map.getEntitiesAt(map_x, map_y).get(0).getRepresentInvisible());
         } else {
           p.set(j, i, new TerminalChar());
         }

@@ -10,7 +10,7 @@ import java.awt.Color;
 
 public class KeyPage extends AppState{
 
-    public static final int ENTITY_COUNT = 7;
+    public static final int ENTITY_COUNT = 8;
     
     private Screen screen;
     private MessageBus messageBus;
