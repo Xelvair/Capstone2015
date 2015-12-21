@@ -106,6 +106,9 @@ public class Map {
                 entities.add(new ActiveEntity(tile_id, xcoord, ycoord, messageBus));
                 tilemap.set(xcoord, ycoord, new Entity(Entity.ID_FLOOR, null));
                 break;
+            case Entity.ID_ENTRY:
+                resetPlayer(xcoord, ycoord);
+                //intentional fallthrough
             default:
                 tilemap.set(xcoord, ycoord, new Entity(tile_id, null));
                 break;

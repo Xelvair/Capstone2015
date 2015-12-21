@@ -5,7 +5,7 @@ import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
-import capstone2015.messaging.ReceiveDamageParams;
+import capstone2015.messaging.ReceivedDamageParams;
 import java.util.HashMap;
 
 public class ActiveEntity extends Entity{

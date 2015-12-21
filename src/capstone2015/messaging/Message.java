@@ -3,8 +3,10 @@ package capstone2015.messaging;
 public class Message {
     public enum Type{
         KeyEvent,               //A Lanterna key event has happened
+        PushGameState,          //Game should be started / displayed
         PushIngameMenuState,    //Ingame menu should be displayed
         PushKeyPageState,       //Key page should be displayed
+        TerminateGameState,     //GameState needs to be terminated
         ReceivedDamage,         //Entity has received damage
         EntityMove,             //Entity wants to move
         InflictDamage,          //When something is dealing damage on an area

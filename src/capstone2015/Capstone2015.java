@@ -5,6 +5,7 @@ import capstone2015.appstate.AppStateManager;
 import capstone2015.appstate.Game;
 import capstone2015.appstate.IngameMenu;
 import capstone2015.appstate.KeyPage;
+import capstone2015.appstate.MainMenu;
 import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.game.behavior.PlayerOnTickBehavior;
@@ -26,7 +27,8 @@ public class Capstone2015 {
         Screen screen = new Screen();
         MessageBus messageBus = new MessageBus();
 
-        asm.pushState(new Game(screen, messageBus, "level.properties")); 
+        asm.pushState(new MainMenu(screen, messageBus));
+        //asm.pushState(new Game(screen, messageBus, "level.properties")); 
        
         long lastClock = System.currentTimeMillis();
         while(!asm.isEmpty()){
@@ -41,11 +43,17 @@ public class Capstone2015 {
              */
             for(Message m : messageBus){
                 switch(m.getType()){
+                    case PushGameState:
+                        asm.pushState(new Game(screen, messageBus, (String)m.getMsgObject()));
+                        break;
                     case PushIngameMenuState:
                         asm.pushState(new IngameMenu(screen, messageBus));
                         break;
                     case PushKeyPageState:
                         asm.pushState(new KeyPage(screen, messageBus));
+                        break;
+                    case QuitToDesktop:
+                        asm.terminateStates();
                         break;
                     default:
                         break;

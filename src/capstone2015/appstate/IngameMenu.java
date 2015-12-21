@@ -3,6 +3,7 @@ package capstone2015.appstate;
 import capstone2015.game.panel.OptionPanel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
+import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 
@@ -11,8 +12,8 @@ public class IngameMenu extends AppState{
     private MessageBus messageBus;
     private final String[] options = {
         "Resume",
-        "Save",
-        "Load",
+        "Save Game",
+        "Load Game",
         "Key",
         "Quit to Main Menu",
         "Quit to Desktop"
@@ -60,6 +61,7 @@ public class IngameMenu extends AppState{
                                     messageBus.enqueue(new Message(Message.Type.PushKeyPageState));
                                     break;
                                 case 4:
+                                    messageBus.enqueue(new Message(TerminateGameState));
                                     terminate();
                                     break;
                                 case 5:
@@ -77,7 +79,7 @@ public class IngameMenu extends AppState{
             }
         }
         
-        screen.insertCenter(OptionPanel.render(options, selection));
+        screen.insertCenter(OptionPanel.render(options, new OptionPanel.Config(), selection));
     }
 
     @Override
