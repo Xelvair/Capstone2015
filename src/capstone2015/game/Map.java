@@ -1,19 +1,24 @@
 package capstone2015.game;
 
 import capstone2015.geom.Vec2i;
+import capstone2015.messaging.EntityMoveParams;
+import capstone2015.messaging.InflictDamageParams;
+import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import capstone2015.util.Array2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Properties;
 
 public class Map {
     private Array2D<Entity> tilemap;
     private Array2D<Boolean> revealmap;
-    private LinkedList<PositionedEntity> entities;
-    private PositionedEntity player; // for fast lookup;
+    private LinkedList<ActiveEntity> entities;
+    private ActiveEntity player; // for fast lookup;
     private MessageBus messageBus;
 
     public Map(MessageBus messageBus){
@@ -23,7 +28,7 @@ public class Map {
 
     public void resetPlayer(int x, int y){
         removePlayer();
-        player = new PositionedEntity(Entity.ID_PLAYER, x, y, messageBus);
+        player = new ActiveEntity(Entity.ID_PLAYER, x, y, messageBus);
         entities.add(player);
     }
 
@@ -42,7 +47,7 @@ public class Map {
         revealmap.set(x, y, true);
     }
 
-    public PositionedEntity getPlayer(){
+    public ActiveEntity getPlayer(){
         return player;
     }
   
@@ -97,7 +102,7 @@ public class Map {
             case Entity.ID_ENEMY:
             case Entity.ID_KEY:
             case Entity.ID_STATIC_OBSTACLE:
-                entities.add(new PositionedEntity(tile_id, xcoord, ycoord, messageBus));
+                entities.add(new ActiveEntity(tile_id, xcoord, ycoord, messageBus));
                 tilemap.set(xcoord, ycoord, new Entity(Entity.ID_FLOOR, null));
                 break;
             default:
@@ -115,7 +120,7 @@ public class Map {
       return tilemap.height();
     }
 
-    private void onMove(PositionedEntity entity, Direction dir){
+    private void onMove(ActiveEntity entity, Direction dir){
 
         Vec2i cur_pos = new Vec2i(entity.getXPos(), entity.getYPos());
         Vec2i dest_pos = new Vec2i( cur_pos.getX() + dir.toVector().getX(), 
@@ -155,24 +160,55 @@ public class Map {
         return is_opaque;
     }
   
+    public void onInflictDamage(ActiveEntity damagingEntity, Vec2i position, int damage){
+        if(!this.inBounds(position.getX(), position.getY())){
+            return;
+        }
+        
+        ArrayList<ActiveEntity> entities = this.getActiveEntitiesAt(position.getX(), position.getY());
+        
+        for(ActiveEntity e : entities){
+            if(e.getOnDamageBehavior() != null){
+                e.getOnDamageBehavior().invoke(e, damagingEntity, damage, messageBus);
+            }
+        }
+    }
+    
     public void tick(double timeDelta){
-        for(PositionedEntity entity : entities){
-            EntityAction action = entity.tick(timeDelta);
-            switch(action.getType()){
-                case MOVE_LEFT:
-                case MOVE_RIGHT:
-                case MOVE_UP:
-                case MOVE_DOWN:
-                    onMove(entity, action.getType().toDirection());
-                case TERMINATE:
+       
+        Iterator<ActiveEntity> it = entities.iterator();
+        while(it.hasNext()){
+            ActiveEntity e = it.next();
+            
+            if(e.getOnTickBehavior() != null){
+                e.getOnTickBehavior().invoke(e, timeDelta, messageBus);
+            }
+            
+            if(e.isTerminate()){
+                it.remove();
+            }
+        }
+        
+        
+        for(Message m : messageBus){
+            switch(m.getType()){
+                case EntityMoveEvent:
+                {
+                    EntityMoveParams msg_obj = (EntityMoveParams)m.getMsgObject();
+                    onMove(msg_obj.getEntity(), msg_obj.getDirection());
                     break;
-                default:
+                }
+                case InflictDamageEvent:
+                {
+                    InflictDamageParams msg_obj = (InflictDamageParams)m.getMsgObject();
+                    onInflictDamage(msg_obj.getDamagingEntity(), msg_obj.getPosition(), msg_obj.getDamage());
                     break;
+                }
             }
         }
     }
 
-    public void add(PositionedEntity e){
+    public void add(ActiveEntity e){
         entities.add(e);
     }
   
@@ -186,13 +222,30 @@ public class Map {
 
       local_entities.add(tilemap.get(x, y));
 
-      for(PositionedEntity e : entities){
+      for(ActiveEntity e : entities){
           if(e.getXPos() == x && e.getYPos() == y){
               local_entities.add(e);
           }
       }
 
       return local_entities;
+    }
+    
+    public ArrayList<ActiveEntity> getActiveEntitiesAt(int x, int y){
+        if(!tilemap.inBounds(x, y)){
+          System.out.println("Map index out of bounds");
+          throw new ArrayIndexOutOfBoundsException();
+        }
+
+        ArrayList<ActiveEntity> local_entities = new ArrayList<>();
+
+        for(ActiveEntity e : entities){
+            if(e.getXPos() == x && e.getYPos() == y){
+                local_entities.add(e);
+            }
+        }
+
+        return local_entities;
     }
   
     public boolean inBounds(int x, int y){

@@ -1,6 +1,10 @@
 package capstone2015.game;
 
-import capstone2015.game.behavior.PlayerBehavior;
+import capstone2015.game.behavior.BonfireOnTickBehavior;
+import capstone2015.game.behavior.OnDamageBehavior;
+import capstone2015.game.behavior.OnTickBehavior;
+import capstone2015.game.behavior.PlayerOnDamageBehavior;
+import capstone2015.game.behavior.PlayerOnTickBehavior;
 import capstone2015.graphics.TerminalChar;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -11,7 +15,9 @@ public class EntityProto {
     private final boolean isSolid;
     private final boolean isOpaque;
     private final int visionRadius;
-    private final EntityBehavior behavior;
+    private final int healthPoints;
+    private final Class<? extends OnTickBehavior> onTickBehaviorClass;
+    private final Class<? extends OnDamageBehavior> onDamageBehaviorClass;
     private final TerminalChar representVisible;
     private final TerminalChar representInvisible;
     private final TerminalChar representInventory;
@@ -23,7 +29,9 @@ public class EntityProto {
             boolean isSolid,
             boolean isOpaque,
             int visionRadius,
-            EntityBehavior behavior,
+            int healthPoints,
+            Class<? extends OnTickBehavior> onTickBehaviorClass,
+            Class<? extends OnDamageBehavior> onDamageBehaviorClass,
             TerminalChar representVisible,
             TerminalChar representInvisible,
             TerminalChar representInventory,
@@ -34,7 +42,9 @@ public class EntityProto {
         this.isSolid = isSolid;
         this.isOpaque = isOpaque;
         this.visionRadius = visionRadius;
-        this.behavior = behavior;
+        this.healthPoints = healthPoints;
+        this.onTickBehaviorClass = onTickBehaviorClass;
+        this.onDamageBehaviorClass = onDamageBehaviorClass;
         this.representVisible = representVisible;
         this.representInvisible = representInvisible;
         this.representInventory = representInventory;
@@ -57,11 +67,35 @@ public class EntityProto {
     public int getVisionRadius(){
         return visionRadius;
     }
-
-    public EntityBehavior getBehavior() {
-        return behavior;
+    
+    public int getHealthPoints(){
+        return healthPoints;
     }
 
+    public OnTickBehavior createOnTickBehavior() {
+        if(onTickBehaviorClass == null){
+            return null;
+        }
+        try{
+            return onTickBehaviorClass.newInstance();
+        } catch(Exception e){
+            System.out.println("Failed to instantiate OnTickBehavior class.");
+            return null;
+        }
+    }
+
+    public OnDamageBehavior createOnDamageBehavior() {
+        if(onDamageBehaviorClass == null){
+            return null;
+        }
+        try{
+            return onDamageBehaviorClass.newInstance();
+        } catch(Exception e){
+            System.out.println("Failed to instantiate OnTickBehavior class.");
+            return null;
+        }
+    }
+    
     public TerminalChar getRepresentVisible() {
         return representVisible;
     }
@@ -101,7 +135,9 @@ public class EntityProto {
                 true, //isSolid
                 true, //isOpaque
                 0, //visionRadius
-                null, //behavior
+                -1, //healthPoints
+                null, //onTickBehavior
+                null, //onDamageBehavior
                 new TerminalChar(' ', Color.WHITE, Color.WHITE), //representVis
                 new TerminalChar(' ', Color.WHITE, new Color(20, 20, 20)), //representInvis
                 new TerminalChar(' ', Color.WHITE, Color.WHITE), //representInv
@@ -118,9 +154,11 @@ public class EntityProto {
                 false, //isSolid
                 false, //isOpaque
                 0, //visionRadius
-                null, //behavior
+                -1, //healthPoints
+                null, //onTickBehavior
+                null, //onDamageBehavior
                 new TerminalChar('\u25BC', Color.BLUE, Color.DARK_GRAY), //representVis
-                new TerminalChar('\u25BC', Color.BLUE, Color.BLACK), //representInvis
+                new TerminalChar('\u25BC', Color.BLUE, new Color(10, 10, 10)), //representInvis
                 new TerminalChar('\u25BC', Color.BLUE, Color.BLACK), //representInv
                 "Entry", //name
                   "The place where you entered the dungeon.\n"
@@ -133,9 +171,11 @@ public class EntityProto {
                 false, //isSolid
                 false, //isOpaque
                 0, //visionRadius
-                null, //behavior
+                -1, //healthPoints
+                null, //onTickBehavior
+                null, //onDamageBehavior
                 new TerminalChar('\u25B2', Color.GREEN, Color.DARK_GRAY), //representVis
-                new TerminalChar('\u25B2', Color.GREEN, Color.BLACK), //representInvis
+                new TerminalChar('\u25B2', Color.GREEN, new Color(10, 10, 10)), //representInvis
                 new TerminalChar('\u25B2', Color.GREEN, Color.BLACK), //representInv
                 "Exit", //name
                   "You need to find this exit in order to leave the\n"
@@ -146,12 +186,14 @@ public class EntityProto {
         //ID_STATIC_OBSTACLE
         entityProtoList.add(new EntityProto(
                 Entity.ID_STATIC_OBSTACLE,
-                true, //isSolid
+                false, //isSolid
                 false, //isOpaque
                 0, //visionRadius
-                null, //behavior
+                -1, //healthPoints
+                BonfireOnTickBehavior.class, //onTickBehavior
+                null, //onDamageBehavior
                 new TerminalChar('\u0751', new Color(255, 140, 0), Color.DARK_GRAY), //representVis
-                new TerminalChar('\u0751', new Color(255, 140, 0) , Color.BLACK), //representInvis
+                new TerminalChar('\u0751', new Color(255, 140, 0) , new Color(10, 10, 10)), //representInvis
                 new TerminalChar('\u0751', new Color(255, 140, 0), Color.BLACK),  //representInv
                 "Bonfire", //name
                   "A warm and cozy bonfire.\n"
@@ -165,9 +207,11 @@ public class EntityProto {
                 false, //isSolid
                 false, //isOpaque
                 0, //visionRadius
-                null, //behavior
+                10, //healthPoints
+                null, //onTickBehavior
+                null, //onDamageBehavior
                 new TerminalChar('\u08B0', new Color(85, 107, 47), Color.DARK_GRAY), //representVis
-                new TerminalChar('\u08B0', new Color(85, 107, 47), Color.BLACK), //representInvis
+                new TerminalChar('\u08B0', new Color(85, 107, 47), new Color(10, 10, 10)), //representInvis
                 new TerminalChar('\u08B0', new Color(85, 107, 47), Color.BLACK), //representInv
                 "Rattlesnake", //name
                   "This dangerous creature can become very deadly \n"
@@ -181,9 +225,11 @@ public class EntityProto {
                 false, //isSolid
                 false, //isOpaque
                 0, //visionRadius
-                null, //behavior
+                -1, //healthPoints
+                null, //onTickBehavior
+                null, //onDamageBehavior
                 new TerminalChar('\u2C61', Color.YELLOW, Color.DARK_GRAY), //representVis
-                new TerminalChar('\u2C61', Color.YELLOW, Color.BLACK), //representInvis
+                new TerminalChar('\u2C61', Color.YELLOW, new Color(10, 10, 10)), //representInvis
                 new TerminalChar('\u2C61', Color.YELLOW, Color.BLACK),  //representInv
                 "Dungeon Key", //name
                   "This is the key you need to find in order to leave\n"
@@ -198,7 +244,9 @@ public class EntityProto {
                 false, //isSolid
                 false, //isOpaque
                 0, //visionRadius
-                null, //behavior
+                -1, //healthPoints
+                null, //onTickBehavior
+                null, //onDamageBehavior
                 new TerminalChar(' ', Color.WHITE, Color.DARK_GRAY), //representVis
                 new TerminalChar(' ', Color.WHITE, new Color(10, 10, 10)),     //representInvis
                 new TerminalChar('.', Color.WHITE, Color.DARK_GRAY), //representInv
@@ -212,7 +260,9 @@ public class EntityProto {
                 false, //isSolid
                 false, //isOpaque
                 10, //visionRadius
-                new PlayerBehavior(), //behavior
+                20, //healthPoints
+                PlayerOnTickBehavior.class, //onTickBehavior
+                PlayerOnDamageBehavior.class, //onDamageBehavior
                 new TerminalChar('@', Color.CYAN, Color.DARK_GRAY), //representVis
                 new TerminalChar('@', Color.CYAN, Color.BLACK),     //representInvis
                 new TerminalChar('@', Color.CYAN, Color.DARK_GRAY), //representInv

@@ -47,7 +47,7 @@ public class MapRenderer {
     int left = 0;
     int top = 0;
       
-    PositionedEntity player = null;
+    ActiveEntity player = null;
     if((player = map.getPlayer()) != null){
         left = player.getXPos() - width / 2;
         top = player.getYPos() - height / 2;

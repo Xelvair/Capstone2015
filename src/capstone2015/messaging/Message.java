@@ -6,6 +6,9 @@ public class Message {
         GameEvent,
         PushIngameMenuState,
         PushKeyPageState,
+        OnDamage,
+        EntityMoveEvent,
+        InflictDamageEvent,
         QuitToDesktop;
     }
     
