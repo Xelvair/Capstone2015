@@ -2,12 +2,12 @@ package capstone2015.messaging;
 
 import capstone2015.game.ActiveEntity;
 
-public class ReceiveDamageParams {
+public class ReceivedDamageParams {
     private ActiveEntity damagedEntity;
     private ActiveEntity damagingEntity;
     private int damage;
 
-    public ReceiveDamageParams(
+    public ReceivedDamageParams(
             ActiveEntity damagedEntity, 
             ActiveEntity damagingEntity, 
             int damage

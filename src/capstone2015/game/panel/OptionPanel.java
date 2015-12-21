@@ -8,28 +8,42 @@ import java.util.Arrays;
 import java.awt.Color;
 
 public class OptionPanel {
-    public static final int MARGIN_V = 1;
-    public static final int MARGIN_H = 3;
-    public static final int BORDER_WIDTH = 1;
-    public static final char SELECTOR_ICON = '>';
-    public static final int OPTION_PADDING = 1;
-    public static final Color BACKGROUND_COLOR = Color.DARK_GRAY;
-    public static final Color BORDER_COLOR = Color.WHITE;
-    public static final Color SELECTOR_COLOR = Color.WHITE;
-    public static final Color OPTION_COLOR = Color.WHITE;
+    public static class Config{
+        public int marginV = 1;
+        public int marginH = 3;
+        public int borderWidth = 1;
+        public char selectorIcon = '>';
+        public int optionPadding = 1;
+        public Color bgColor = Color.DARK_GRAY;
+        public Color borderColor = Color.WHITE;
+        public Color selectorColor = Color.WHITE;
+        public Color optionColor = Color.WHITE;
+    }    
     
-    
-    public static Panel render(String[] options, int selection){
-        int panel_width = Util.maxLength(Arrays.asList(options)) + (MARGIN_H * 2) + 2 + (BORDER_WIDTH * 2);
-        int panel_height = options.length + (OPTION_PADDING * (options.length - 1)) + (MARGIN_V * 2) + (BORDER_WIDTH * 2);
+    public static Panel render(String[] options, Config config, int selection){
+        int panel_width = Util.maxLength(Arrays.asList(options)) 
+                        + (config.marginH * 2) 
+                        + 2 
+                        + (config.borderWidth * 2);
         
-        Panel option_panel = Panel.fillPanel(panel_width, panel_height, new TerminalChar(' ', Color.WHITE, BORDER_COLOR));
-        option_panel.insertCenter(Panel.fillPanel(panel_width - 2, panel_height - 2, new TerminalChar(' ', Color.WHITE, BACKGROUND_COLOR)));
+        int panel_height = options.length 
+                         + (config.optionPadding * (options.length - 1)) 
+                         + (config.marginV * 2) + (config.borderWidth * 2);
+        
+        Panel option_panel = Panel.fillPanel(panel_width, panel_height, new TerminalChar(' ', Color.WHITE, config.borderColor));
+        option_panel.insertCenter(Panel.fillPanel(panel_width - 2, panel_height - 2, new TerminalChar(' ', Color.WHITE, config.bgColor)));
      
         for(int i = 0; i < options.length; i++){
             String option = new String(options[i]);
             option = (i == selection ? "> " : "  ") + option;
-            option_panel.insert(Panel.textPanel(option, OPTION_COLOR, BACKGROUND_COLOR), BORDER_WIDTH + MARGIN_H, BORDER_WIDTH + MARGIN_V + i * (OPTION_PADDING + 1));
+            option_panel.insert(
+                    Panel.textPanel(
+                            option, 
+                            config.optionColor, 
+                            config.bgColor), 
+                    config.borderWidth + config.marginH, 
+                    config.borderWidth + config.marginV + i * (config.optionPadding + 1)
+            );
         }
         
         return option_panel;
