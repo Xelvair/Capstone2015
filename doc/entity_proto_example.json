@@ -1,0 +1,26 @@
+{
+  "0":{
+    "entity": {
+      "represent":{ #How the entity is displayed on screen
+        "character": " ",
+        "fg_color": "WHITE",
+        "bg_color": "WHITE"
+      }
+    },
+    # This part needs to be defined for the entity to be 
+    # able to be created as either a tile or an actor
+    "map_entity": { 
+      "opaque": true, #will intercept line-of-sight
+      "solid": true #will not allow entering the same place
+    },
+    # This part needs to be defined for the entity to be 
+    # able to be created as a tile
+    "tile": {
+      "represent_invisible": {
+        "character": " ",
+        "fg_color": "WHITE",
+        "bg_color": "rgb(20, 20, 20)"
+      }
+    }
+  }
+}
