@@ -7,7 +7,6 @@ import capstone2015.game.MapRenderer;
 import capstone2015.game.NotificationList;
 import capstone2015.game.panel.HudPanel;
 import capstone2015.game.panel.NotificationPanel;
-import capstone2015.game.panel.TitlePanel;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
@@ -20,10 +19,10 @@ public class Game extends AppState{
     public static final int NOTIFICATION_LIST_SIZE = 2;
     public static final int HUD_HEIGHT = 1;
     
-    private Screen screen;
-    private MessageBus messageBus;
-    private Map map;
-    private NotificationList notifications = new NotificationList(NOTIFICATION_LIST_SIZE);
+    private final Screen screen;
+    private final MessageBus messageBus;
+    private final Map map;
+    private final NotificationList notifications = new NotificationList(NOTIFICATION_LIST_SIZE);
 
     
     public Game(Screen screen, MessageBus messageBus, String mapFile){
@@ -31,7 +30,6 @@ public class Game extends AppState{
         this.messageBus = messageBus;
         map = new Map(messageBus);
         map.loadFromProperties(mapFile);
-        map.resetPlayer(4, 3);
         notifications.push("CapStone2015 (C) Marvin Doerr", Color.YELLOW);
     }
     

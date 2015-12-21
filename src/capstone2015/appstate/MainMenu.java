@@ -19,7 +19,6 @@ public class MainMenu extends AppState{
     private int selection = 0;
     private String[] options = {
         "Start Game",
-        "Save Game",
         "Load Game",
         "Key",
         "Quit to Desktop"
@@ -73,11 +72,9 @@ public class MainMenu extends AppState{
                     case 1:
                         break;
                     case 2:
-                        break;
-                    case 3:
                         messageBus.enqueue(new Message(PushKeyPageState));
                         break;
-                    case 4:
+                    case 3:
                         terminate();
                         break;
                 }

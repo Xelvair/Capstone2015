@@ -12,8 +12,8 @@ public class IngameMenu extends AppState{
     private MessageBus messageBus;
     private final String[] options = {
         "Resume",
-        "Save",
-        "Load",
+        "Save Game",
+        "Load Game",
         "Key",
         "Quit to Main Menu",
         "Quit to Desktop"
