@@ -2,14 +2,15 @@ package capstone2015.messaging;
 
 public class Message {
     public enum Type{
-        KeyEvent,
-        GameEvent,
-        PushIngameMenuState,
-        PushKeyPageState,
-        OnDamage,
-        EntityMoveEvent,
-        InflictDamageEvent,
-        QuitToDesktop;
+        KeyEvent,               //A Lanterna key event has happened
+        PushIngameMenuState,    //Ingame menu should be displayed
+        PushKeyPageState,       //Key page should be displayed
+        ReceivedDamage,         //Entity has received damage
+        EntityMove,             //Entity wants to move
+        InflictDamage,          //When something is dealing damage on an area
+        PlayerEncounter,        //Player encounters an entity that's worth noting
+        Terminate,              //Entity terminates
+        QuitToDesktop;          //Game has to close
     }
     
     private Type type;

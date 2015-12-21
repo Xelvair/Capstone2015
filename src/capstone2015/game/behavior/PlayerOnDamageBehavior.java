@@ -1,7 +1,10 @@
 package capstone2015.game.behavior;
 
 import capstone2015.game.ActiveEntity;
+import capstone2015.messaging.Message;
+import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
+import capstone2015.messaging.ReceiveDamageParams;
 import java.util.HashMap;
 
 public class PlayerOnDamageBehavior implements OnDamageBehavior{
@@ -16,9 +19,11 @@ public class PlayerOnDamageBehavior implements OnDamageBehavior{
             entity.setHealthPoints(Math.max(0, entity.getHealthPoints() - damage));
             entity.getDamageIgnoreTimers().put(damagingEntity, DAMAGE_IGNORE_TIME);
             
-            System.out.println("Player hit! HP left: " + entity.getHealthPoints());
-            
+            ReceiveDamageParams msg_obj = new ReceiveDamageParams(entity, damagingEntity, damage);
+            messageBus.enqueue(new Message(ReceivedDamage, msg_obj));
+             
             if(entity.getHealthPoints() == 0){
+                messageBus.enqueue(new Message(Terminate, entity));
                 entity.terminate();
             }
         }  

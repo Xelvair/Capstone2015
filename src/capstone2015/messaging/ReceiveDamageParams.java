@@ -2,15 +2,15 @@ package capstone2015.messaging;
 
 import capstone2015.game.ActiveEntity;
 
-public class OnDamageParams {
+public class ReceiveDamageParams {
     private ActiveEntity damagedEntity;
     private ActiveEntity damagingEntity;
     private int damage;
 
-    public OnDamageParams(
+    public ReceiveDamageParams(
             ActiveEntity damagedEntity, 
             ActiveEntity damagingEntity, 
-            int damageDealt
+            int damage
     ){
         this.damagedEntity = damagedEntity;
         this.damagingEntity = damagingEntity;

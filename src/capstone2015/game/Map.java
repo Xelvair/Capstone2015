@@ -1,5 +1,6 @@
 package capstone2015.game;
 
+import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.EntityMoveParams;
 import capstone2015.messaging.InflictDamageParams;
@@ -133,6 +134,10 @@ public class Map {
         if(!isSolidAt(dest_pos.getX(), dest_pos.getY())){
             entity.setXPos(dest_pos.getX());
             entity.setYPos(dest_pos.getY());
+            OnMovedBehavior omb = entity.getOnMovedBehavior();
+            if(omb != null){
+                omb.invoke(entity, this.getEntitiesAt(dest_pos), messageBus);
+            }
         }
     }
   
@@ -192,13 +197,13 @@ public class Map {
         
         for(Message m : messageBus){
             switch(m.getType()){
-                case EntityMoveEvent:
+                case EntityMove:
                 {
                     EntityMoveParams msg_obj = (EntityMoveParams)m.getMsgObject();
                     onMove(msg_obj.getEntity(), msg_obj.getDirection());
                     break;
                 }
-                case InflictDamageEvent:
+                case InflictDamage:
                 {
                     InflictDamageParams msg_obj = (InflictDamageParams)m.getMsgObject();
                     onInflictDamage(msg_obj.getDamagingEntity(), msg_obj.getPosition(), msg_obj.getDamage());
@@ -212,6 +217,10 @@ public class Map {
         entities.add(e);
     }
   
+    public ArrayList<Entity> getEntitiesAt(Vec2i pos){
+        return getEntitiesAt(pos.getX(), pos.getY());
+    }
+    
     public ArrayList<Entity> getEntitiesAt(int x, int y){
       if(!tilemap.inBounds(x, y)){
         System.out.println("Map index out of bounds");

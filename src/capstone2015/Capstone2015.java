@@ -5,7 +5,7 @@ import capstone2015.appstate.AppStateManager;
 import capstone2015.appstate.Game;
 import capstone2015.appstate.IngameMenu;
 import capstone2015.appstate.KeyPage;
-import capstone2015.game.behavior.BonfireOnTickBehavior;
+import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.game.behavior.PlayerOnTickBehavior;
 import capstone2015.geom.Geom;

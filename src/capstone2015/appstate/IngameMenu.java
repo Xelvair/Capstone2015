@@ -1,16 +1,10 @@
 package capstone2015.appstate;
 
 import capstone2015.game.panel.OptionPanel;
-import capstone2015.game.panel.PointListPanel;
-import capstone2015.geom.Geom;
-import capstone2015.geom.Vec2i;
-import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
-import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
-import java.awt.Color;
 
 public class IngameMenu extends AppState{
     private Screen screen;

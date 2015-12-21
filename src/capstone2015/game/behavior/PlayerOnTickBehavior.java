@@ -8,6 +8,8 @@ import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class PlayerOnTickBehavior implements OnTickBehavior{
     public static final double MOVE_TIMEOUT = 0.05f;
@@ -20,15 +22,18 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
          * Decrease damage ignore timers
          */
         HashMap<ActiveEntity, Double> damage_ignore_timers = entity.getDamageIgnoreTimers();
-        for(ActiveEntity key : damage_ignore_timers.keySet()){
-            double damage_timer = damage_ignore_timers.get(key);
+        
+        for(Iterator<Map.Entry<ActiveEntity, Double>> it = damage_ignore_timers.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<ActiveEntity, Double> entry = it.next();
+            double damage_timer = entry.getValue();
             double new_damage_timer = Math.max(0, damage_timer - timeDelta);
             
             if(new_damage_timer == 0.f){
-                damage_ignore_timers.remove(key);
+                it.remove();
             } else {
-                damage_ignore_timers.put(key, new_damage_timer);
+                entry.setValue(new_damage_timer);
             }
+            
         }
         
         /********
@@ -67,7 +72,7 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
         if(moveTimeoutCounter == 0.f && direction != Direction.NONE){
             moveTimeoutCounter = MOVE_TIMEOUT;
             EntityMoveParams msg_obj = new EntityMoveParams(entity, direction);
-            messageBus.enqueue(new Message(EntityMoveEvent, msg_obj));
+            messageBus.enqueue(new Message(EntityMove, msg_obj));
         }
     } 
 }

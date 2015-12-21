@@ -1,6 +1,7 @@
 package capstone2015.game;
 
 import capstone2015.game.behavior.OnDamageBehavior;
+import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.MessageBus;
@@ -35,6 +36,7 @@ public class Entity {
     public int                              getVisionRadius(){return proto.getVisionRadius();}
     public OnTickBehavior                   getOnTickBehavior(){return null;}
     public OnDamageBehavior                 getOnDamageBehavior(){return null;}
+    public OnMovedBehavior                  getOnMovedBehavior(){return null;}
     public int                              getHealthPoints(){return proto.getHealthPoints();}
     public boolean                          isInvincible(){return proto.getHealthPoints() >= 0;}
     public TerminalChar                     getRepresentVisible(){return proto.getRepresentVisible();}

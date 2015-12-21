@@ -1,10 +1,11 @@
 package capstone2015.game;
 
 import capstone2015.game.behavior.OnDamageBehavior;
+import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
-import capstone2015.messaging.OnDamageParams;
+import capstone2015.messaging.ReceiveDamageParams;
 import java.util.HashMap;
 
 public class ActiveEntity extends Entity{
@@ -14,6 +15,7 @@ public class ActiveEntity extends Entity{
   private int               healthPoints;
   private OnTickBehavior    onTickBehavior;
   private OnDamageBehavior  onDamageBehavior;
+  private OnMovedBehavior   onMovedBehavior;
   private final HashMap<ActiveEntity, Double> damageIgnoreTimers = new HashMap<>();
   
   public ActiveEntity(int entityId, int xPos, int yPos, MessageBus messageBus){
@@ -23,7 +25,7 @@ public class ActiveEntity extends Entity{
       this.healthPoints = this.proto.getHealthPoints();
       this.onTickBehavior = proto.createOnTickBehavior();
       this.onDamageBehavior = proto.createOnDamageBehavior();
-      
+      this.onMovedBehavior = proto.createOnMovedBehavior();
   }
   
   public int getXPos(){return xPos;}
@@ -40,6 +42,11 @@ public class ActiveEntity extends Entity{
   @Override
   public OnDamageBehavior getOnDamageBehavior(){
       return onDamageBehavior;
+  }
+  
+  @Override
+  public OnMovedBehavior getOnMovedBehavior(){
+      return onMovedBehavior;
   }
   
   @Override
