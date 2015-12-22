@@ -1,24 +1,16 @@
 package capstone2015;
 
-import capstone2015.appstate.AppState;
 import capstone2015.appstate.AppStateManager;
 import capstone2015.appstate.Game;
 import capstone2015.appstate.IngameMenu;
 import capstone2015.appstate.KeyPage;
 import capstone2015.appstate.LaunchGameState;
 import capstone2015.appstate.MainMenu;
-import capstone2015.entity.Actor;
 import capstone2015.entity.EntityFactory;
-import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
-import capstone2015.game.behavior.OnTickBehavior;
-import capstone2015.game.behavior.PlayerOnTickBehavior;
-import capstone2015.geom.Geom;
-import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
-import java.util.LinkedList;
 
 public class Capstone2015 {
     

@@ -62,7 +62,10 @@ public class VisionMaskGenerator {
          * of each entity. Then traverse and set the visibility mask
          * until a non-opaque point on the map is reached
          */        
-        Array2D<Boolean> vision_mask = new Array2D<>(area.getWidth(), area.getHeight());
+        Array2D<Boolean> vision_mask = new Array2D<>(
+                Math.max(0, area.getWidth()), 
+                Math.max(0, area.getHeight())
+        );
         
         for(int i = 0; i < vision_mask.height(); i++){
             for(int j = 0; j < vision_mask.width(); j++){
@@ -90,8 +93,14 @@ public class VisionMaskGenerator {
                     if(map.isOpaqueAt(line_point.getX(), line_point.getY())){
                         break;
                     }
+                    
                   
                     Vec2i vision_mask_pos = area.getRelative(line_point);
+                    
+                    if(!vision_mask.inBounds(vision_mask_pos)){
+                        continue;
+                    }
+                    
                     vision_mask.set(vision_mask_pos.getX(), vision_mask_pos.getY(), true);
                     
                     /* Also make any adjacent walls visible */
@@ -104,10 +113,11 @@ public class VisionMaskGenerator {
                     
                     for(Direction direction : directions){
                         Vec2i surrounding_point = line_point.translate(direction.toVector());
+                        vision_mask_pos = area.getRelative(surrounding_point);
                         if(   map.inBounds(surrounding_point)
+                           && vision_mask.inBounds(vision_mask_pos)
                            && map.getEntitiesAt(surrounding_point).get(0).isOpaque()
                         ){
-                            vision_mask_pos = area.getRelative(surrounding_point);
                             vision_mask.set(vision_mask_pos, true);
                         }
                     }

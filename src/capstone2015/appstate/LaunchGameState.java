@@ -29,7 +29,7 @@ public class LaunchGameState extends AppState{
         ArrayList<String> map_list = new ArrayList<>();
         for(File map_file : map_folder.listFiles()){
             String map_name = map_file.getName();
-            map_name = map_name.substring(0, map_name.indexOf('.'));
+            map_name = map_name.substring(0, map_name.lastIndexOf('.'));
             map_list.add(map_name);
         }
         

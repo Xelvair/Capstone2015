@@ -14,7 +14,7 @@ public class MapRenderer {
   public static final int ITEM_DISPLAY_SWITCHTIME = 500;
   
   public static Panel render(Map map, Recti renderRect){
-    Panel p = new Panel(renderRect.getWidth(), renderRect.getHeight());
+    Panel p = new Panel(Math.max(0, renderRect.getWidth()), Math.max(0, renderRect.getHeight()));
     
     Array2D<Boolean> vision_mask = VisionMaskGenerator.generate(map, renderRect);
 
