@@ -132,6 +132,11 @@ public class Screen implements Array2DInterface<TerminalChar>{
     }
 
     @Override
+    public void set(Vec2i pos, TerminalChar tile) {
+        set(pos.getX(), pos.getY(), tile);
+    }
+    
+    @Override
     public void set(int x, int y, TerminalChar tile) {
         setMemBuf(x, y, tile);
     }
@@ -155,7 +160,12 @@ public class Screen implements Array2DInterface<TerminalChar>{
         terminal.exitPrivateMode();
         terminal = null;
     }
-
+    
+    @Override
+    public boolean inBounds(Vec2i pos) {
+      return inBounds(pos.getX(), pos.getY());
+    }
+    
     @Override
     public boolean inBounds(int x, int y) {
       return new Recti(0, 0, width, height).contains(new Vec2i(x, y));

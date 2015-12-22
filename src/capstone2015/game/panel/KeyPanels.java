@@ -1,6 +1,6 @@
 package capstone2015.game.panel;
 
-import capstone2015.game.EntityProto;
+import capstone2015.entity.EntityFactory;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.TerminalChar;
 import java.awt.Color;
@@ -14,9 +14,9 @@ import java.awt.Color;
 public class KeyPanels {
     public static Panel render(int entityId){
         TerminalChar bg_char = new TerminalChar(' ', Color.WHITE, Color.DARK_GRAY);
-        TerminalChar entity_represent = EntityProto.get(entityId).getRepresentVisible();
-        String entity_name = EntityProto.get(entityId).getName();
-        String entity_desc = EntityProto.get(entityId).getDescription();
+        TerminalChar entity_represent = EntityFactory.getProto(entityId).entityBaseProto.represent;
+        String entity_name = EntityFactory.getProto(entityId).entityBaseProto.name;
+        String entity_desc = EntityFactory.getProto(entityId).entityBaseProto.description;
         int header_length = entity_name.length() + 2;
         
         Panel p = Panel.fillPanel(60, 20, bg_char);

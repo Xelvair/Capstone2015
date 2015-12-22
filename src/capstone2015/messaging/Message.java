@@ -6,6 +6,7 @@ public class Message {
         PushGameState,          //Game should be started / displayed
         PushIngameMenuState,    //Ingame menu should be displayed
         PushKeyPageState,       //Key page should be displayed
+        PushLaunchGameState,    //Game launcher should be opened
         TerminateGameState,     //GameState needs to be terminated
         ReceivedDamage,         //Entity has received damage
         EntityMove,             //Entity wants to move

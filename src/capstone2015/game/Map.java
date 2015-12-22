@@ -1,5 +1,9 @@
 package capstone2015.game;
 
+import capstone2015.entity.Actor;
+import capstone2015.entity.EntityFactory;
+import capstone2015.entity.MapEntity;
+import capstone2015.entity.Tile;
 import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.EntityMoveParams;
@@ -12,30 +16,29 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.Properties;
 
 public class Map {
-    private Array2D<Entity> tilemap;
+    private Array2D<Tile> tilemap;
     private Array2D<Boolean> revealmap;
-    private LinkedList<ActiveEntity> entities;
-    private ActiveEntity player; // for fast lookup;
+    private LinkedList<Actor> actors;
+    private Actor player; // for fast lookup;
     private MessageBus messageBus;
 
     public Map(MessageBus messageBus){
         this.messageBus = messageBus;
-        entities = new LinkedList<>();
+        actors = new LinkedList<>();
     }
 
     public void resetPlayer(int x, int y){
         removePlayer();
-        player = new ActiveEntity(Entity.ID_PLAYER, x, y, messageBus);
-        entities.add(player);
+        player = EntityFactory.createActor(EntityFactory.ID_PLAYER, x, y);
+        actors.add(player);
     }
 
     public void removePlayer(){
         if(player != null){
-          entities.remove(player);
+          actors.remove(player);
           player = null;
         }
   }
@@ -48,7 +51,7 @@ public class Map {
         revealmap.set(x, y, true);
     }
 
-    public ActiveEntity getPlayer(){
+    public Actor getPlayer(){
         return player;
     }
   
@@ -75,7 +78,7 @@ public class Map {
 
       for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
-          tilemap.set(j, i, new Entity(Entity.ID_FLOOR, null));
+          tilemap.set(j, i, EntityFactory.createTile(EntityFactory.ID_FLOOR));
         }
       }
       
@@ -100,17 +103,17 @@ public class Map {
          * rather than static tiles.
          */
         switch(tile_id){
-            case Entity.ID_ENEMY:
-            case Entity.ID_KEY:
-            case Entity.ID_STATIC_OBSTACLE:
-                entities.add(new ActiveEntity(tile_id, xcoord, ycoord, messageBus));
-                tilemap.set(xcoord, ycoord, new Entity(Entity.ID_FLOOR, null));
+            case EntityFactory.ID_RATTLESNAKE:
+            case EntityFactory.ID_KEY:
+            case EntityFactory.ID_BONFIRE:
+                actors.add(EntityFactory.createActor(tile_id, xcoord, ycoord));
+                tilemap.set(xcoord, ycoord, EntityFactory.createTile(EntityFactory.ID_FLOOR));
                 break;
-            case Entity.ID_ENTRY:
+            case EntityFactory.ID_ENTRY:
                 resetPlayer(xcoord, ycoord);
                 //intentional fallthrough
             default:
-                tilemap.set(xcoord, ycoord, new Entity(tile_id, null));
+                tilemap.set(xcoord, ycoord, EntityFactory.createTile(tile_id));
                 break;
         }
       }
@@ -124,7 +127,7 @@ public class Map {
       return tilemap.height();
     }
 
-    private void onMove(ActiveEntity entity, Direction dir){
+    private void onMove(Actor entity, Direction dir){
 
         Vec2i cur_pos = new Vec2i(entity.getXPos(), entity.getYPos());
         Vec2i dest_pos = new Vec2i( cur_pos.getX() + dir.toVector().getX(), 
@@ -137,18 +140,15 @@ public class Map {
         if(!isSolidAt(dest_pos.getX(), dest_pos.getY())){
             entity.setXPos(dest_pos.getX());
             entity.setYPos(dest_pos.getY());
-            OnMovedBehavior omb = entity.getOnMovedBehavior();
-            if(omb != null){
-                omb.invoke(entity, this.getEntitiesAt(dest_pos), messageBus);
-            }
+            entity.onMoved(this.getEntitiesAt(dest_pos));
         }
     }
   
     public boolean isSolidAt(int x, int y){
         boolean is_solid = false;
 
-        ArrayList<Entity> local_entities = getEntitiesAt(x, y);
-        for(Entity e : local_entities){
+        ArrayList<MapEntity> local_entities = getEntitiesAt(x, y);
+        for(MapEntity e : local_entities){
             if(e.isSolid()){
                 is_solid = true;
             }
@@ -159,8 +159,8 @@ public class Map {
     public boolean isOpaqueAt(int x, int y){
         boolean is_opaque = false;
 
-        ArrayList<Entity> local_entities = getEntitiesAt(x, y);
-        for(Entity e : local_entities){
+        ArrayList<MapEntity> local_entities = getEntitiesAt(x, y);
+        for(MapEntity e : local_entities){
             if(e.isOpaque()){
                 is_opaque = true;
             }
@@ -168,29 +168,25 @@ public class Map {
         return is_opaque;
     }
   
-    public void onInflictDamage(ActiveEntity damagingEntity, Vec2i position, int damage){
+    public void onInflictDamage(Actor damagingEntity, Vec2i position, int damage){
         if(!this.inBounds(position.getX(), position.getY())){
             return;
         }
         
-        ArrayList<ActiveEntity> entities = this.getActiveEntitiesAt(position.getX(), position.getY());
+        ArrayList<Actor> entities = this.getActorsAt(position.getX(), position.getY());
         
-        for(ActiveEntity e : entities){
-            if(e.getOnDamageBehavior() != null){
-                e.getOnDamageBehavior().invoke(e, damagingEntity, damage, messageBus);
-            }
+        for(Actor e : entities){
+            e.onDamage(damagingEntity, damage);
         }
     }
     
     public void tick(double timeDelta){
        
-        Iterator<ActiveEntity> it = entities.iterator();
+        Iterator<Actor> it = actors.iterator();
         while(it.hasNext()){
-            ActiveEntity e = it.next();
+            Actor e = it.next();
             
-            if(e.getOnTickBehavior() != null){
-                e.getOnTickBehavior().invoke(e, timeDelta, messageBus);
-            }
+            e.onTick(timeDelta);
             
             if(e.isTerminate()){
                 it.remove();
@@ -216,25 +212,25 @@ public class Map {
         }
     }
 
-    public void add(ActiveEntity e){
-        entities.add(e);
+    public void add(Actor e){
+        actors.add(e);
     }
   
-    public ArrayList<Entity> getEntitiesAt(Vec2i pos){
+    public ArrayList<MapEntity> getEntitiesAt(Vec2i pos){
         return getEntitiesAt(pos.getX(), pos.getY());
     }
     
-    public ArrayList<Entity> getEntitiesAt(int x, int y){
+    public ArrayList<MapEntity> getEntitiesAt(int x, int y){
       if(!tilemap.inBounds(x, y)){
         System.out.println("Map index out of bounds");
         throw new ArrayIndexOutOfBoundsException();
       }
 
-      ArrayList<Entity> local_entities = new ArrayList<>();
+      ArrayList<MapEntity> local_entities = new ArrayList<>();
 
       local_entities.add(tilemap.get(x, y));
 
-      for(ActiveEntity e : entities){
+      for(Actor e : actors){
           if(e.getXPos() == x && e.getYPos() == y){
               local_entities.add(e);
           }
@@ -243,15 +239,15 @@ public class Map {
       return local_entities;
     }
     
-    public ArrayList<ActiveEntity> getActiveEntitiesAt(int x, int y){
+    public ArrayList<Actor> getActorsAt(int x, int y){
         if(!tilemap.inBounds(x, y)){
           System.out.println("Map index out of bounds");
           throw new ArrayIndexOutOfBoundsException();
         }
 
-        ArrayList<ActiveEntity> local_entities = new ArrayList<>();
+        ArrayList<Actor> local_entities = new ArrayList<>();
 
-        for(ActiveEntity e : entities){
+        for(Actor e : actors){
             if(e.getXPos() == x && e.getYPos() == y){
                 local_entities.add(e);
             }
@@ -260,6 +256,10 @@ public class Map {
         return local_entities;
     }
   
+    public boolean inBounds(Vec2i pos) {
+      return inBounds(pos.getX(), pos.getY());
+    }
+    
     public boolean inBounds(int x, int y){
       return tilemap.inBounds(x, y);
     }

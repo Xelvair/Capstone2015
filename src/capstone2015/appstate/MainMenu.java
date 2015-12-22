@@ -67,7 +67,7 @@ public class MainMenu extends AppState{
             case Enter:
                 switch(selection){
                     case 0:
-                        messageBus.enqueue(new Message(PushGameState, "level.properties"));
+                        messageBus.enqueue(new Message(PushLaunchGameState));
                         break;
                     case 1:
                         break;

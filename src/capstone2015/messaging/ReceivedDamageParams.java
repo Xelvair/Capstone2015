@@ -1,15 +1,16 @@
 package capstone2015.messaging;
 
-import capstone2015.game.ActiveEntity;
+import capstone2015.entity.Actor;
+import capstone2015.entity.EntityBase;
 
 public class ReceivedDamageParams {
-    private ActiveEntity damagedEntity;
-    private ActiveEntity damagingEntity;
+    private Actor damagedEntity;
+    private EntityBase damagingEntity;
     private int damage;
 
     public ReceivedDamageParams(
-            ActiveEntity damagedEntity, 
-            ActiveEntity damagingEntity, 
+            Actor damagedEntity, 
+            EntityBase damagingEntity, 
             int damage
     ){
         this.damagedEntity = damagedEntity;
@@ -21,11 +22,11 @@ public class ReceivedDamageParams {
         return damage;
     }
 
-    public ActiveEntity getDamagingEntity() {
+    public EntityBase getDamagingEntity() {
         return damagingEntity;
     }
     
-    public ActiveEntity getDamagedEntity() {
+    public Actor getDamagedEntity() {
         return damagedEntity;
     }
    

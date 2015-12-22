@@ -1,6 +1,7 @@
 package capstone2015.game.behavior;
 
-import capstone2015.game.ActiveEntity;
+import capstone2015.entity.Actor;
+import capstone2015.entity.EntityBase;
 import capstone2015.game.Direction;
 import capstone2015.messaging.EntityMoveParams;
 import capstone2015.messaging.Message;
@@ -17,14 +18,15 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
     private double moveTimeoutCounter = 0;
     
     @Override
-    public void invoke(ActiveEntity entity, double timeDelta, MessageBus messageBus) {
+    public void invoke(Actor entity, double timeDelta) {
         /*********
          * Decrease damage ignore timers
          */
-        HashMap<ActiveEntity, Double> damage_ignore_timers = entity.getDamageIgnoreTimers();
         
-        for(Iterator<Map.Entry<ActiveEntity, Double>> it = damage_ignore_timers.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<ActiveEntity, Double> entry = it.next();
+        HashMap<EntityBase, Double> damage_ignore_timers = entity.getDamageIgnoreTimers();
+        
+        for(Iterator<Map.Entry<EntityBase, Double>> it = damage_ignore_timers.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<EntityBase, Double> entry = it.next();
             double damage_timer = entry.getValue();
             double new_damage_timer = Math.max(0, damage_timer - timeDelta);
             
@@ -33,7 +35,6 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
             } else {
                 entry.setValue(new_damage_timer);
             }
-            
         }
         
         /********
@@ -43,7 +44,9 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
         
         Direction direction = Direction.NONE;
         
-        for(Message m : messageBus){
+        MessageBus message_bus = entity.getMessageBus();
+        
+        for(Message m : message_bus){
             switch(m.getType()){
                 case KeyEvent:
                     Key key = (Key)m.getMsgObject();
@@ -72,7 +75,7 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
         if(moveTimeoutCounter == 0.f && direction != Direction.NONE){
             moveTimeoutCounter = MOVE_TIMEOUT;
             EntityMoveParams msg_obj = new EntityMoveParams(entity, direction);
-            messageBus.enqueue(new Message(EntityMove, msg_obj));
+            entity.sendBusMessage(new Message(EntityMove, msg_obj));
         }
     } 
 }

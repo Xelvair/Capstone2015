@@ -1,12 +1,15 @@
 package capstone2015.game;
 
+import capstone2015.entity.Actor;
 import capstone2015.geom.Geom;
 import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
 import capstone2015.util.Array2D;
 import capstone2015.util.Pair;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 public class VisionMaskGenerator {
     public static final int SEARCH_AREA_GROW = 10;
@@ -32,16 +35,16 @@ public class VisionMaskGenerator {
          * that position information. Creating a PositionedEntity
          * through the copy constructor is dangerous IMO.
          */
-        ArrayList<Pair<Vec2i, Entity>> vision_entities = new ArrayList<>();
+        ArrayList<Pair<Vec2i, Actor>> vision_entities = new ArrayList<>();
         
         for(int i = search.getTop(); i <= search.getBottom(); i++){
             for(int j = search.getLeft(); j <= search.getRight(); j++){
                 //INEFFICIENT AS HELL, PLS CHANGE
-                ArrayList<Entity> local_entities = map.getEntitiesAt(j, i);
+                ArrayList<Actor> local_entities = map.getActorsAt(j, i);
                 int vision_radius_max = 0;
-                Entity vision_radius_max_e = null;
+                Actor vision_radius_max_e = null;
                 
-                for(Entity e : local_entities){
+                for(Actor e : local_entities){
                     if(e.getVisionRadius() > vision_radius_max){
                         vision_radius_max = e.getVisionRadius();
                         vision_radius_max_e = e;
@@ -67,11 +70,16 @@ public class VisionMaskGenerator {
             }
         }
         
-        for(Pair<Vec2i, Entity> e : vision_entities){
+        for(Pair<Vec2i, Actor> e : vision_entities){
             Vec2i entity_pos = e.getFirst();
-            Entity entity = e.getSecond();
+            Actor entity = e.getSecond();
             int entity_vision_radius = entity.getVisionRadius();
             
+            /** *************
+             * Go from the center out to the endpoints of the circle
+             * and set visited tiles visible until an opaque tile was
+             * encountered.
+             */
             LinkedList<Vec2i> circle_points = Geom.generateCircle(entity_pos, entity_vision_radius);
             for(Vec2i circle_point : circle_points){
                 LinkedList<Vec2i> line_points = Geom.lineToPoints(entity_pos, circle_point);
@@ -79,13 +87,31 @@ public class VisionMaskGenerator {
                     if(!map.inBounds(line_point.getX(), line_point.getY())){
                         continue;
                     }
-                    Vec2i vision_mask_pos = area.getRelative(line_point);
                     if(map.isOpaqueAt(line_point.getX(), line_point.getY())){
-                        
-                        vision_mask.set(vision_mask_pos.getX(), vision_mask_pos.getY(), true);
                         break;
                     }
+                  
+                    Vec2i vision_mask_pos = area.getRelative(line_point);
                     vision_mask.set(vision_mask_pos.getX(), vision_mask_pos.getY(), true);
+                    
+                    /* Also make any adjacent walls visible */
+                    List<Direction> directions = Arrays.asList(new Direction[]{
+                        Direction.LEFT,
+                        Direction.UP,
+                        Direction.RIGHT,
+                        Direction.DOWN
+                    });
+                    
+                    for(Direction direction : directions){
+                        Vec2i surrounding_point = line_point.translate(direction.toVector());
+                        if(   map.inBounds(surrounding_point)
+                           && map.getEntitiesAt(surrounding_point).get(0).isOpaque()
+                        ){
+                            vision_mask_pos = area.getRelative(surrounding_point);
+                            vision_mask.set(vision_mask_pos, true);
+                        }
+                    }
+                    
                 }
             }
         }

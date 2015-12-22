@@ -1,5 +1,6 @@
 package capstone2015.util;
 
+import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Panel;
 
 public class Array2D<T> implements Array2DInterface<T>{
@@ -22,6 +23,11 @@ public class Array2D<T> implements Array2DInterface<T>{
         return (T)data[y * width + x];
     }
 
+    @Override
+    public void set(Vec2i pos, T data){
+        set(pos.getX(), pos.getY(), data);
+    }
+    
     @Override
     public void set(int x, int y, T data) {
         if(!inBounds(x, y)){
@@ -66,7 +72,12 @@ public class Array2D<T> implements Array2DInterface<T>{
         }
         return str;
     }
-
+    
+    @Override
+    public boolean inBounds(Vec2i pos) {
+      return inBounds(pos.getX(), pos.getY());
+    }
+    
     @Override
     public boolean inBounds(int x, int y) {
       return (   x >= 0

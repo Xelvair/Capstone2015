@@ -1,21 +1,21 @@
 package capstone2015.game.panel;
 
-import capstone2015.game.ActiveEntity;
-import capstone2015.game.EntityProto;
+import capstone2015.entity.Actor;
+import capstone2015.entity.EntityFactory;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.TerminalChar;
 import java.awt.Color;
 
 public class HudPanel {
-    public static Panel render(ActiveEntity e, int width){
+    public static Panel render(Actor e, int width){
         Panel p = Panel.fillPanel(width, 1, new TerminalChar(' ', Color.WHITE, Color.DARK_GRAY));
         
         String health_str = "";
         
-        int entity_max_hp = EntityProto.get(e.getId()).getHealthPoints();
-        int entity_hp = e.getHealthPoints();
+        int entity_max_hp = e.getMaxHealth();
+        int entity_hp = e.getHealth();
         
-        for(int i = 0; i < e.getHealthPoints(); i++){
+        for(int i = 0; i < e.getHealth(); i++){
             health_str += '\u2665';
         }
         

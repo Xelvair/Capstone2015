@@ -1,10 +1,13 @@
 package capstone2015.util;
 
+import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Panel;
 
 public interface Array2DInterface<T> {
     public T get(int x, int y);
+    public boolean inBounds(Vec2i pos);
     public boolean inBounds(int x, int y);
+    public void set(Vec2i pos, T data);
     public void set(int x, int y, T data);
     public void insert(Array2DInterface<T> data, int x, int y);
     public int width();

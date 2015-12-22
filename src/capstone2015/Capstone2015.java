@@ -5,7 +5,10 @@ import capstone2015.appstate.AppStateManager;
 import capstone2015.appstate.Game;
 import capstone2015.appstate.IngameMenu;
 import capstone2015.appstate.KeyPage;
+import capstone2015.appstate.LaunchGameState;
 import capstone2015.appstate.MainMenu;
+import capstone2015.entity.Actor;
+import capstone2015.entity.EntityFactory;
 import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.game.behavior.PlayerOnTickBehavior;
@@ -22,10 +25,12 @@ public class Capstone2015 {
     public static final int FRAME_RATE = 60;
     public static final int FRAME_TIME = 1000 / FRAME_RATE;
     
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {       
         AppStateManager asm = new AppStateManager();
         Screen screen = new Screen();
         MessageBus messageBus = new MessageBus();
+        
+        EntityFactory.setMessageBus(messageBus);
 
         asm.pushState(new MainMenu(screen, messageBus));
         //asm.pushState(new Game(screen, messageBus, "level.properties")); 
@@ -51,6 +56,9 @@ public class Capstone2015 {
                         break;
                     case PushKeyPageState:
                         asm.pushState(new KeyPage(screen, messageBus));
+                        break;
+                    case PushLaunchGameState:
+                        asm.pushState(new LaunchGameState(screen, messageBus));
                         break;
                     case QuitToDesktop:
                         asm.terminateStates();

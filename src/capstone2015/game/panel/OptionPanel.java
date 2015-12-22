@@ -18,21 +18,35 @@ public class OptionPanel {
         public Color borderColor = Color.WHITE;
         public Color selectorColor = Color.WHITE;
         public Color optionColor = Color.WHITE;
+        public Color headingColor = Color.BLACK;
+        public String heading = "";
     }    
     
-    public static Panel render(String[] options, Config config, int selection){
-        int panel_width = Util.maxLength(Arrays.asList(options)) 
+    public static Panel render(String[] options, Config config, int selection){       
+        int panel_width = Util.maxLength(Arrays.asList(options))
                         + (config.marginH * 2) 
                         + 2 
                         + (config.borderWidth * 2);
         
         int panel_height = options.length 
                          + (config.optionPadding * (options.length - 1)) 
-                         + (config.marginV * 2) + (config.borderWidth * 2);
+                         + (config.marginV * 2) 
+                         + (config.borderWidth * 2);
         
         Panel option_panel = Panel.fillPanel(panel_width, panel_height, new TerminalChar(' ', Color.WHITE, config.borderColor));
         option_panel.insertCenter(Panel.fillPanel(panel_width - 2, panel_height - 2, new TerminalChar(' ', Color.WHITE, config.bgColor)));
-     
+        
+        if(config.heading != ""){
+            //Don't allow multiline headings
+            if(config.heading.indexOf('\n') >= 0){
+                config.heading = config.heading.substring(0, config.heading.indexOf('\n'));
+            }
+            
+            Panel p_heading = Panel.textPanel(config.heading, config.headingColor, config.borderColor);
+            
+            option_panel.insertCenterHorizontally(p_heading, 0);
+        }
+        
         for(int i = 0; i < options.length; i++){
             String option = new String(options[i]);
             option = (i == selection ? "> " : "  ") + option;

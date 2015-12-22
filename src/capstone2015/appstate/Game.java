@@ -1,7 +1,6 @@
 package capstone2015.appstate;
 
-import capstone2015.game.Entity;
-import capstone2015.game.EntityProto;
+import capstone2015.entity.MapEntity;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
 import capstone2015.game.NotificationList;
@@ -52,7 +51,7 @@ public class Game extends AppState{
                 onReceivedDamage((ReceivedDamageParams)m.getMsgObject());
                 break;
             case PlayerEncounter:
-              onPlayerEncounter((Entity)m.getMsgObject());
+                onPlayerEncounter((MapEntity)m.getMsgObject());
                 break;
             case TerminateGameState:
                 terminate();
@@ -67,23 +66,20 @@ public class Game extends AppState{
         }
     }
     
-    private void onPlayerEncounter(Entity e_enc){                
-        EntityProto e_enc_proto = EntityProto.get(e_enc.getId());
-        String entity_name_str = e_enc_proto.getName();
-        String notif_text = String.format("You encounter a %s!", entity_name_str);
-        Color notif_color = e_enc_proto.getRepresentVisible().getFGColor();
+    private void onPlayerEncounter(MapEntity e_enc){                
+        String notif_text = String.format("You encounter a %s!", e_enc.getName());
+        Color notif_color = e_enc.getRepresent().getFGColor();
         notifications.push(notif_text, notif_color);
     }
     
     private void onReceivedDamage(ReceivedDamageParams msg_obj){
         if(msg_obj.getDamagedEntity() == map.getPlayer()){
-            EntityProto e_damager = EntityProto.get(msg_obj.getDamagingEntity().getId());
             String notif_text = String.format(
                     "You take %d damage from %s!", 
                     msg_obj.getDamage(),
-                    e_damager.getName()
+                    msg_obj.getDamagingEntity().getName()
             );
-            Color notif_color = e_damager.getRepresentVisible().getFGColor();
+            Color notif_color = msg_obj.getDamagingEntity().getRepresent().getFGColor();
             notifications.push(notif_text, notif_color);
         }
     }
