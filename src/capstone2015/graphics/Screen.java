@@ -11,6 +11,7 @@ import java.awt.Color;
 import com.googlecode.lanterna.terminal.Terminal.ResizeListener;
 import com.googlecode.lanterna.terminal.TerminalSize;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Screen implements Array2DInterface<TerminalChar>{
 
@@ -184,6 +185,11 @@ public class Screen implements Array2DInterface<TerminalChar>{
     @Override
     public void insertCenter(Array2D<TerminalChar> array) {
         buffers.get(getMemBufId()).insertCenter(array);
+    }
+
+    @Override
+    public void fill(TerminalChar data) {
+        buffers.get(getMemBufId()).fill(data);
     }
     
 }

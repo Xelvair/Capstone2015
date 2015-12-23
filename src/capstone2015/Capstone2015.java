@@ -25,7 +25,6 @@ public class Capstone2015 {
         EntityFactory.setMessageBus(messageBus);
 
         asm.pushState(new MainMenu(screen, messageBus));
-        //asm.pushState(new Game(screen, messageBus, "level.properties")); 
        
         long lastClock = System.currentTimeMillis();
         while(!asm.isEmpty()){

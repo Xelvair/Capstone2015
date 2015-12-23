@@ -2,6 +2,7 @@ package capstone2015.util;
 
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Panel;
+import java.util.Arrays;
 
 public class Array2D<T> implements Array2DInterface<T>{
     
@@ -34,6 +35,11 @@ public class Array2D<T> implements Array2DInterface<T>{
             throw new ArrayIndexOutOfBoundsException(x + "," + y);
         }
         this.data[y * width + x] = data;
+    }
+    
+    @Override
+    public void fill(T data){
+        Arrays.fill(this.data,  data);
     }
 
     @Override

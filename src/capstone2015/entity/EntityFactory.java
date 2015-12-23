@@ -20,6 +20,9 @@ public class EntityFactory {
     public static final int ID_FLOOR = 6;
     public static final int ID_PLAYER = 7;
     
+    public static final Color COLOR_FLOOR = new Color(87,59,12);
+    public static final Color COLOR_FLOOR_HIDDEN = new Color(26, 20, 4);
+    
     private static ArrayList<EntityProto> entityProtos;
     private static MessageBus messageBus;
     
@@ -160,7 +163,7 @@ public class EntityFactory {
         ep.mapEntityProto = new MapEntityProto();
         ep.tileProto = new TileProto();
         
-        ep.entityBaseProto.represent = new TerminalChar(' ', Color.WHITE, Color.WHITE);
+        ep.entityBaseProto.represent = new TerminalChar(' ', Color.WHITE, new Color(139, 141, 122));
         ep.entityBaseProto.name = "Wall";
         ep.entityBaseProto.description = 
               "Walls make up most of the dungeon. You can not\n"
@@ -171,7 +174,7 @@ public class EntityFactory {
         ep.mapEntityProto.isSolid = true;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(30, 30, 30));
+        ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
         
         entityProtos.add(ep);
         
@@ -183,7 +186,7 @@ public class EntityFactory {
         ep.mapEntityProto = new MapEntityProto();
         ep.tileProto = new TileProto();
         
-        ep.entityBaseProto.represent = new TerminalChar('\u25BC', Color.BLUE, Color.DARK_GRAY);
+        ep.entityBaseProto.represent = new TerminalChar('\u25BC', Color.BLUE, COLOR_FLOOR);
         ep.entityBaseProto.name = "Entry";
         ep.entityBaseProto.description = 
               "The place where you entered the dungeon.\n"
@@ -192,7 +195,7 @@ public class EntityFactory {
         ep.mapEntityProto.isSolid = false;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('\u25BC', Color.BLUE, Color.BLACK);
+        ep.mapEntityProto.representInvisible = new TerminalChar('\u25BC', Color.BLUE, COLOR_FLOOR_HIDDEN);
         
         entityProtos.add(ep);
         
@@ -204,7 +207,7 @@ public class EntityFactory {
         ep.mapEntityProto = new MapEntityProto();
         ep.tileProto = new TileProto();
         
-        ep.entityBaseProto.represent = new TerminalChar('\u25B2', Color.GREEN, Color.DARK_GRAY);
+        ep.entityBaseProto.represent = new TerminalChar('\u25B2', Color.GREEN, COLOR_FLOOR);
         ep.entityBaseProto.name = "Exit";
         ep.entityBaseProto.description = 
               "You need to find this exit in order to leave the\n"
@@ -214,7 +217,7 @@ public class EntityFactory {
         ep.mapEntityProto.isSolid = false;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('\u25B2', Color.GREEN, Color.BLACK);
+        ep.mapEntityProto.representInvisible = new TerminalChar('\u25B2', Color.GREEN, COLOR_FLOOR_HIDDEN);
         
         entityProtos.add(ep);
         
@@ -226,7 +229,7 @@ public class EntityFactory {
         ep.mapEntityProto = new MapEntityProto();
         ep.actorProto = new ActorProto();
         
-        ep.entityBaseProto.represent = new TerminalChar('\uFB63', new Color(156, 42, 0), Color.DARK_GRAY);
+        ep.entityBaseProto.represent = new TerminalChar('\uFB63', new Color(156, 42, 0), COLOR_FLOOR);
         ep.entityBaseProto.name = "Bonfire";
         ep.entityBaseProto.description = 
               "A warm and cozy bonfire.\n"
@@ -235,7 +238,7 @@ public class EntityFactory {
         ep.mapEntityProto.isSolid = false;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('\uFB63', new Color(156, 42, 0), Color.BLACK);
+        ep.mapEntityProto.representInvisible = new TerminalChar('\uFB63', new Color(156, 42, 0), COLOR_FLOOR_HIDDEN);
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
@@ -251,7 +254,7 @@ public class EntityFactory {
         ep.mapEntityProto = new MapEntityProto();
         ep.actorProto = new ActorProto();
         
-        ep.entityBaseProto.represent = new TerminalChar('\u08B0', new Color(0, 153, 76), Color.DARK_GRAY);
+        ep.entityBaseProto.represent = new TerminalChar('\u08B0', new Color(0, 153, 76), COLOR_FLOOR);
         ep.entityBaseProto.name = "Rattlesnake";
         ep.entityBaseProto.description = 
               "This dangerous creature can become very deadly \n"
@@ -261,7 +264,7 @@ public class EntityFactory {
         ep.mapEntityProto.isSolid = false;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('\u08B0', new Color(0, 153, 76), Color.BLACK);
+        ep.mapEntityProto.representInvisible = new TerminalChar('\u08B0', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
         ep.actorProto.maxHealth = 1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
@@ -278,7 +281,7 @@ public class EntityFactory {
         ep.actorProto = new ActorProto();
         ep.itemProto = new ItemProto();
         
-        ep.entityBaseProto.represent = new TerminalChar('\u2C61', Color.YELLOW, Color.DARK_GRAY);
+        ep.entityBaseProto.represent = new TerminalChar('\u2C61', Color.YELLOW, COLOR_FLOOR);
         ep.entityBaseProto.name = "Dungeon Key";
         ep.entityBaseProto.description = 
               "This is the key you need to find in order to leave\n"
@@ -289,7 +292,7 @@ public class EntityFactory {
         ep.mapEntityProto.isSolid = false;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('\u2C61', Color.YELLOW, Color.BLACK);
+        ep.mapEntityProto.representInvisible = new TerminalChar('\u2C61', Color.YELLOW, COLOR_FLOOR_HIDDEN);
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;
@@ -307,14 +310,14 @@ public class EntityFactory {
         ep.mapEntityProto = new MapEntityProto();
         ep.tileProto = new TileProto();
         
-        ep.entityBaseProto.represent = new TerminalChar(' ', Color.WHITE, Color.DARK_GRAY);
+        ep.entityBaseProto.represent = new TerminalChar(' ', Color.WHITE, COLOR_FLOOR);
         ep.entityBaseProto.name = "Floor";
         ep.entityBaseProto.description = "\"If you fall, I'll be there.\" - Floor, 2015\n";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.isSolid = false;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(10, 10, 10));
+        ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_FLOOR_HIDDEN);
 
         entityProtos.add(ep);
         
@@ -326,7 +329,7 @@ public class EntityFactory {
         ep.mapEntityProto = new MapEntityProto();
         ep.actorProto = new ActorProto();
         
-        ep.entityBaseProto.represent = new TerminalChar('@', Color.CYAN, Color.DARK_GRAY);
+        ep.entityBaseProto.represent = new TerminalChar('@', Color.CYAN, COLOR_FLOOR);
         ep.entityBaseProto.name = "The Player";
         ep.entityBaseProto.description = 
               "That's you, a frightened individual running through a\n"
@@ -336,7 +339,7 @@ public class EntityFactory {
         ep.mapEntityProto.isSolid = false;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('@', Color.CYAN, Color.BLACK);
+        ep.mapEntityProto.representInvisible = new TerminalChar('@', Color.CYAN, COLOR_FLOOR_HIDDEN);
         ep.actorProto.maxHealth = 10;
         ep.actorProto.onMovedBehaviorClass = PlayerOnMovedBehavior.class;
         ep.actorProto.onTickBehaviorClass = PlayerOnTickBehavior.class;

@@ -4,7 +4,6 @@ import capstone2015.entity.Actor;
 import capstone2015.entity.EntityFactory;
 import capstone2015.entity.MapEntity;
 import capstone2015.entity.Tile;
-import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.EntityMoveParams;
 import capstone2015.messaging.InflictDamageParams;
@@ -82,11 +81,7 @@ public class Map {
         }
       }
       
-      for(int i = 0; i < height; i++){
-        for(int j = 0; j < width; j++){
-          revealmap.set(j, i, false);
-        }
-      }
+      revealmap.fill(false);
 
       for(String key : props.stringPropertyNames()){
         String value = props.getProperty(key);
