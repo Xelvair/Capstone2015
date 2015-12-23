@@ -31,9 +31,9 @@ public class Item extends EntityBase{
         }
     }
     
-    public void onItemPickedUp(){
+    public void onItemPickedUp(Actor pickupper){
         if(onItemPickedUpBehavior != null){
-            //onItemPickedUpBehavior.invoke();
+            onItemPickedUpBehavior.invoke(pickupper);
         }
     }
 }

@@ -9,10 +9,11 @@ public class Message {
         PushLaunchGameState,    //Game launcher should be opened
         TerminateGameState,     //GameState needs to be terminated
         ReceivedDamage,         //Entity has received damage
+        PushNotification,       //New notification should be pushed
         EntityMove,             //Entity wants to move
         InflictDamage,          //When something is dealing damage on an area
-        PlayerEncounter,        //Player encounters an entity that's worth noting
-        Terminate,              //Entity terminates
+        Pickup,                 //Entity wants to pick something up
+        Terminate,              //Entity has terminated
         QuitToDesktop;          //Game has to close
     }
     

@@ -23,6 +23,10 @@ public class HudPanel {
         p_health.insert(Panel.textPanel(health_str, Color.RED, Color.DARK_GRAY), 0, 0);
         
         p.insert(p_health, p.width() - p_health.width(), 0);
+        
+        if(e.hasInventory()){
+            p.insert(InventoryPanel.render(e.getInventory(), Color.DARK_GRAY), 3, 0);
+        }
         return p;
     }
 }

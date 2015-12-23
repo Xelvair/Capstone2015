@@ -11,10 +11,6 @@ import java.util.ArrayList;
 public class PlayerOnMovedBehavior implements OnMovedBehavior{
     @Override
     public void invoke(Actor entity, ArrayList<MapEntity> entitiesAtPos) {
-        for(MapEntity e : entitiesAtPos){            
-            if(e.isEncounterNotified()){
-                entity.sendBusMessage(new Message(PlayerEncounter, e));
-            }
-        }
+
     }
 }

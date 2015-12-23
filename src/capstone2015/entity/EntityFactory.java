@@ -1,8 +1,10 @@
 package capstone2015.entity;
 
+import capstone2015.game.Inventory;
 import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
 import capstone2015.game.behavior.PlayerOnDamageBehavior;
 import capstone2015.game.behavior.PlayerOnMovedBehavior;
+import capstone2015.game.behavior.PlayerOnPickedUpItemBehavior;
 import capstone2015.game.behavior.PlayerOnTickBehavior;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
@@ -101,6 +103,13 @@ public class EntityFactory {
             if(e_proto.actorProto.onDamageBehaviorClass != null){
                 actor.onDamageBehavior = e_proto.actorProto.onDamageBehaviorClass.newInstance();
             }
+            if(e_proto.actorProto.onPickedUpItemBehavior != null){
+                actor.onPickedUpItemBehavior = e_proto.actorProto.onPickedUpItemBehavior.newInstance();
+            }
+            
+            if(e_proto.actorProto.inventorySize > 0){
+                actor.inventory = new Inventory(e_proto.actorProto.inventorySize);
+            }
         
             return actor;
         } catch(Exception e){
@@ -138,14 +147,12 @@ public class EntityFactory {
         }
     }
     
-    public static Tile createActorFromItem(Item item){
-        System.out.println("createActorFromItem not yet implemented.");
-        return null;
+    public static Actor createActorFromItem(Item item){
+        return createActor(item.proto.id);
     }
     
-    public static Tile createItemFromActor(Actor actor){
-        System.out.println("createItemFromActor not yet implemented.");
-        return null;
+    public static Item createItemFromActor(Actor actor){
+        return createItem(actor.proto.id);
     }
     
     /** 
@@ -158,7 +165,7 @@ public class EntityFactory {
         /******************************************
          * #0 - WALL - TILE
          */
-        ep = new EntityProto();
+        ep = new EntityProto(ID_WALL);
         ep.entityBaseProto = new EntityBaseProto();
         ep.mapEntityProto = new MapEntityProto();
         ep.tileProto = new TileProto();
@@ -181,7 +188,7 @@ public class EntityFactory {
         /******************************************
          * #1 - ENTRY - TILE
          */
-        ep = new EntityProto();
+        ep = new EntityProto(ID_ENTRY);
         ep.entityBaseProto = new EntityBaseProto();
         ep.mapEntityProto = new MapEntityProto();
         ep.tileProto = new TileProto();
@@ -202,7 +209,7 @@ public class EntityFactory {
         /******************************************
          * #2 - EXIT - TILE
          */
-        ep = new EntityProto();
+        ep = new EntityProto(ID_EXIT);
         ep.entityBaseProto = new EntityBaseProto();
         ep.mapEntityProto = new MapEntityProto();
         ep.tileProto = new TileProto();
@@ -224,7 +231,7 @@ public class EntityFactory {
         /******************************************
          * #3 - BONFIRE - ACTOR
          */
-        ep = new EntityProto();
+        ep = new EntityProto(ID_BONFIRE);
         ep.entityBaseProto = new EntityBaseProto();
         ep.mapEntityProto = new MapEntityProto();
         ep.actorProto = new ActorProto();
@@ -242,14 +249,17 @@ public class EntityFactory {
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehavior = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
 
         entityProtos.add(ep);
         
         /******************************************
          * #4 - RATTLESNAKE - ACTOR
          */
-        ep = new EntityProto();
+        ep = new EntityProto(ID_RATTLESNAKE);
         ep.entityBaseProto = new EntityBaseProto();
         ep.mapEntityProto = new MapEntityProto();
         ep.actorProto = new ActorProto();
@@ -268,14 +278,17 @@ public class EntityFactory {
         ep.actorProto.maxHealth = 1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehavior = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
 
         entityProtos.add(ep);
         
         /******************************************
          * #5 - KEY - ACTOR, ITEM
          */
-        ep = new EntityProto();
+        ep = new EntityProto(ID_KEY);
         ep.entityBaseProto = new EntityBaseProto();
         ep.mapEntityProto = new MapEntityProto();
         ep.actorProto = new ActorProto();
@@ -296,7 +309,10 @@ public class EntityFactory {
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;
+        ep.actorProto.onPickedUpItemBehavior = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.pickupable = true;
+        ep.actorProto.inventorySize = 0;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = null;
 
@@ -305,7 +321,7 @@ public class EntityFactory {
         /******************************************
          * #6 - FLOOR - TILE
          */
-        ep = new EntityProto();
+        ep = new EntityProto(ID_FLOOR);
         ep.entityBaseProto = new EntityBaseProto();
         ep.mapEntityProto = new MapEntityProto();
         ep.tileProto = new TileProto();
@@ -324,7 +340,7 @@ public class EntityFactory {
         /******************************************
          * #7 - PLAYER - ACTOR
          */
-        ep = new EntityProto();
+        ep = new EntityProto(ID_PLAYER);
         ep.entityBaseProto = new EntityBaseProto();
         ep.mapEntityProto = new MapEntityProto();
         ep.actorProto = new ActorProto();
@@ -344,7 +360,10 @@ public class EntityFactory {
         ep.actorProto.onMovedBehaviorClass = PlayerOnMovedBehavior.class;
         ep.actorProto.onTickBehaviorClass = PlayerOnTickBehavior.class;
         ep.actorProto.onDamageBehaviorClass = PlayerOnDamageBehavior.class;
+        ep.actorProto.onPickedUpItemBehavior = PlayerOnPickedUpItemBehavior.class;
         ep.actorProto.visionRadius = 10;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 3;
 
         entityProtos.add(ep);
     }

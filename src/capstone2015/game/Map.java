@@ -2,6 +2,7 @@ package capstone2015.game;
 
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityFactory;
+import capstone2015.entity.Item;
 import capstone2015.entity.MapEntity;
 import capstone2015.entity.Tile;
 import capstone2015.geom.Vec2i;
@@ -162,6 +163,19 @@ public class Map {
         }
         return is_opaque;
     }
+    
+    public ArrayList<Actor> getPickupableAt(int x, int y){
+        ArrayList<Actor> local_actors = getActorsAt(x, y);
+        ArrayList<Actor> pickupable_actors = new ArrayList<>();
+        
+        for(Actor a : local_actors){
+            if(a.isPickupable() && !a.isTerminate()){
+                pickupable_actors.add(a);
+            }
+        }
+        
+        return pickupable_actors;
+    }
   
     public void onInflictDamage(Actor damagingEntity, Vec2i position, int damage){
         if(!this.inBounds(position.getX(), position.getY())){
@@ -172,6 +186,30 @@ public class Map {
         
         for(Actor e : entities){
             e.onDamage(damagingEntity, damage);
+        }
+    }
+    
+    public void onPickup(Actor pickupper){
+        int pickup_x = pickupper.getXPos();
+        int pickup_y = pickupper.getYPos();
+
+        ArrayList<Actor> picked_up_actors = this.getPickupableAt(pickup_x, pickup_y);
+        
+        while(!picked_up_actors.isEmpty()){
+            Actor picked_up_actor = picked_up_actors.remove(0);
+            
+            Item picked_up_item = EntityFactory.createItemFromActor(picked_up_actor);
+            
+            if(pickupper.hasFreeInventorySlot()){
+                if(pickupper.addItem(picked_up_item)){
+                    picked_up_actor.terminate(); //remove from map
+
+                    picked_up_item.onItemPickedUp(pickupper);
+                    pickupper.onPickedUpItem(picked_up_item);
+                }
+            } else {
+                pickupper.onPickedUpItemFailedNoSpace(picked_up_item);
+            }
         }
     }
     
@@ -201,6 +239,11 @@ public class Map {
                 {
                     InflictDamageParams msg_obj = (InflictDamageParams)m.getMsgObject();
                     onInflictDamage(msg_obj.getDamagingEntity(), msg_obj.getPosition(), msg_obj.getDamage());
+                    break;
+                }
+                case Pickup:
+                {
+                    onPickup((Actor)m.getMsgObject());
                     break;
                 }
             }

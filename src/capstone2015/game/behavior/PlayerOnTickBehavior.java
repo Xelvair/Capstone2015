@@ -63,6 +63,12 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                         case ArrowDown:
                             direction = Direction.DOWN;
                             break;
+                        case NormalKey:
+                            switch(key.getCharacter()){
+                                case 'e':
+                                    entity.sendBusMessage(new Message(Pickup, entity));
+                                    break;
+                            }
                         default:
                             break;
                     }

@@ -1,7 +1,9 @@
 package capstone2015.entity;
 
+import capstone2015.game.Inventory;
 import capstone2015.game.behavior.OnDamageBehavior;
 import capstone2015.game.behavior.OnMovedBehavior;
+import capstone2015.game.behavior.OnPickedUpItemBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.game.behavior.OnWalkedOverBehavior;
 import capstone2015.geom.Vec2i;
@@ -16,11 +18,13 @@ public class Actor extends MapEntity{
     protected OnMovedBehavior onMovedBehavior;
     protected OnTickBehavior onTickBehavior;
     protected OnDamageBehavior onDamageBehavior;
+    protected OnPickedUpItemBehavior onPickedUpItemBehavior;
     protected int health;
     protected Vec2i pos;
     protected boolean terminate;
     protected int visionRadius;
     protected HashMap<EntityBase, Double> damageIgnoreTimers = new HashMap<>();
+    protected Inventory inventory;
     
     public Vec2i getPos(){
         return pos;
@@ -38,8 +42,20 @@ public class Actor extends MapEntity{
         terminate = true;
     }
     
+    public boolean isPickupable(){
+        return proto.actorProto.pickupable;
+    }
+    
     public boolean isTerminate(){
         return terminate;
+    }
+    
+    public boolean hasInventory(){
+        return (inventory != null);
+    }
+    
+    public Inventory getInventory(){
+        return inventory;
     }
     
     public int getVisionRadius(){
@@ -48,6 +64,35 @@ public class Actor extends MapEntity{
     
     public HashMap<EntityBase, Double> getDamageIgnoreTimers(){
         return damageIgnoreTimers;
+    }
+    
+    public int freeInventorySlotCount(){
+        if(inventory != null){
+            return inventory.freeSlotsCount();
+        } else {
+            return 0;
+        }
+    }
+    
+    public boolean hasFreeInventorySlot(){
+        return freeInventorySlotCount() > 0;
+    }
+    
+    public boolean addItem(Item item){
+        if(inventory != null){
+            inventory.add(item);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public Item getInventorySlot(int slotIdx){
+        if(inventory != null){
+            return inventory.get(slotIdx);
+        } else {
+            return null;
+        }
     }
     
     @Override
@@ -98,6 +143,18 @@ public class Actor extends MapEntity{
     public void onWalkedOver() {
         if(onWalkedOverBehavior != null){
             //onWalkedOverBehavior.invoke(this);
+        }
+    }
+    
+    public void onPickedUpItem(Item item){
+        if(onPickedUpItemBehavior != null){
+            onPickedUpItemBehavior.invoke(this, item);
+        }
+    }
+
+    public void onPickedUpItemFailedNoSpace(Item item){
+        if(onPickedUpItemBehavior != null){
+            onPickedUpItemBehavior.invokeFailedNoSpace(this, item);
         }
     }
     

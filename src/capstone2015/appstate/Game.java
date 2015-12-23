@@ -10,6 +10,7 @@ import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
+import capstone2015.messaging.PushNotificationParams;
 import capstone2015.messaging.ReceivedDamageParams;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
@@ -50,11 +51,11 @@ public class Game extends AppState{
             case ReceivedDamage:
                 onReceivedDamage((ReceivedDamageParams)m.getMsgObject());
                 break;
-            case PlayerEncounter:
-                onPlayerEncounter((MapEntity)m.getMsgObject());
-                break;
             case TerminateGameState:
                 terminate();
+                break;
+            case PushNotification:
+                onPushNotification((PushNotificationParams)m.getMsgObject());
                 break;
             case Terminate:
             {
@@ -64,12 +65,6 @@ public class Game extends AppState{
             }
                 
         }
-    }
-    
-    private void onPlayerEncounter(MapEntity e_enc){                
-        String notif_text = String.format("You encounter a %s!", e_enc.getName());
-        Color notif_color = e_enc.getRepresent().getFGColor();
-        notifications.push(notif_text, notif_color);
     }
     
     private void onReceivedDamage(ReceivedDamageParams msg_obj){
@@ -82,6 +77,10 @@ public class Game extends AppState{
             Color notif_color = msg_obj.getDamagingEntity().getRepresent().getFGColor();
             notifications.push(notif_text, notif_color);
         }
+    }
+    
+    private void onPushNotification(PushNotificationParams pnp){
+        notifications.push(pnp.notification, pnp.color);
     }
     
     @Override
