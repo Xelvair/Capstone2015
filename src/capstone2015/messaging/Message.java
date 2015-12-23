@@ -13,6 +13,7 @@ public class Message {
         EntityMove,             //Entity wants to move
         InflictDamage,          //When something is dealing damage on an area
         Pickup,                 //Entity wants to pick something up
+        Drop,                   //Entity wants to drop an item
         Terminate,              //Entity has terminated
         QuitToDesktop;          //Game has to close
     }

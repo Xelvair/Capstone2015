@@ -5,7 +5,8 @@ import capstone2015.entity.Item;
 public class Inventory {
     
     private Item[] items;
-
+    private int select_idx = -1;
+    
     public Inventory(int size){
         items = new Item[size];
     }
@@ -16,6 +17,27 @@ public class Inventory {
             new_items[i] = items[i];
             items = new_items;
         }
+    }
+    
+    public boolean setSelectIndex(int idx){
+        if(idx < items.length && items[idx] != null){
+            select_idx = idx;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public Item getSelectedItem(){
+        if(0 <= select_idx && select_idx < items.length){
+            return items[select_idx];
+        } else {
+            return null;
+        }
+    }
+    
+    public int getSelectIndex(){
+        return select_idx;
     }
     
     public int size(){
@@ -54,6 +76,9 @@ public class Inventory {
     }
     
     public Item take(int idx){
+        if(select_idx == idx){
+            select_idx = -1;
+        }
         Item item = items[idx];
         items[idx] = null;
         return item;
@@ -63,6 +88,9 @@ public class Inventory {
         for(int i = 0; i < items.length; i++){
             if(items[i] == item){
                 items[i] = null;
+                if(select_idx == 0){
+                    select_idx = -1;
+                }
             }
         }
     }

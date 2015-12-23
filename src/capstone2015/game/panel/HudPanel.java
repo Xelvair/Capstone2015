@@ -1,7 +1,6 @@
 package capstone2015.game.panel;
 
 import capstone2015.entity.Actor;
-import capstone2015.entity.EntityFactory;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.TerminalChar;
 import java.awt.Color;
@@ -25,7 +24,7 @@ public class HudPanel {
         p.insert(p_health, p.width() - p_health.width(), 0);
         
         if(e.hasInventory()){
-            p.insert(InventoryPanel.render(e.getInventory(), Color.DARK_GRAY), 3, 0);
+            p.insert(InventoryPanel.render(e.getInventory(), Color.GRAY, Color.DARK_GRAY), 3, 0);
         }
         return p;
     }

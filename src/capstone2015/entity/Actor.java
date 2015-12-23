@@ -2,6 +2,7 @@ package capstone2015.entity;
 
 import capstone2015.game.Inventory;
 import capstone2015.game.behavior.OnDamageBehavior;
+import capstone2015.game.behavior.OnDroppedItemBehavior;
 import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.game.behavior.OnPickedUpItemBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
@@ -19,6 +20,7 @@ public class Actor extends MapEntity{
     protected OnTickBehavior onTickBehavior;
     protected OnDamageBehavior onDamageBehavior;
     protected OnPickedUpItemBehavior onPickedUpItemBehavior;
+    protected OnDroppedItemBehavior onDroppedItemBehavior;
     protected int health;
     protected Vec2i pos;
     protected boolean terminate;
@@ -146,12 +148,18 @@ public class Actor extends MapEntity{
         }
     }
     
+    public void onDroppedItem(Item item){
+        if(onDroppedItemBehavior != null){
+            onDroppedItemBehavior.invoke(this, item);
+        }
+    }
+    
     public void onPickedUpItem(Item item){
         if(onPickedUpItemBehavior != null){
             onPickedUpItemBehavior.invoke(this, item);
         }
     }
-
+    
     public void onPickedUpItemFailedNoSpace(Item item){
         if(onPickedUpItemBehavior != null){
             onPickedUpItemBehavior.invokeFailedNoSpace(this, item);

@@ -3,6 +3,7 @@ package capstone2015.entity;
 import capstone2015.game.Inventory;
 import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
 import capstone2015.game.behavior.PlayerOnDamageBehavior;
+import capstone2015.game.behavior.PlayerOnDroppedItemBehavior;
 import capstone2015.game.behavior.PlayerOnMovedBehavior;
 import capstone2015.game.behavior.PlayerOnPickedUpItemBehavior;
 import capstone2015.game.behavior.PlayerOnTickBehavior;
@@ -103,8 +104,11 @@ public class EntityFactory {
             if(e_proto.actorProto.onDamageBehaviorClass != null){
                 actor.onDamageBehavior = e_proto.actorProto.onDamageBehaviorClass.newInstance();
             }
-            if(e_proto.actorProto.onPickedUpItemBehavior != null){
-                actor.onPickedUpItemBehavior = e_proto.actorProto.onPickedUpItemBehavior.newInstance();
+            if(e_proto.actorProto.onPickedUpItemBehaviorClass != null){
+                actor.onPickedUpItemBehavior = e_proto.actorProto.onPickedUpItemBehaviorClass.newInstance();
+            }
+            if(e_proto.actorProto.onDroppedItemBehaviorClass != null){
+                actor.onDroppedItemBehavior = e_proto.actorProto.onDroppedItemBehaviorClass.newInstance();
             }
             
             if(e_proto.actorProto.inventorySize > 0){
@@ -136,6 +140,9 @@ public class EntityFactory {
             if(e_proto.itemProto.onItemPickedUpBehaviorClass != null){
                 item.onItemPickedUpBehavior = e_proto.itemProto.onItemPickedUpBehaviorClass.newInstance();
             }
+            if(e_proto.itemProto.onItemDroppedBehaviorClass != null){
+                item.onItemDroppedBehavior = e_proto.itemProto.onItemDroppedBehaviorClass.newInstance();
+            }
             if(e_proto.itemProto.onUseBehaviorClass != null){
                 item.onUseBehavior = e_proto.itemProto.onUseBehaviorClass.newInstance();
             }
@@ -147,8 +154,11 @@ public class EntityFactory {
         }
     }
     
-    public static Actor createActorFromItem(Item item){
-        return createActor(item.proto.id);
+    public static Actor createActorFromItem(Item item, Vec2i pos){
+        return createActorFromItem(item, pos.getX(), pos.getY());
+    }
+    public static Actor createActorFromItem(Item item, int x, int y){
+        return createActor(item.proto.id, x, y);
     }
     
     public static Item createItemFromActor(Actor actor){
@@ -249,7 +259,8 @@ public class EntityFactory {
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
-        ep.actorProto.onPickedUpItemBehavior = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -278,7 +289,8 @@ public class EntityFactory {
         ep.actorProto.maxHealth = 1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
-        ep.actorProto.onPickedUpItemBehavior = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -309,7 +321,8 @@ public class EntityFactory {
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;
-        ep.actorProto.onPickedUpItemBehavior = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
@@ -360,7 +373,8 @@ public class EntityFactory {
         ep.actorProto.onMovedBehaviorClass = PlayerOnMovedBehavior.class;
         ep.actorProto.onTickBehaviorClass = PlayerOnTickBehavior.class;
         ep.actorProto.onDamageBehaviorClass = PlayerOnDamageBehavior.class;
-        ep.actorProto.onPickedUpItemBehavior = PlayerOnPickedUpItemBehavior.class;
+        ep.actorProto.onPickedUpItemBehaviorClass = PlayerOnPickedUpItemBehavior.class;
+        ep.actorProto.onDroppedItemBehaviorClass = PlayerOnDroppedItemBehavior.class;
         ep.actorProto.visionRadius = 10;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 3;

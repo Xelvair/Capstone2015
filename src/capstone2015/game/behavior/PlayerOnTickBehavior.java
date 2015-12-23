@@ -65,8 +65,39 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                             break;
                         case NormalKey:
                             switch(key.getCharacter()){
-                                case 'e':
+                                case 'e': //Pickup item
                                     entity.sendBusMessage(new Message(Pickup, entity));
+                                    break;
+                                case 'q': //Drop item
+                                    entity.sendBusMessage(new Message(Drop, entity));
+                                    break;
+                                //WASD controls as alternative to arrow keys
+                                case 'w':
+                                    direction = Direction.UP;
+                                    break;
+                                case 'a':
+                                    direction = Direction.LEFT;
+                                    break;
+                                case 's':
+                                    direction = Direction.DOWN;
+                                    break;
+                                case 'd':
+                                    direction = Direction.RIGHT;
+                                    break;
+                                //Inventory select keys
+                                case '0':
+                                case '1':
+                                case '2':
+                                case '3':
+                                case '4':
+                                case '5':
+                                case '6':
+                                case '7':
+                                case '8':
+                                case '9':
+                                    int select_idx = (Character.getNumericValue(key.getCharacter()) - 1) % 9;
+                                    entity.getInventory().setSelectIndex(select_idx);
+                                    System.out.println(entity.getInventory().getSelectIndex());
                                     break;
                             }
                         default:

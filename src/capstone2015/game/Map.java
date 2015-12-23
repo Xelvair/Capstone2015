@@ -96,6 +96,12 @@ public class Map {
         /**
          * Special case for the enemy, key and static obstacle,
          * as they will instead be added to the list of movable entities
+         * as they will instead be added to the list of movable entities
+         * as they will instead be added to the list of movable entities
+         * as they will instead be added to the list of movable entities
+         * as they will instead be added to the list of movable entities
+         * as they will instead be added to the list of movable entities
+         * as they will instead be added to the list of movable entities
          * rather than static tiles.
          */
         switch(tile_id){
@@ -177,7 +183,7 @@ public class Map {
         return pickupable_actors;
     }
   
-    public void onInflictDamage(Actor damagingEntity, Vec2i position, int damage){
+    private void onInflictDamage(Actor damagingEntity, Vec2i position, int damage){
         if(!this.inBounds(position.getX(), position.getY())){
             return;
         }
@@ -189,7 +195,7 @@ public class Map {
         }
     }
     
-    public void onPickup(Actor pickupper){
+    private void onPickup(Actor pickupper){
         int pickup_x = pickupper.getXPos();
         int pickup_y = pickupper.getYPos();
 
@@ -209,6 +215,25 @@ public class Map {
                 }
             } else {
                 pickupper.onPickedUpItemFailedNoSpace(picked_up_item);
+            }
+        }
+    }
+    
+    private void onDrop(Actor dropper){
+        Inventory dropper_inv = dropper.getInventory();
+        Item dropped_item = dropper_inv.getSelectedItem();
+        if(dropped_item != null){
+            Actor dropped_actor = EntityFactory.createActorFromItem(
+                    dropped_item, 
+                    dropper.getPos()
+            );
+            if(dropped_actor != null){
+                actors.add(dropped_actor);
+                dropper_inv.remove(dropped_item);
+                
+                dropper.onDroppedItem(dropped_item);
+                dropped_item.onItemDropped();
+                
             }
         }
     }
@@ -244,6 +269,11 @@ public class Map {
                 case Pickup:
                 {
                     onPickup((Actor)m.getMsgObject());
+                    break;
+                }
+                case Drop:
+                {
+                    onDrop((Actor)m.getMsgObject());
                     break;
                 }
             }
