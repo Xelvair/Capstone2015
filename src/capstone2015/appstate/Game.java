@@ -1,10 +1,16 @@
 package capstone2015.appstate;
 
+import capstone2015.entity.Actor;
+import capstone2015.entity.EntityBase;
+import capstone2015.entity.EntityFactory;
+import static capstone2015.entity.EntityFactory.ID_KEY;
+import capstone2015.entity.Item;
 import capstone2015.entity.MapEntity;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
 import capstone2015.game.NotificationList;
 import capstone2015.game.panel.HudPanel;
+import capstone2015.game.panel.EntityListPanel;
 import capstone2015.game.panel.NotificationPanel;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
@@ -14,6 +20,7 @@ import capstone2015.messaging.PushNotificationParams;
 import capstone2015.messaging.ReceivedDamageParams;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
+import java.util.ArrayList;
 
 public class Game extends AppState{
     public static final int NOTIFICATION_LIST_SIZE = 2;
@@ -96,15 +103,35 @@ public class Game extends AppState{
         Panel p_notif;
         p_notif = NotificationPanel.render(notifications, screen.width());
         screen.insert(p_notif, 0, 0);
-
+    
+        screen.insert(MapRenderer.renderPlayerCentered(map, screen.width(), screen.height() - NOTIFICATION_LIST_SIZE - HUD_HEIGHT), 0, NOTIFICATION_LIST_SIZE);
+        
+        drawPickupableList();
+        
         Panel p_hud;
         p_hud = HudPanel.render(map.getPlayer(), screen.width());
         screen.insert(p_hud, 0, screen.height() - 1);
-        
-        screen.insert(MapRenderer.renderPlayerCentered(map, screen.width(), screen.height() - NOTIFICATION_LIST_SIZE - HUD_HEIGHT), 0, NOTIFICATION_LIST_SIZE);
-
     }
-
+    
+    private void drawPickupableList(){
+        Actor player = map.getPlayer();
+        if(player != null){
+            ArrayList<? extends EntityBase> pickupable_items = map.getPickupableAt(player.getPos());
+            if(!pickupable_items.isEmpty()){
+                EntityListPanel.Config elist_p_cfg = new EntityListPanel.Config();
+                elist_p_cfg.bgColor = Color.BLACK;
+                elist_p_cfg.borderColor = Color.DARK_GRAY;
+                elist_p_cfg.marginH = 1;
+                elist_p_cfg.marginV = 1;
+                elist_p_cfg.title = "'E' to pick up";
+                elist_p_cfg.subtitle = "";
+                
+                Panel p_pickupable = EntityListPanel.render(pickupable_items, elist_p_cfg);
+                screen.insert(p_pickupable, 0, screen.height() - p_pickupable.height());
+            }
+        }
+    }
+    
     @Override
     protected void onEvent(AppStateEvent event) {
         switch(event){

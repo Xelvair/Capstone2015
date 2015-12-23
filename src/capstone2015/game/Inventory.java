@@ -88,7 +88,7 @@ public class Inventory {
         for(int i = 0; i < items.length; i++){
             if(items[i] == item){
                 items[i] = null;
-                if(select_idx == 0){
+                if(select_idx == i){
                     select_idx = -1;
                 }
             }

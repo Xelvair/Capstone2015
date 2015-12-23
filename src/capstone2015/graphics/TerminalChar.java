@@ -7,6 +7,12 @@ public class TerminalChar {
     private Color   fgColor;
     private Color   bgColor;
 
+    public TerminalChar(TerminalChar tc){
+        this.character = tc.character;
+        this.fgColor = tc.fgColor;
+        this.bgColor = tc.bgColor;
+    }
+    
     public TerminalChar(char character, Color fgColor, Color bgColor){
         this.character = character;
         this.fgColor = fgColor;
@@ -28,6 +34,10 @@ public class TerminalChar {
     public char getCharacter(){return this.character;}
     public Color getFGColor(){return this.fgColor;}
     public Color getBGColor(){return this.bgColor;}
+    
+    public TerminalChar setCharacter(char character){this.character = character; return this;}
+    public TerminalChar setFGColor(Color fgColor){this.fgColor = fgColor; return this;}
+    public TerminalChar setBGColor(Color bgColor){this.bgColor = bgColor; return this;}
     
     public boolean equals(TerminalChar rhs){
         return (   this.getCharacter() == rhs.getCharacter()

@@ -1,6 +1,7 @@
 package capstone2015.game;
 
 import capstone2015.entity.Actor;
+import capstone2015.entity.EntityBase;
 import capstone2015.entity.EntityFactory;
 import capstone2015.entity.Item;
 import capstone2015.entity.MapEntity;
@@ -170,6 +171,9 @@ public class Map {
         return is_opaque;
     }
     
+    public ArrayList<Actor> getPickupableAt(Vec2i pos){
+        return getPickupableAt(pos.getX(), pos.getY());
+    }
     public ArrayList<Actor> getPickupableAt(int x, int y){
         ArrayList<Actor> local_actors = getActorsAt(x, y);
         ArrayList<Actor> pickupable_actors = new ArrayList<>();
