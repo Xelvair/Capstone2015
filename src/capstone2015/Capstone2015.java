@@ -2,6 +2,7 @@ package capstone2015;
 
 import capstone2015.appstate.AppStateManager;
 import capstone2015.appstate.Game;
+import capstone2015.appstate.GameWonState;
 import capstone2015.appstate.IngameMenu;
 import capstone2015.appstate.KeyPage;
 import capstone2015.appstate.LaunchGameState;
@@ -50,6 +51,9 @@ public class Capstone2015 {
                         break;
                     case PushLaunchGameState:
                         asm.pushState(new LaunchGameState(screen, messageBus));
+                        break;
+                    case GameWon:
+                        asm.pushState(new GameWonState(screen, messageBus));
                         break;
                     case QuitToDesktop:
                         asm.terminateStates();

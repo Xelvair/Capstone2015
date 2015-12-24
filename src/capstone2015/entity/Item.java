@@ -5,13 +5,20 @@ import capstone2015.game.behavior.OnItemPickedUpBehavior;
 import capstone2015.game.behavior.OnUseBehavior;
 import capstone2015.graphics.TerminalChar;
 
-public class Item extends EntityBase{
-    protected EntityProto proto;
-    
+public class Item extends EntityBase{   
     protected OnUseBehavior onUseBehavior;
     protected OnItemPickedUpBehavior onItemPickedUpBehavior;
     protected OnItemDroppedBehavior onItemDroppedBehavior;
+    private boolean terminated = false;
 
+    public void terminate(){
+        terminated = true;
+    }
+    
+    public boolean isTerminated(){
+        return terminated;
+    }
+    
     @Override
     public TerminalChar getRepresent() {
         return proto.entityBaseProto.represent;
@@ -27,9 +34,13 @@ public class Item extends EntityBase{
         return proto.entityBaseProto.description;
     }
     
-    public void onUse(){
+    public boolean isUsable(){
+        return onUseBehavior != null;
+    }
+    
+    public void onUse(Actor user){
         if(onUseBehavior != null){
-            //onUseBehavior.invoke();
+            onUseBehavior.invoke(this, user);
         }
     }
     

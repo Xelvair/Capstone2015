@@ -1,7 +1,7 @@
 package capstone2015.appstate;
 
 import capstone2015.game.panel.OptionPanel;
-import capstone2015.game.panel.TitlePanel;
+import capstone2015.game.panel.TitleScreenPanel;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.graphics.TerminalChar;
@@ -35,7 +35,7 @@ public class MainMenu extends AppState{
         menu_config.borderColor = Color.BLACK;
         
         Panel p_background = Panel.fillPanel(screen.width(), screen.height(), new TerminalChar());
-        Panel p_title = TitlePanel.render();
+        Panel p_title = TitleScreenPanel.render();
         Panel p_options = OptionPanel.render(options, menu_config, selection);
         
         int menu_width = Math.max(p_title.width(), p_options.width());

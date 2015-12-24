@@ -5,8 +5,6 @@ import capstone2015.graphics.TerminalChar;
 
 public class Tile extends MapEntity{
     
-    protected EntityProto proto;
-    
     protected OnWalkedOverBehavior onWalkedOverBehavior;
     
     @Override

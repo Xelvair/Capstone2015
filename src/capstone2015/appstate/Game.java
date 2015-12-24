@@ -2,10 +2,6 @@ package capstone2015.appstate;
 
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
-import capstone2015.entity.EntityFactory;
-import static capstone2015.entity.EntityFactory.ID_KEY;
-import capstone2015.entity.Item;
-import capstone2015.entity.MapEntity;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
 import capstone2015.game.NotificationList;
@@ -37,7 +33,7 @@ public class Game extends AppState{
         this.messageBus = messageBus;
         map = new Map(messageBus);
         map.loadFromProperties(mapFile);
-        notifications.push("CapStone2015 (C) Marvin Doerr", Color.YELLOW);
+        notifications.push("You enter the dungeon...", Color.YELLOW);
     }
     
     private void handleMessage(Message m){
@@ -63,6 +59,9 @@ public class Game extends AppState{
                 break;
             case PushNotification:
                 onPushNotification((PushNotificationParams)m.getMsgObject());
+                break;
+            case GameWon:
+                notifications.push("You unlock the door and exit the dungeon!", Color.YELLOW);
                 break;
             case Terminate:
             {

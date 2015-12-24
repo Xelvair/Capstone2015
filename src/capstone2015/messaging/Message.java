@@ -12,9 +12,11 @@ public class Message {
         PushNotification,       //New notification should be pushed
         EntityMove,             //Entity wants to move
         InflictDamage,          //When something is dealing damage on an area
+        AttemptKeyUsage,        //Key trying to open a door
         Pickup,                 //Entity wants to pick something up
         Drop,                   //Entity wants to drop an item
         Terminate,              //Entity has terminated
+        GameWon,                //Game has been won
         QuitToDesktop;          //Game has to close
     }
     

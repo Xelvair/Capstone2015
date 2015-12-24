@@ -2,7 +2,9 @@ package capstone2015.game.behavior;
 
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
+import capstone2015.entity.Item;
 import capstone2015.game.Direction;
+import capstone2015.game.Inventory;
 import capstone2015.messaging.EntityMoveParams;
 import capstone2015.messaging.Message;
 import static capstone2015.messaging.Message.Type.*;
@@ -70,6 +72,12 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                                     break;
                                 case 'q': //Drop item
                                     entity.sendBusMessage(new Message(Drop, entity));
+                                    break;
+                                case 'f':
+                                    Item sel_item = entity.getSelectedItem();
+                                    if(sel_item != null){
+                                        sel_item.onUse(entity);
+                                    }
                                     break;
                                 //WASD controls as alternative to arrow keys
                                 case 'w':

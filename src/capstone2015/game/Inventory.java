@@ -94,4 +94,17 @@ public class Inventory {
             }
         }
     }
+    
+    public void tick(){
+        for(int i = 0; i < items.length; i++){
+            Item item = items[i];
+            if(item != null && item.isTerminated()){
+                remove(item);
+            }
+        }
+    }
+
+    public boolean isEmpty() {
+        return freeSlotsCount() == size();
+    }
 }

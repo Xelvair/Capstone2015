@@ -7,8 +7,6 @@ import capstone2015.graphics.Panel;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.util.Array2D;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MapRenderer {
   public static final int ITEM_DISPLAY_SWITCHTIME = 500;

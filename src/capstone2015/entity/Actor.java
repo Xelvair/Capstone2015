@@ -3,6 +3,7 @@ package capstone2015.entity;
 import capstone2015.game.Inventory;
 import capstone2015.game.behavior.OnDamageBehavior;
 import capstone2015.game.behavior.OnDroppedItemBehavior;
+import capstone2015.game.behavior.OnHealBehavior;
 import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.game.behavior.OnPickedUpItemBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
@@ -12,96 +13,103 @@ import capstone2015.graphics.TerminalChar;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Actor extends MapEntity{
-
-    protected EntityProto proto;
+public class Actor extends MapEntity {
     protected OnWalkedOverBehavior onWalkedOverBehavior;
     protected OnMovedBehavior onMovedBehavior;
     protected OnTickBehavior onTickBehavior;
     protected OnDamageBehavior onDamageBehavior;
     protected OnPickedUpItemBehavior onPickedUpItemBehavior;
     protected OnDroppedItemBehavior onDroppedItemBehavior;
+    protected OnHealBehavior onHealBehavior;
     protected int health;
     protected Vec2i pos;
-    protected boolean terminate;
+    protected boolean terminated;
     protected int visionRadius;
     protected HashMap<EntityBase, Double> damageIgnoreTimers = new HashMap<>();
     protected Inventory inventory;
-    
-    public Vec2i getPos(){
+
+    public Vec2i getPos() {
         return pos;
     }
-    
-    public int getXPos(){
+
+    public int getXPos() {
         return pos.getX();
     }
-    
-    public int getYPos(){
+
+    public int getYPos() {
         return pos.getY();
     }
-    
-    public void terminate(){
-        terminate = true;
+
+    public void terminate() {
+        terminated = true;
     }
-    
-    public boolean isPickupable(){
+
+    public boolean isPickupable() {
         return proto.actorProto.pickupable;
     }
-    
-    public boolean isTerminate(){
-        return terminate;
+
+    public boolean isTerminated() {
+        return terminated;
     }
-    
-    public boolean hasInventory(){
+
+    public boolean hasInventory() {
         return (inventory != null);
     }
-    
-    public Inventory getInventory(){
+
+    public Inventory getInventory() {
         return inventory;
     }
-    
-    public int getVisionRadius(){
+
+    public int getVisionRadius() {
         return visionRadius;
     }
-    
-    public HashMap<EntityBase, Double> getDamageIgnoreTimers(){
+
+    public HashMap<EntityBase, Double> getDamageIgnoreTimers() {
         return damageIgnoreTimers;
     }
-    
-    public int freeInventorySlotCount(){
-        if(inventory != null){
+
+    public int freeInventorySlotCount() {
+        if (inventory != null) {
             return inventory.freeSlotsCount();
         } else {
             return 0;
         }
     }
     
-    public boolean hasFreeInventorySlot(){
+    public Item getSelectedItem(){
+        if(inventory != null){
+            return inventory.getSelectedItem();
+        } else {
+            return null;
+        }
+    }
+
+    public boolean hasFreeInventorySlot() {
         return freeInventorySlotCount() > 0;
     }
-    
-    public boolean addItem(Item item){
-        if(inventory != null){
+
+    public boolean addItem(Item item) {
+        if (inventory != null) {
             inventory.add(item);
             return true;
         } else {
             return false;
         }
     }
-    
-    public Item getInventorySlot(int slotIdx){
-        if(inventory != null){
+
+    public Item getInventorySlot(int slotIdx) {
+        if (inventory != null) {
             return inventory.get(slotIdx);
         } else {
             return null;
         }
     }
-    
+
     @Override
-    public boolean isEncounterNotified(){
+    public boolean isEncounterNotified() {
         return proto.mapEntityProto.isEncounterNotified;
     }
-    
+
     @Override
     public String getName() {
         return proto.entityBaseProto.name;
@@ -111,7 +119,7 @@ public class Actor extends MapEntity{
     public String getDescription() {
         return proto.entityBaseProto.description;
     }
-    
+
     @Override
     public TerminalChar getRepresentInvisible() {
         return proto.mapEntityProto.representInvisible;
@@ -131,76 +139,85 @@ public class Actor extends MapEntity{
     public TerminalChar getRepresent() {
         return proto.entityBaseProto.represent;
     }
-    
-    public int getHealth(){
+
+    public int getHealth() {
         return health;
     }
-    
+
     public int getMaxHealth() {
         return proto.actorProto.maxHealth;
     }
     
-    
+    public void heal(Item source, int heal) {
+        if(onHealBehavior != null){
+            onHealBehavior.invoke(this, source, heal);
+        }
+        health = Math.min(health + heal, getMaxHealth());
+    }
+
     @Override
     public void onWalkedOver() {
-        if(onWalkedOverBehavior != null){
+        if (onWalkedOverBehavior != null) {
             //onWalkedOverBehavior.invoke(this);
         }
     }
-    
-    public void onDroppedItem(Item item){
-        if(onDroppedItemBehavior != null){
+
+    public void onDroppedItem(Item item) {
+        if (onDroppedItemBehavior != null) {
             onDroppedItemBehavior.invoke(this, item);
         }
     }
-    
-    public void onPickedUpItem(Item item){
-        if(onPickedUpItemBehavior != null){
+
+    public void onPickedUpItem(Item item) {
+        if (onPickedUpItemBehavior != null) {
             onPickedUpItemBehavior.invoke(this, item);
         }
     }
-    
-    public void onPickedUpItemFailedNoSpace(Item item){
-        if(onPickedUpItemBehavior != null){
+
+    public void onPickedUpItemFailedNoSpace(Item item) {
+        if (onPickedUpItemBehavior != null) {
             onPickedUpItemBehavior.invokeFailedNoSpace(this, item);
         }
     }
-    
-    public void onMoved(ArrayList<MapEntity> entitiesOnPosition){
-        if(onMovedBehavior != null){
+
+    public void onMoved(ArrayList<MapEntity> entitiesOnPosition) {
+        if (onMovedBehavior != null) {
             onMovedBehavior.invoke(this, entitiesOnPosition);
         }
     }
-    
-    public void onTick(double timeDelta){
-        if(onTickBehavior != null){
+
+    public void onTick(double timeDelta) {
+        if(inventory != null){
+            inventory.tick();
+        }
+        if (onTickBehavior != null) {
             onTickBehavior.invoke(this, timeDelta);
         }
     }
-    
-    public void onDamage(Actor damagingEntity, int damage){
-        if(onDamageBehavior != null){
+
+    public void onDamage(Actor damagingEntity, int damage) {
+        if (onDamageBehavior != null) {
             onDamageBehavior.invoke(this, damagingEntity, damage);
         }
     }
-    
-    public void setHealthPoints(int healthPoints){
+
+    public void setHealthPoints(int healthPoints) {
         this.health = healthPoints;
     }
-    
-    public void setXPos(int xPos){
+
+    public void setXPos(int xPos) {
         pos.setX(xPos);
     }
-    
-    public void setYPos(int yPos){
+
+    public void setYPos(int yPos) {
         pos.setY(yPos);
     }
-    
-    public void setPos(Vec2i pos){
+
+    public void setPos(Vec2i pos) {
         this.pos = pos;
     }
-    
-    public void setVisionRadius(int visionRadius){
+
+    public void setVisionRadius(int visionRadius) {
         this.visionRadius = visionRadius;
     }
 }

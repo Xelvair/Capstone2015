@@ -3,7 +3,7 @@ package capstone2015.game.panel;
 import capstone2015.graphics.Panel;
 import java.awt.Color;
 
-public class TitlePanel {
+public class TitleScreenPanel {
     public static Panel render(){
         String title = "";
         title += " _______  _______  _______  _______ _________ _______  _        _______ \n";
@@ -14,6 +14,7 @@ public class TitlePanel {
         title += "| |      | (   ) || (            ) |   | |   | |   | || | \\   || (      \n";
         title += "| (____/\\| )   ( || )      /\\____) |   | |   | (___) || )  \\  || (____/\\\n";
         title += "(_______/|/     \\||/       \\_______)   )_(   (_______)|/    )_)(_______/\n";
+        title += "                                                 Created by Marvin Doerr";
                                                                         
         
         return Panel.textPanel(title, Color.WHITE, Color.BLACK);

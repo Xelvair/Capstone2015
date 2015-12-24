@@ -1,15 +1,17 @@
 package capstone2015.game;
 
 import capstone2015.entity.Actor;
-import capstone2015.entity.EntityBase;
 import capstone2015.entity.EntityFactory;
+import static capstone2015.entity.EntityFactory.ID_EXIT;
 import capstone2015.entity.Item;
 import capstone2015.entity.MapEntity;
 import capstone2015.entity.Tile;
 import capstone2015.geom.Vec2i;
+import capstone2015.messaging.AttemptKeyUsageParams;
 import capstone2015.messaging.EntityMoveParams;
 import capstone2015.messaging.InflictDamageParams;
 import capstone2015.messaging.Message;
+import static capstone2015.messaging.Message.Type.GameWon;
 import capstone2015.messaging.MessageBus;
 import capstone2015.util.Array2D;
 import java.io.File;
@@ -97,18 +99,13 @@ public class Map {
         /**
          * Special case for the enemy, key and static obstacle,
          * as they will instead be added to the list of movable entities
-         * as they will instead be added to the list of movable entities
-         * as they will instead be added to the list of movable entities
-         * as they will instead be added to the list of movable entities
-         * as they will instead be added to the list of movable entities
-         * as they will instead be added to the list of movable entities
-         * as they will instead be added to the list of movable entities
          * rather than static tiles.
          */
         switch(tile_id){
             case EntityFactory.ID_RATTLESNAKE:
             case EntityFactory.ID_KEY:
             case EntityFactory.ID_BONFIRE:
+            case EntityFactory.ID_HEALTH_POTION:
                 actors.add(EntityFactory.createActor(tile_id, xcoord, ycoord));
                 tilemap.set(xcoord, ycoord, EntityFactory.createTile(EntityFactory.ID_FLOOR));
                 break;
@@ -174,12 +171,13 @@ public class Map {
     public ArrayList<Actor> getPickupableAt(Vec2i pos){
         return getPickupableAt(pos.getX(), pos.getY());
     }
+    
     public ArrayList<Actor> getPickupableAt(int x, int y){
         ArrayList<Actor> local_actors = getActorsAt(x, y);
         ArrayList<Actor> pickupable_actors = new ArrayList<>();
         
         for(Actor a : local_actors){
-            if(a.isPickupable() && !a.isTerminate()){
+            if(a.isPickupable() && !a.isTerminated()){
                 pickupable_actors.add(a);
             }
         }
@@ -242,6 +240,18 @@ public class Map {
         }
     }
     
+    private void onAttemptKeyUsage(AttemptKeyUsageParams akup){
+        Actor user = akup.user;
+        Item key = akup.key;
+        
+        Tile tile = getTileAt(user.getPos());
+        
+        if(tile.getProto().id == ID_EXIT){
+            key.terminate();
+            messageBus.enqueue(new Message(GameWon));
+        }
+    }
+    
     public void tick(double timeDelta){
        
         Iterator<Actor> it = actors.iterator();
@@ -250,7 +260,7 @@ public class Map {
             
             e.onTick(timeDelta);
             
-            if(e.isTerminate()){
+            if(e.isTerminated()){
                 it.remove();
             }
         }
@@ -280,12 +290,29 @@ public class Map {
                     onDrop((Actor)m.getMsgObject());
                     break;
                 }
+                case AttemptKeyUsage:
+                {
+                    onAttemptKeyUsage((AttemptKeyUsageParams)m.getMsgObject());
+                    break;
+                }
             }
         }
     }
 
     public void add(Actor e){
         actors.add(e);
+    }
+    
+    public Tile getTileAt(Vec2i pos){
+        return getTileAt(pos.getX(), pos.getY());
+    }
+    
+    public Tile getTileAt(int x, int y){
+        if(!tilemap.inBounds(x, y)){
+            System.out.println("Map index out of bounds");
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return tilemap.get(x, y);
     }
   
     public ArrayList<MapEntity> getEntitiesAt(Vec2i pos){

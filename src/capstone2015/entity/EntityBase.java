@@ -5,11 +5,11 @@ import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 
 public abstract class EntityBase {
-    /*package private*/ EntityProto entityProto;
+    /*package private*/ EntityProto proto;
     /*package private*/ MessageBus messageBus;
     
     public final EntityProto getProto(){
-        return entityProto;
+        return proto;
     }
     
     public final void sendBusMessage(Message msg){

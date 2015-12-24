@@ -2,8 +2,11 @@ package capstone2015.entity;
 
 import capstone2015.game.Inventory;
 import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
+import capstone2015.game.behavior.HealthPotionOnUseBehavior;
+import capstone2015.game.behavior.KeyOnUseBehavior;
 import capstone2015.game.behavior.PlayerOnDamageBehavior;
 import capstone2015.game.behavior.PlayerOnDroppedItemBehavior;
+import capstone2015.game.behavior.PlayerOnHealBehavior;
 import capstone2015.game.behavior.PlayerOnMovedBehavior;
 import capstone2015.game.behavior.PlayerOnPickedUpItemBehavior;
 import capstone2015.game.behavior.PlayerOnTickBehavior;
@@ -22,6 +25,7 @@ public class EntityFactory {
     public static final int ID_KEY = 5;
     public static final int ID_FLOOR = 6;
     public static final int ID_PLAYER = 7;
+    public static final int ID_HEALTH_POTION = 8;
     
     public static final Color COLOR_FLOOR = new Color(87,59,12);
     public static final Color COLOR_FLOOR_HIDDEN = new Color(26, 20, 4);
@@ -109,6 +113,9 @@ public class EntityFactory {
             }
             if(e_proto.actorProto.onDroppedItemBehaviorClass != null){
                 actor.onDroppedItemBehavior = e_proto.actorProto.onDroppedItemBehaviorClass.newInstance();
+            }
+            if(e_proto.actorProto.onHealBehaviorClass != null){
+                actor.onHealBehavior = e_proto.actorProto.onHealBehaviorClass.newInstance();
             }
             
             if(e_proto.actorProto.inventorySize > 0){
@@ -261,6 +268,7 @@ public class EntityFactory {
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -291,6 +299,7 @@ public class EntityFactory {
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -323,11 +332,13 @@ public class EntityFactory {
         ep.actorProto.onTickBehaviorClass = null;
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
-        ep.itemProto.onUseBehaviorClass = null;
+        ep.itemProto.onItemDroppedBehaviorClass = null;
+        ep.itemProto.onUseBehaviorClass = KeyOnUseBehavior.class;
 
         entityProtos.add(ep);
         
@@ -369,15 +380,49 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('@', Color.CYAN, COLOR_FLOOR_HIDDEN);
-        ep.actorProto.maxHealth = 10;
+        ep.actorProto.maxHealth = 5;
         ep.actorProto.onMovedBehaviorClass = PlayerOnMovedBehavior.class;
         ep.actorProto.onTickBehaviorClass = PlayerOnTickBehavior.class;
         ep.actorProto.onDamageBehaviorClass = PlayerOnDamageBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = PlayerOnPickedUpItemBehavior.class;
         ep.actorProto.onDroppedItemBehaviorClass = PlayerOnDroppedItemBehavior.class;
+        ep.actorProto.onHealBehaviorClass = PlayerOnHealBehavior.class;
         ep.actorProto.visionRadius = 10;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 3;
+
+        entityProtos.add(ep);
+    
+        /******************************************
+         * #8 - HEALTH_POTION - ACTOR, ITEM
+         */
+        ep = new EntityProto(ID_HEALTH_POTION);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+        ep.itemProto = new ItemProto();
+        
+        ep.entityBaseProto.represent = new TerminalChar('\uFBEA', Color.RED, COLOR_FLOOR);
+        ep.entityBaseProto.name = "Health Potion";
+        ep.entityBaseProto.description = 
+              "It heals you, duh.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('\uFBEA', Color.RED, COLOR_FLOOR_HIDDEN);
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
+        ep.actorProto.pickupable = true;
+        ep.actorProto.inventorySize = 0;
+        ep.itemProto.onItemPickedUpBehaviorClass = null;
+        ep.itemProto.onItemDroppedBehaviorClass = null;
+        ep.itemProto.onUseBehaviorClass = HealthPotionOnUseBehavior.class;
 
         entityProtos.add(ep);
     }
