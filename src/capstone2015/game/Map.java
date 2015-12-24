@@ -95,7 +95,7 @@ public class Map implements MapInterface{
             case EntityFactory.ID_KEY:
             case EntityFactory.ID_BONFIRE:
             case EntityFactory.ID_HEALTH_POTION:
-                actors.add(EntityFactory.createActor(tile_id, xcoord, ycoord));
+                add(EntityFactory.createActor(tile_id, xcoord, ycoord));
                 tilemap.set(xcoord, ycoord, EntityFactory.createTile(EntityFactory.ID_FLOOR));
                 break;
             case EntityFactory.ID_ENTRY:
