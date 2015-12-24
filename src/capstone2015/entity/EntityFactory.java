@@ -16,6 +16,13 @@ import capstone2015.messaging.MessageBus;
 import java.awt.Color;
 import java.util.ArrayList;
 
+/***********************************
+ * Creates Tiles, Items and Actors from a shared pool of entity
+ * prototypes. Note that there are no subclasses to Actor, Item or Tile.
+ * This is intentional. A good design principle in game (and software in 
+ * general) development is to favor composition over inheritance!
+ * https://en.wikipedia.org/wiki/Composition_over_inheritance
+ */
 public class EntityFactory {
     public static final int ID_WALL = 0;
     public static final int ID_ENTRY = 1;
