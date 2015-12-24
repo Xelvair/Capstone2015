@@ -4,16 +4,20 @@ import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
+import capstone2015.game.MaskedMapView;
 import capstone2015.game.NotificationList;
+import capstone2015.game.VisionMaskGenerator;
 import capstone2015.game.panel.HudPanel;
 import capstone2015.game.panel.EntityListPanel;
 import capstone2015.game.panel.NotificationPanel;
+import capstone2015.geom.Recti;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import capstone2015.messaging.PushNotificationParams;
 import capstone2015.messaging.ReceivedDamageParams;
+import capstone2015.util.Array2D;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -26,6 +30,7 @@ public class Game extends AppState{
     private final MessageBus messageBus;
     private final Map map;
     private final NotificationList notifications = new NotificationList(NOTIFICATION_LIST_SIZE);
+    private final MaskedMapView maskedMapView;
 
     
     public Game(Screen screen, MessageBus messageBus, String mapFile){
@@ -33,6 +38,7 @@ public class Game extends AppState{
         this.messageBus = messageBus;
         map = new Map(messageBus);
         map.loadFromProperties(mapFile);
+        maskedMapView = new MaskedMapView(map);
         notifications.push("You enter the dungeon...", Color.YELLOW);
     }
     
@@ -103,13 +109,34 @@ public class Game extends AppState{
         p_notif = NotificationPanel.render(notifications, screen.width());
         screen.insert(p_notif, 0, 0);
     
-        screen.insert(MapRenderer.renderPlayerCentered(map, screen.width(), screen.height() - NOTIFICATION_LIST_SIZE - HUD_HEIGHT), 0, NOTIFICATION_LIST_SIZE);
+        Recti map_render_rect = getPlayerRenderRect();
+        
+        Array2D<Boolean> visibility_mask = VisionMaskGenerator.generate(map, map_render_rect);
+        
+        maskedMapView.updateVisibilityMask(map_render_rect.getLeft(), map_render_rect.getTop(), visibility_mask);
+        
+        screen.insert(MapRenderer.render(maskedMapView, map_render_rect), 0, NOTIFICATION_LIST_SIZE);
         
         drawPickupableList();
         
         Panel p_hud;
         p_hud = HudPanel.render(map.getPlayer(), screen.width());
         screen.insert(p_hud, 0, screen.height() - 1);
+    }
+    
+    private Recti getPlayerRenderRect(){
+        int left = 0;
+        int top = 0;
+        int width = screen.width();
+        int height = screen.height() - NOTIFICATION_LIST_SIZE - HUD_HEIGHT;
+
+        Actor player = null;
+        if((player = map.getPlayer()) != null){
+            left = player.getXPos() - width / 2;
+            top = player.getYPos() - height / 2;
+        }
+        
+        return new Recti(left, top, width, height);
     }
     
     private void drawPickupableList(){

@@ -141,11 +141,21 @@ public class Recti {
         );
     }
     
-    public Vec2i getRelative(Vec2i absolute){
+    /*******************************************************
+     * Converts an absolute vector to a rectangle-relative vector
+     * @param absolute absolute vector
+     * @return relative vector
+     */
+    public Vec2i toRel(Vec2i absolute){
         return absolute.translate(new Vec2i(-this.getLeft(), -this.getTop()));
     }
     
-    public Vec2i getAbsolute(Vec2i relative){
+    /*******************************************************
+     * Converts a rectangle-relative vector to an absolute vector
+     * @param relative relative vector
+     * @return absolute vector
+     */
+    public Vec2i toAbs(Vec2i relative){
         return relative.translate(new Vec2i(this.getLeft(), this.getTop()));
     }
     

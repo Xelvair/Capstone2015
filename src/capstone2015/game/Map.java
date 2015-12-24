@@ -21,9 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Properties;
 
-public class Map {
+public class Map implements MapInterface{
     private Array2D<Tile> tilemap;
-    private Array2D<Boolean> revealmap;
     private LinkedList<Actor> actors;
     private Actor player; // for fast lookup;
     private MessageBus messageBus;
@@ -45,15 +44,7 @@ public class Map {
           player = null;
         }
   }
-  
-    public boolean isRevealed(int x, int y){
-        return revealmap.get(x, y);
-    }
-
-    public void setRevealed(int x, int y){
-        revealmap.set(x, y, true);
-    }
-
+    
     public Actor getPlayer(){
         return player;
     }
@@ -77,15 +68,12 @@ public class Map {
       props.remove("Height");
 
       tilemap = new Array2D<>(width, height);
-      revealmap = new Array2D<>(width, height);
 
       for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
           tilemap.set(j, i, EntityFactory.createTile(EntityFactory.ID_FLOOR));
         }
       }
-      
-      revealmap.fill(false);
 
       for(String key : props.stringPropertyNames()){
         String value = props.getProperty(key);
@@ -140,32 +128,20 @@ public class Map {
         if(!isSolidAt(dest_pos.getX(), dest_pos.getY())){
             entity.setXPos(dest_pos.getX());
             entity.setYPos(dest_pos.getY());
-            entity.onMoved(this.getEntitiesAt(dest_pos));
+            entity.onMoved(this.getMapEntitiesAt(dest_pos));
         }
     }
   
     public boolean isSolidAt(int x, int y){
         boolean is_solid = false;
 
-        ArrayList<MapEntity> local_entities = getEntitiesAt(x, y);
+        ArrayList<MapEntity> local_entities = getMapEntitiesAt(x, y);
         for(MapEntity e : local_entities){
             if(e.isSolid()){
                 is_solid = true;
             }
         }
         return is_solid;
-    }
-  
-    public boolean isOpaqueAt(int x, int y){
-        boolean is_opaque = false;
-
-        ArrayList<MapEntity> local_entities = getEntitiesAt(x, y);
-        for(MapEntity e : local_entities){
-            if(e.isOpaque()){
-                is_opaque = true;
-            }
-        }
-        return is_opaque;
     }
     
     public ArrayList<Actor> getPickupableAt(Vec2i pos){
@@ -314,12 +290,8 @@ public class Map {
         }
         return tilemap.get(x, y);
     }
-  
-    public ArrayList<MapEntity> getEntitiesAt(Vec2i pos){
-        return getEntitiesAt(pos.getX(), pos.getY());
-    }
     
-    public ArrayList<MapEntity> getEntitiesAt(int x, int y){
+    public ArrayList<MapEntity> getMapEntitiesAt(int x, int y){
       if(!tilemap.inBounds(x, y)){
         System.out.println("Map index out of bounds");
         throw new ArrayIndexOutOfBoundsException();
@@ -361,18 +333,5 @@ public class Map {
     
     public boolean inBounds(int x, int y){
       return tilemap.inBounds(x, y);
-    }
-
-    void applyVisionMask(Array2D<Boolean> vision_mask, int x, int y) {       
-        for(int i = 0; i < vision_mask.height(); i++){
-            for(int j = 0; j < vision_mask.width(); j++){
-                int map_x = x + j;
-                int map_y = y + i;
-                
-                if(inBounds(map_x, map_y) && vision_mask.get(j, i)){
-                    setRevealed(map_x, map_y);
-                }
-            }
-        }
     }
 }

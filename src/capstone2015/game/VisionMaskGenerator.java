@@ -95,7 +95,7 @@ public class VisionMaskGenerator {
                     }
                     
                   
-                    Vec2i vision_mask_pos = area.getRelative(line_point);
+                    Vec2i vision_mask_pos = area.toRel(line_point);
                     
                     if(!vision_mask.inBounds(vision_mask_pos)){
                         continue;
@@ -113,10 +113,10 @@ public class VisionMaskGenerator {
                     
                     for(Direction direction : directions){
                         Vec2i surrounding_point = line_point.translate(direction.toVector());
-                        vision_mask_pos = area.getRelative(surrounding_point);
+                        vision_mask_pos = area.toRel(surrounding_point);
                         if(   map.inBounds(surrounding_point)
                            && vision_mask.inBounds(vision_mask_pos)
-                           && map.getEntitiesAt(surrounding_point).get(0).isOpaque()
+                           && map.getMapEntitiesAt(surrounding_point).get(0).isOpaque()
                         ){
                             vision_mask.set(vision_mask_pos, true);
                         }

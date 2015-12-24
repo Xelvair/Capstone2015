@@ -4,6 +4,9 @@ import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Panel;
 
 public interface Array2DInterface<T> {
+    public default T get(Vec2i pos){
+        return get(pos.getX(), pos.getY());
+    }
     public T get(int x, int y);
     public boolean inBounds(Vec2i pos);
     public boolean inBounds(int x, int y);
