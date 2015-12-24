@@ -1,11 +1,9 @@
 package capstone2015.game;
 
-import capstone2015.entity.Actor;
 import capstone2015.entity.MapEntity;
 import capstone2015.geom.Recti;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.TerminalChar;
-import capstone2015.util.Array2D;
 import java.util.ArrayList;
 
 public class MapRenderer {

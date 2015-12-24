@@ -1,6 +1,7 @@
 package capstone2015.entity;
 
 import capstone2015.game.Inventory;
+import capstone2015.game.Map;
 import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
 import capstone2015.game.behavior.HealthPotionOnUseBehavior;
 import capstone2015.game.behavior.KeyOnUseBehavior;
@@ -103,6 +104,7 @@ public class EntityFactory {
             actor.pos = new Vec2i(x, y);
             actor.health = e_proto.actorProto.maxHealth;
             actor.visionRadius = e_proto.actorProto.visionRadius;
+            
             if(e_proto.actorProto.onMovedBehaviorClass != null){
                 actor.onMovedBehavior = e_proto.actorProto.onMovedBehaviorClass.newInstance();
             }

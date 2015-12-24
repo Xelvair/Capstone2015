@@ -6,6 +6,7 @@ import static capstone2015.entity.EntityFactory.ID_EXIT;
 import capstone2015.entity.Item;
 import capstone2015.entity.MapEntity;
 import capstone2015.entity.Tile;
+import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.AttemptKeyUsageParams;
 import capstone2015.messaging.EntityMoveParams;
@@ -35,7 +36,7 @@ public class Map implements MapInterface{
     public void resetPlayer(int x, int y){
         removePlayer();
         player = EntityFactory.createActor(EntityFactory.ID_PLAYER, x, y);
-        actors.add(player);
+        add(player);
     }
 
     public void removePlayer(){
@@ -234,6 +235,19 @@ public class Map implements MapInterface{
         while(it.hasNext()){
             Actor e = it.next();
             
+            if(e.hasVision()){
+                int vis_radius = e.getVisionRadius();
+                Vec2i pos = e.getPos();
+                Recti vision_rect = new Recti(
+                        pos.getX() - vis_radius,
+                        pos.getY() - vis_radius,
+                        vis_radius * 2,
+                        vis_radius * 2
+                );
+                Array2D<Boolean> vision_mask = VisionMaskGenerator.generate(this, vision_rect, e);
+                e.onVisionUpdate(vision_rect.getLeft(), vision_rect.getTop(), vision_mask);
+            }
+            
             e.onTick(timeDelta);
             
             if(e.isTerminated()){
@@ -276,6 +290,7 @@ public class Map implements MapInterface{
     }
 
     public void add(Actor e){
+        e.setMap(this);
         actors.add(e);
     }
     

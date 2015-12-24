@@ -1,6 +1,8 @@
 package capstone2015.entity;
 
 import capstone2015.game.Inventory;
+import capstone2015.game.Map;
+import capstone2015.game.MaskedMapView;
 import capstone2015.game.behavior.OnDamageBehavior;
 import capstone2015.game.behavior.OnDroppedItemBehavior;
 import capstone2015.game.behavior.OnHealBehavior;
@@ -10,6 +12,7 @@ import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.game.behavior.OnWalkedOverBehavior;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
+import capstone2015.util.Array2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,6 +24,7 @@ public class Actor extends MapEntity {
     protected OnPickedUpItemBehavior onPickedUpItemBehavior;
     protected OnDroppedItemBehavior onDroppedItemBehavior;
     protected OnHealBehavior onHealBehavior;
+    protected MaskedMapView view;
     protected int health;
     protected Vec2i pos;
     protected boolean terminated;
@@ -28,15 +32,38 @@ public class Actor extends MapEntity {
     protected HashMap<EntityBase, Double> damageIgnoreTimers = new HashMap<>();
     protected Inventory inventory;
 
-    public Vec2i getPos() {
+    public void setMap(Map map){
+        if(hasVision())
+            view = new MaskedMapView(map);
+    }
+    
+    public boolean hasVision(){
+        return (visionRadius > 0);
+    }
+    
+    public void unsetMap(){
+        view = null;
+    }
+    
+    public void onVisionUpdate(int x, int y, Array2D<Boolean> visibilityMap){
+        if(view != null){
+            view.updateVisibilityMask(x, y, visibilityMap);
+        }
+    }
+    
+    public MaskedMapView getView(){
+        return view;
+    }
+    
+    public Vec2i getPos(){
         return pos;
     }
 
-    public int getXPos() {
+    public int getXPos(){
         return pos.getX();
     }
 
-    public int getYPos() {
+    public int getYPos(){
         return pos.getY();
     }
 

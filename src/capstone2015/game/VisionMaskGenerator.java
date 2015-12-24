@@ -5,7 +5,6 @@ import capstone2015.geom.Geom;
 import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
 import capstone2015.util.Array2D;
-import capstone2015.util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -15,6 +14,9 @@ public class VisionMaskGenerator {
     public static final int SEARCH_AREA_GROW = 10;
     
     public static Array2D<Boolean> generate(Map map, Recti area){
+        return generate(map, area, null);
+    }
+    public static Array2D<Boolean> generate(Map map, Recti area, Actor viewer){
         Recti map_rect = new Recti(0, 0, map.width(), map.height());
         Recti dest_rect = new Recti(0, 0, area.getWidth(), area.getHeight());
         
@@ -35,26 +37,30 @@ public class VisionMaskGenerator {
          * that position information. Creating a PositionedEntity
          * through the copy constructor is dangerous IMO.
          */
-        ArrayList<Pair<Vec2i, Actor>> vision_entities = new ArrayList<>();
+        ArrayList<Actor> vision_entities = new ArrayList<>();
         
-        for(int i = search.getTop(); i <= search.getBottom(); i++){
-            for(int j = search.getLeft(); j <= search.getRight(); j++){
-                //INEFFICIENT AS HELL, PLS CHANGE
-                ArrayList<Actor> local_entities = map.getActorsAt(j, i);
-                int vision_radius_max = 0;
-                Actor vision_radius_max_e = null;
-                
-                for(Actor e : local_entities){
-                    if(e.getVisionRadius() > vision_radius_max){
-                        vision_radius_max = e.getVisionRadius();
-                        vision_radius_max_e = e;
+        if(viewer == null){
+            for(int i = search.getTop(); i <= search.getBottom(); i++){
+                for(int j = search.getLeft(); j <= search.getRight(); j++){
+                    //INEFFICIENT AS HELL, PLS CHANGE
+                    ArrayList<Actor> local_entities = map.getActorsAt(j, i);
+                    int vision_radius_max = 0;
+                    Actor vision_radius_max_e = null;
+
+                    for(Actor e : local_entities){
+                        if(e.getVisionRadius() > vision_radius_max){
+                            vision_radius_max = e.getVisionRadius();
+                            vision_radius_max_e = e;
+                        }
+                    }
+
+                    if(vision_radius_max > 0 && vision_radius_max_e != null){
+                        vision_entities.add(vision_radius_max_e);
                     }
                 }
-                
-                if(vision_radius_max > 0 && vision_radius_max_e != null){
-                    vision_entities.add(new Pair<>(new Vec2i(j, i), vision_radius_max_e));
-                }
             }
+        } else {
+            vision_entities.add(viewer);
         }
         
         /********
@@ -73,9 +79,9 @@ public class VisionMaskGenerator {
             }
         }
         
-        for(Pair<Vec2i, Actor> e : vision_entities){
-            Vec2i entity_pos = e.getFirst();
-            Actor entity = e.getSecond();
+        for(Actor e : vision_entities){
+            Vec2i entity_pos = e.getPos();
+            Actor entity = e;
             int entity_vision_radius = entity.getVisionRadius();
             
             /** *************

@@ -2,6 +2,7 @@ package capstone2015.appstate;
 
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
+import capstone2015.entity.EntityFactory;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
 import capstone2015.game.MaskedMapView;
@@ -109,13 +110,11 @@ public class Game extends AppState{
         p_notif = NotificationPanel.render(notifications, screen.width());
         screen.insert(p_notif, 0, 0);
     
+        
+        Actor player = map.getPlayer();
         Recti map_render_rect = getPlayerRenderRect();
         
-        Array2D<Boolean> visibility_mask = VisionMaskGenerator.generate(map, map_render_rect);
-        
-        maskedMapView.updateVisibilityMask(map_render_rect.getLeft(), map_render_rect.getTop(), visibility_mask);
-        
-        screen.insert(MapRenderer.render(maskedMapView, map_render_rect), 0, NOTIFICATION_LIST_SIZE);
+        screen.insert(MapRenderer.render(player.getView(), map_render_rect), 0, NOTIFICATION_LIST_SIZE);
         
         drawPickupableList();
         
