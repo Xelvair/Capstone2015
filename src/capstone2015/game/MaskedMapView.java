@@ -25,6 +25,10 @@ public class MaskedMapView implements MapInterface{
         return visionMask.get(x, y);
     }
     
+    public void revealAll(){
+        visionMask.fill(VisionType.Revealed);
+    }
+    
     private void setVisibleToRevealed(){
         for(int i = 0; i < visionMask.height(); ++i){
             for(int j = 0; j < visionMask.width(); ++j){

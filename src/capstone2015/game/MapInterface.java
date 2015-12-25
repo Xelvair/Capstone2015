@@ -25,9 +25,27 @@ public interface MapInterface {
     public int width();
     public int height();
     
+    public default boolean inBounds(Vec2i pos){
+        return inBounds(pos.getX(), pos.getY());
+    }
     public default boolean inBounds(int x, int y){
         return (   0 <= x && x < width()
                 && 0 <= y && y < height());
+    }
+    
+    public default boolean isSolidAt(Vec2i pos){
+        return isSolidAt(pos.getX(), pos.getY());
+    }
+    public default boolean isSolidAt(int x, int y){
+        boolean is_solid = false;
+
+        ArrayList<MapEntity> local_entities = getMapEntitiesAt(x, y);
+        for(MapEntity e : local_entities){
+            if(e.isSolid()){
+                is_solid = true;
+            }
+        }
+        return is_solid;
     }
     
     public default boolean isOpaqueAt(Vec2i pos){

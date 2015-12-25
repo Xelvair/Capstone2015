@@ -28,6 +28,7 @@ public class PointListPanel {
         int panel_height = (y_max - y_min) + 1;
         
         Panel p = new Panel(panel_width, panel_height);
+        p.fill(new TerminalChar());
         
         for(Vec2i point : points){
             p.set(point.getX() - x_min, point.getY() - y_min, new TerminalChar('X', Color.WHITE, Color.BLACK));

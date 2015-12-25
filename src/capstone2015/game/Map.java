@@ -132,18 +132,6 @@ public class Map implements MapInterface{
             entity.onMoved(this.getMapEntitiesAt(dest_pos));
         }
     }
-  
-    public boolean isSolidAt(int x, int y){
-        boolean is_solid = false;
-
-        ArrayList<MapEntity> local_entities = getMapEntitiesAt(x, y);
-        for(MapEntity e : local_entities){
-            if(e.isSolid()){
-                is_solid = true;
-            }
-        }
-        return is_solid;
-    }
     
     public ArrayList<Actor> getPickupableAt(Vec2i pos){
         return getPickupableAt(pos.getX(), pos.getY());

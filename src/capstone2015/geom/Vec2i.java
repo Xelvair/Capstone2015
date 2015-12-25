@@ -1,6 +1,6 @@
 package capstone2015.geom;
 
-public class Vec2i{
+public class Vec2i implements Comparable<Vec2i>{
     private int x;
     private int y;
     
@@ -90,5 +90,18 @@ public class Vec2i{
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int compareTo(Vec2i o) {
+        if(this.y < o.y){
+            return -1;
+        } else if(this.y == o.y && this.x < o.x){
+            return -1;
+        } else if(this.x == o.x && this.y == o.y){
+            return 0;
+        } else {
+            return 1;
+        }
     }
 }

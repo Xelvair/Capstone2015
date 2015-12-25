@@ -15,6 +15,7 @@ public class ActorProto {
     public Class<? extends OnDroppedItemBehavior> onDroppedItemBehaviorClass;
     public Class<? extends OnHealBehavior> onHealBehaviorClass;
     public int visionRadius;
+    public boolean visionRevealedByDefault;
     public int maxHealth;
     public boolean pickupable;
     public int inventorySize;

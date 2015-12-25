@@ -1,10 +1,10 @@
 package capstone2015.entity;
 
 import capstone2015.game.Inventory;
-import capstone2015.game.Map;
 import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
 import capstone2015.game.behavior.HealthPotionOnUseBehavior;
 import capstone2015.game.behavior.KeyOnUseBehavior;
+import capstone2015.game.behavior.MovingDamageOnCollisionOnTickBehavior;
 import capstone2015.game.behavior.PlayerOnDamageBehavior;
 import capstone2015.game.behavior.PlayerOnDroppedItemBehavior;
 import capstone2015.game.behavior.PlayerOnHealBehavior;
@@ -279,6 +279,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
 
@@ -305,11 +306,12 @@ public class EntityFactory {
         ep.mapEntityProto.representInvisible = new TerminalChar('\u08B0', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
         ep.actorProto.maxHealth = 1;
         ep.actorProto.onMovedBehaviorClass = null;
-        ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
+        ep.actorProto.onTickBehaviorClass = MovingDamageOnCollisionOnTickBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 7;
+        ep.actorProto.visionRevealedByDefault = true;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
 
@@ -343,6 +345,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
@@ -397,6 +400,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = PlayerOnDroppedItemBehavior.class;
         ep.actorProto.onHealBehaviorClass = PlayerOnHealBehavior.class;
         ep.actorProto.visionRadius = 10;
+        ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 3;
 
@@ -427,6 +431,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.itemProto.onItemPickedUpBehaviorClass = null;

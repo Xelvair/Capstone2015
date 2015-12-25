@@ -5,10 +5,15 @@
         <group>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/behavior/HealthPotionOnUseBehavior.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/appstate/AppStateManager.java</file>
+            <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/util/Array2DInterface.java</file>
+            <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/geom/Recti.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/entity/ActorProto.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/entity/Tile.java</file>
+            <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/entity/EntityProto.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/entity/EntityFactory.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/Inventory.java</file>
+            <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/util/Array2D.java</file>
+            <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/VisionType.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/panel/TitleScreenPanel.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/messaging/MessageBus.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/behavior/PlayerOnHealBehavior.java</file>
@@ -17,6 +22,8 @@
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/messaging/Message.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/behavior/OnUseBehavior.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/appstate/Game.java</file>
+            <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/appstate/AppState.java</file>
+            <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/MapInterface.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/Map.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/VisionMaskGenerator.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/appstate/KeyPage.java</file>
@@ -28,6 +35,7 @@
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/panel/EntityListPanel.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/entity/Actor.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/appstate/GameWonState.java</file>
+            <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/MaskedMapView.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/Capstone2015.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/entity/EntityBase.java</file>
             <file>file:/C:/Users/doerr/capstone2015/src/capstone2015/game/panel/InventoryPanel.java</file>

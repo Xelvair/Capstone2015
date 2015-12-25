@@ -33,8 +33,15 @@ public class Actor extends MapEntity {
     protected Inventory inventory;
 
     public void setMap(Map map){
-        if(hasVision())
+        if(hasVision()){
             view = new MaskedMapView(map);
+            if(hasVisionRevealedByDefault())
+                view.revealAll();
+        }
+    }
+    
+    public boolean hasVisionRevealedByDefault(){
+        return proto.actorProto.visionRevealedByDefault;
     }
     
     public boolean hasVision(){
