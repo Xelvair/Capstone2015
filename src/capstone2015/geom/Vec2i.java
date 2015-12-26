@@ -71,7 +71,7 @@ public class Vec2i implements Comparable<Vec2i>{
     
     @Override
     public int hashCode(){
-        return this.x * this.y + (this.x - this.y) * (this.x ^ this.y);
+        return  this.y * 46370 + this.x;
     }
 
     @Override

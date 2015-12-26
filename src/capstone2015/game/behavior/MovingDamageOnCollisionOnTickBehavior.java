@@ -9,7 +9,7 @@ import capstone2015.messaging.InflictDamageParams;
 import capstone2015.messaging.Message;
 import static capstone2015.messaging.Message.Type.EntityMove;
 import static capstone2015.messaging.Message.Type.InflictDamage;
-import capstone2015.pathfinding.Dijkstra;
+import capstone2015.pathfinding.AStar;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -61,7 +61,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
             
             if(entity.getView().inBounds(random_point) && !entity.getView().isSolidAt(random_point)){
                 MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView());
-                path = Dijkstra.find(mta, entity.getPos(), random_point);
+                path = AStar.find(mta, entity.getPos(), random_point);
             }
         }
     }

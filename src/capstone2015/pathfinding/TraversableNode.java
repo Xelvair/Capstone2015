@@ -47,4 +47,9 @@ public class TraversableNode<T extends Comparable> implements Comparable<Travers
             return super.equals(rhs);
         }
     }
+    
+    @Override
+    public int hashCode(){
+        return nodeVal.hashCode();
+    }
 }

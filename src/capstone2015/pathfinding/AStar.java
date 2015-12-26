@@ -1,14 +1,17 @@
 package capstone2015.pathfinding;
 
 import capstone2015.geom.Vec2i;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 
-public class Dijkstra {
+public class AStar {
     public static <T extends Comparable> LinkedList<T> find(Traversable traversable, T start, T target){
+        long start_time = System.currentTimeMillis();
         boolean target_found = false;
-        LinkedList<TraversableNode<T>> nodes_closed = new LinkedList<>();
+        HashMap<TraversableNode<T>, TraversableNode<T>> nodes_closed = new HashMap<>();
         LinkedList<TraversableNode<T>> nodes_open = new LinkedList<>();
         
         nodes_open.add(new TraversableNode(start, 0, null)); //Add starting node, no distance no previous node
@@ -31,7 +34,7 @@ public class Dijkstra {
             
             });
             TraversableNode<T> cur_node = nodes_open.pollFirst();
-            nodes_closed.add(cur_node);
+            nodes_closed.put(cur_node, cur_node);
             
             //If final node was found, all required nodes are in nodes_closed
             //And ready to be searched for a path in reverse order
@@ -39,6 +42,8 @@ public class Dijkstra {
                 target_found = true;
                 break;
             }
+            
+            //System.out.println("open: " + nodes_open.size() + " closed: " + nodes_closed.size());
             
             LinkedList<TraversableTransition<T>> transitions = traversable.getIncidentalEdges(cur_node);
             
@@ -51,7 +56,7 @@ public class Dijkstra {
                  * or the preceding node, because the TraversableNode compareTo
                  * method only comparey by endNode, which is exactly what we want
                  */
-                if(nodes_closed.contains(new TraversableNode(end_value, 0.f, null)))
+                if(nodes_closed.containsKey(new TraversableNode(end_value, 0.f, null)))
                     continue;
                    
                 /**********************************
@@ -77,14 +82,13 @@ public class Dijkstra {
             }
         }
         
-        System.out.println("Dijkstra finished with " + nodes_closed.size() + " considered nodes.");
+        System.out.println("AStar finished in " + (System.currentTimeMillis() - start_time) + "ms with " + nodes_closed.size() + " considered nodes.");
         System.out.println("(" + nodes_open.size() + " still in open list.)");
+        
         
         if(target_found){
             LinkedList<T> path = new LinkedList<>();
-            TraversableNode<T> cur_node = nodes_closed.get(nodes_closed.indexOf(new TraversableNode(target, 0.f, null)));
-            
-            System.out.println(nodes_closed.size());
+            TraversableNode<T> cur_node = nodes_closed.get(new TraversableNode(target, 0.f, null));
             
             while(cur_node.getNodeVal().compareTo(start) != 0){
                 path.addFirst(cur_node.getNodeVal());

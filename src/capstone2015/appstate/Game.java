@@ -21,7 +21,7 @@ import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import capstone2015.messaging.PushNotificationParams;
 import capstone2015.messaging.ReceivedDamageParams;
-import capstone2015.pathfinding.Dijkstra;
+import capstone2015.pathfinding.AStar;
 import capstone2015.util.Array2D;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
@@ -103,6 +103,14 @@ public class Game extends AppState{
     
     @Override
     protected void onTick(double timeDelta) {
+        
+        /* TEST CODE */
+        
+        MapTraversableAdapter mta = new MapTraversableAdapter(map);
+        
+        System.out.println(AStar.find(mta, new Vec2i(0, 32), new Vec2i(499, 235)).size());
+        
+        /* END TEST CODE */
         for(Message m : messageBus){
             handleMessage(m);
         }
