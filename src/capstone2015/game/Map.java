@@ -95,6 +95,9 @@ public class Map implements MapInterface{
             case EntityFactory.ID_KEY:
             case EntityFactory.ID_BONFIRE:
             case EntityFactory.ID_HEALTH_POTION:
+            case EntityFactory.ID_SWORD:
+            case EntityFactory.ID_BOW:
+            case EntityFactory.ID_ARROW:
                 add(EntityFactory.createActor(tile_id, xcoord, ycoord));
                 tilemap.set(xcoord, ycoord, EntityFactory.createTile(EntityFactory.ID_FLOOR));
                 break;
@@ -150,7 +153,7 @@ public class Map implements MapInterface{
         return pickupable_actors;
     }
   
-    private void onInflictDamage(Actor damagingEntity, Vec2i position, int damage){
+    private void onInflictDamage(Actor damagingEntity, Vec2i position, int damage, int teamId){
         if(!this.inBounds(position.getX(), position.getY())){
             return;
         }
@@ -158,7 +161,9 @@ public class Map implements MapInterface{
         ArrayList<Actor> entities = this.getActorsAt(position.getX(), position.getY());
         
         for(Actor e : entities){
-            e.onDamage(damagingEntity, damage);
+            if(e.getTeamId() != teamId) {
+                e.onDamage(damagingEntity, damage);
+            }
         }
     }
     
@@ -208,8 +213,9 @@ public class Map implements MapInterface{
     private void onAttemptKeyUsage(AttemptKeyUsageParams akup){
         Actor user = akup.user;
         Item key = akup.key;
+        Vec2i use_dir = akup.useDir;
         
-        Tile tile = getTileAt(user.getPos());
+        Tile tile = getTileAt(user.getPos().add(use_dir));
         
         if(tile.getProto().id == ID_EXIT){
             key.terminate();
@@ -255,7 +261,7 @@ public class Map implements MapInterface{
                 case InflictDamage:
                 {
                     InflictDamageParams msg_obj = (InflictDamageParams)m.getMsgObject();
-                    onInflictDamage(msg_obj.getDamagingEntity(), msg_obj.getPosition(), msg_obj.getDamage());
+                    onInflictDamage(msg_obj.damagingEntity, msg_obj.position, msg_obj.damage, msg_obj.teamId);
                     break;
                 }
                 case Pickup:

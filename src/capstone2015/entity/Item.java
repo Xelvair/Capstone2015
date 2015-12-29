@@ -3,6 +3,7 @@ package capstone2015.entity;
 import capstone2015.game.behavior.OnItemDroppedBehavior;
 import capstone2015.game.behavior.OnItemPickedUpBehavior;
 import capstone2015.game.behavior.OnUseBehavior;
+import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
 
 public class Item extends EntityBase{   
@@ -38,9 +39,9 @@ public class Item extends EntityBase{
         return onUseBehavior != null;
     }
     
-    public void onUse(Actor user){
+    public void onUse(Actor user, Vec2i target){
         if(onUseBehavior != null){
-            onUseBehavior.invoke(this, user);
+            onUseBehavior.invoke(this, user, target);
         }
     }
     

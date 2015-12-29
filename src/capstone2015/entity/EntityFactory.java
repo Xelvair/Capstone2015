@@ -1,16 +1,7 @@
 package capstone2015.entity;
 
 import capstone2015.game.Inventory;
-import capstone2015.game.behavior.DamageOnCollisionOnTickBehavior;
-import capstone2015.game.behavior.HealthPotionOnUseBehavior;
-import capstone2015.game.behavior.KeyOnUseBehavior;
-import capstone2015.game.behavior.MovingDamageOnCollisionOnTickBehavior;
-import capstone2015.game.behavior.PlayerOnDamageBehavior;
-import capstone2015.game.behavior.PlayerOnDroppedItemBehavior;
-import capstone2015.game.behavior.PlayerOnHealBehavior;
-import capstone2015.game.behavior.PlayerOnMovedBehavior;
-import capstone2015.game.behavior.PlayerOnPickedUpItemBehavior;
-import capstone2015.game.behavior.PlayerOnTickBehavior;
+import capstone2015.game.behavior.*;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.MessageBus;
@@ -34,6 +25,9 @@ public class EntityFactory {
     public static final int ID_FLOOR = 6;
     public static final int ID_PLAYER = 7;
     public static final int ID_HEALTH_POTION = 8;
+    public static final int ID_SWORD = 9;
+    public static final int ID_BOW = 10;
+    public static final int ID_ARROW = 11;
     
     public static final Color COLOR_FLOOR = new Color(87,59,12);
     public static final Color COLOR_FLOOR_HIDDEN = new Color(26, 20, 4);
@@ -282,6 +276,7 @@ public class EntityFactory {
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
 
         entityProtos.add(ep);
         
@@ -304,16 +299,18 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u08B0', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
-        ep.actorProto.maxHealth = 1;
+        ep.actorProto.maxHealth = 5;
+        ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = MovingDamageOnCollisionOnTickBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
-        ep.actorProto.visionRadius = 7;
+        ep.actorProto.visionRadius = 14;
         ep.actorProto.visionRevealedByDefault = true;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
 
         entityProtos.add(ep);
         
@@ -348,6 +345,7 @@ public class EntityFactory {
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = KeyOnUseBehavior.class;
@@ -395,7 +393,7 @@ public class EntityFactory {
         ep.actorProto.maxHealth = 5;
         ep.actorProto.onMovedBehaviorClass = PlayerOnMovedBehavior.class;
         ep.actorProto.onTickBehaviorClass = PlayerOnTickBehavior.class;
-        ep.actorProto.onDamageBehaviorClass = PlayerOnDamageBehavior.class;
+        ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = PlayerOnPickedUpItemBehavior.class;
         ep.actorProto.onDroppedItemBehaviorClass = PlayerOnDroppedItemBehavior.class;
         ep.actorProto.onHealBehaviorClass = PlayerOnHealBehavior.class;
@@ -403,6 +401,7 @@ public class EntityFactory {
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 3;
+        ep.actorProto.teamId = ActorProto.TEAM_PLAYER;
 
         entityProtos.add(ep);
     
@@ -434,9 +433,120 @@ public class EntityFactory {
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = HealthPotionOnUseBehavior.class;
+
+        entityProtos.add(ep);
+
+        /*********************************************
+         * #9 - SWORD - ACTOR, ITEM
+         */
+
+        ep = new EntityProto(ID_SWORD);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+        ep.itemProto = new ItemProto();
+
+        ep.entityBaseProto.represent = new TerminalChar('\u019A', new Color(160, 160, 160), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Sword";
+        ep.entityBaseProto.description =
+                "Swing it at your foes to deal damage1";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('\u019A', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = true;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.itemProto.onItemPickedUpBehaviorClass = null;
+        ep.itemProto.onItemDroppedBehaviorClass = null;
+        ep.itemProto.onUseBehaviorClass = SwordOnUseBehavior.class;
+
+        entityProtos.add(ep);
+
+        /*********************************************
+         * #10 - BOW - ACTOR, ITEM
+         */
+
+        ep = new EntityProto(ID_BOW);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+        ep.itemProto = new ItemProto();
+
+        ep.entityBaseProto.represent = new TerminalChar(')', new Color(160, 160, 160), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Bow";
+        ep.entityBaseProto.description =
+                "Hurls arrows towards your enemies, provided you have any.\n\n"
+              + "Arrows, that is. You'll have plenty of enemies alright.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar(')', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = true;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.itemProto.onItemPickedUpBehaviorClass = null;
+        ep.itemProto.onItemDroppedBehaviorClass = null;
+        ep.itemProto.onUseBehaviorClass = null;
+
+        entityProtos.add(ep);
+
+        /*********************************************
+         * #11 - ARROW - ACTOR, ITEM
+         */
+
+        ep = new EntityProto(ID_ARROW);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+        ep.itemProto = new ItemProto();
+
+        ep.entityBaseProto.represent = new TerminalChar('I', new Color(160, 160, 160), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Arrow";
+        ep.entityBaseProto.description =
+                "Used as ammunition for the bow. After the arrow strikes its target,\n"
+              + "you will be able to pick it up and shoot it again";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('I', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = true;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.itemProto.onItemPickedUpBehaviorClass = null;
+        ep.itemProto.onItemDroppedBehaviorClass = null;
+        ep.itemProto.onUseBehaviorClass = null;
 
         entityProtos.add(ep);
     }

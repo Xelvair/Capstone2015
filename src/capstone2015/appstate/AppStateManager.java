@@ -88,15 +88,12 @@ public class AppStateManager {
         if(states.isEmpty()){
             return;
         }
-        
-        Iterator<AppState> it = states.iterator();
-        
+
         /**
          * Tick alive states, remove others
          */
-        while(it.hasNext()){
-            AppState state = it.next();
-            if(state.isAlive()){
+        for (AppState state : states) {
+            if (state.isAlive()) {
                 state.onTick(timeDelta);
             }
         }

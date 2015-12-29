@@ -48,24 +48,6 @@ public class Game extends AppState{
         map.loadFromProperties(mapFile);
         maskedMapView = new MaskedMapView(map);
         notifications.push("You enter the dungeon...", Color.YELLOW);
-
-        /* TEST CODE */
-
-        MapTraversableAdapter mta = new MapTraversableAdapter(map);
-        LinkedList<Vec2i> path = AStar.find(mta, new Vec2i(0, 32), new Vec2i(499, 235));
-
-        String s_path = PointListPanel.render(path).toString();
-
-        try(PrintWriter out = new PrintWriter("path.txt")) {
-            out.write(s_path);
-            out.write("Fuck ya");
-            out.flush();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-        }
-
-        /* TEST CODE */
     }
     
     private void handleMessage(Message m){
@@ -106,14 +88,25 @@ public class Game extends AppState{
     }
     
     private void onReceivedDamage(ReceivedDamageParams msg_obj){
-        if(msg_obj.getDamagedEntity() == map.getPlayer()){
+        if(msg_obj.damagedEntity == map.getPlayer()) {
             String notif_text = String.format(
-                    "You take %d damage from %s!", 
-                    msg_obj.getDamage(),
-                    msg_obj.getDamagingEntity().getName()
+                    "You take %d damage from %s!",
+                    msg_obj.damage,
+                    msg_obj.damagingEntity.getName()
             );
-            Color notif_color = msg_obj.getDamagingEntity().getRepresent().getFGColor();
+            Color notif_color = msg_obj.damagingEntity.getRepresent().getFGColor();
             notifications.push(notif_text, notif_color);
+            return;
+        }
+        if(msg_obj.damagingEntity == map.getPlayer()){
+            String notif_text = String.format(
+                    "You inflict %d damage on %s!",
+                    msg_obj.damage,
+                    msg_obj.damagedEntity.getName()
+            );
+            Color notif_color = msg_obj.damagingEntity.getRepresent().getFGColor();
+            notifications.push(notif_text, notif_color);
+            return;
         }
     }
     

@@ -8,6 +8,10 @@ import capstone2015.game.behavior.OnPickedUpItemBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 
 public class ActorProto {
+    public static final int TEAM_NONE = 0;
+    public static final int TEAM_PLAYER = 1;
+    public static final int TEAM_DUNGEON = 2;
+
     public Class<? extends OnTickBehavior> onTickBehaviorClass;
     public Class<? extends OnMovedBehavior> onMovedBehaviorClass;
     public Class<? extends OnDamageBehavior> onDamageBehaviorClass;
@@ -19,4 +23,5 @@ public class ActorProto {
     public int maxHealth;
     public boolean pickupable;
     public int inventorySize;
+    public int teamId;
 }

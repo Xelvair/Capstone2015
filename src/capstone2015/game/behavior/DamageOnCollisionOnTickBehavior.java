@@ -11,11 +11,12 @@ public class DamageOnCollisionOnTickBehavior implements OnTickBehavior{
     
     @Override
     public void invoke(Actor entity, double timeDelta) {
-        InflictDamageParams msg_obj = new InflictDamageParams(
-                entity, 
-                new Vec2i(entity.getXPos(), entity.getYPos()), 
-                DAMAGE
-        );
+        InflictDamageParams msg_obj = new InflictDamageParams();
+        msg_obj.damagingEntity = entity;
+        msg_obj.position = entity.getPos();
+        msg_obj.damage = DAMAGE;
+        msg_obj.teamId = entity.getTeamId();
+
         entity.sendBusMessage(new Message(InflictDamage, msg_obj));
     }
     

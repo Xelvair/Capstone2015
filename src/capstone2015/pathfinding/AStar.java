@@ -17,11 +17,16 @@ public class AStar {
         nodes_open.add(new TraversableNode<T>(start, 0, null)); //Add starting node, no distance no previous node
         
         while(!nodes_open.isEmpty()){
+            /********************
+             * Sort nodes by their "relvance" to finding the correct path
+             * relevance is calculated as follows:
+             * actual distance from start to node + estimated distance from node to target
+             */
             Collections.sort(nodes_open, new Comparator<TraversableNode<T>>(){
                 @Override
                 public int compare(TraversableNode<T> o1, TraversableNode<T> o2) {
-                    float result1 = traversable.calculateHeuristic(o1.getNodeVal(), target) + o1.getDistance();
-                    float result2 = traversable.calculateHeuristic(o2.getNodeVal(), target) + o2.getDistance();
+                    float result1 = o1.getDistance() + traversable.calculateHeuristic(o1.getNodeVal(), target);
+                    float result2 = o2.getDistance() + traversable.calculateHeuristic(o2.getNodeVal(), target);
                     float result =  result1 - result2;
                     if(result < 0.f){
                         return -1;
@@ -35,9 +40,11 @@ public class AStar {
             });
             TraversableNode<T> cur_node = nodes_open.pollFirst();
             nodes_closed.put(cur_node, cur_node);
-            
-            //If final node was found, all required nodes are in nodes_closed
-            //And ready to be searched for a path in reverse order
+
+            /***************
+             * If final node was found, all required nodes are in nodes_closed
+             * And ready to be searched for a path in reverse order
+             */
             if(cur_node.equals(new TraversableNode<T>(target, 0.f, null))){
                 target_found = true;
                 break;
@@ -82,8 +89,11 @@ public class AStar {
         
         System.out.println("AStar finished in " + (System.currentTimeMillis() - start_time) + "ms with " + nodes_closed.size() + " considered nodes.");
         System.out.println("(" + nodes_open.size() + " still in open list.)");
-        
-        
+
+        /******************************
+         * If a target was found, traverse nodes in reverse order and return traversed nodes
+         * If not, return null
+         */
         if(target_found){
             LinkedList<T> path = new LinkedList<>();
             TraversableNode<T> cur_node = nodes_closed.get(new TraversableNode<T>(target, 0.f, null));

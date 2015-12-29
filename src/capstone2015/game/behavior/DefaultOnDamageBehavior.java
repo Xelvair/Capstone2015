@@ -6,7 +6,7 @@ import capstone2015.messaging.Message;
 import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.ReceivedDamageParams;
 
-public class PlayerOnDamageBehavior implements OnDamageBehavior{
+public class DefaultOnDamageBehavior implements OnDamageBehavior{
     
     public static final double DAMAGE_IGNORE_TIME = 0.5d;
     
@@ -17,7 +17,10 @@ public class PlayerOnDamageBehavior implements OnDamageBehavior{
             entity.setHealthPoints(Math.max(0, entity.getHealth() - damage));
             entity.getDamageIgnoreTimers().put(damagingEntity, DAMAGE_IGNORE_TIME);
             
-            ReceivedDamageParams msg_obj = new ReceivedDamageParams(entity, damagingEntity, damage);
+            ReceivedDamageParams msg_obj = new ReceivedDamageParams();
+            msg_obj.damage = damage;
+            msg_obj.damagedEntity = entity;
+            msg_obj.damagingEntity = damagingEntity;
             entity.sendBusMessage(new Message(ReceivedDamage, msg_obj));
              
             if(entity.getHealth() == 0){

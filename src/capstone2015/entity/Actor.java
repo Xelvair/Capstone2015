@@ -102,6 +102,8 @@ public class Actor extends MapEntity {
         return damageIgnoreTimers;
     }
 
+    public int getTeamId(){return proto.actorProto.teamId;}
+
     public int freeInventorySlotCount() {
         if (inventory != null) {
             return inventory.freeSlotsCount();

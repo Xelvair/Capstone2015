@@ -1,6 +1,7 @@
 package capstone2015.game.behavior;
 
 import capstone2015.entity.Actor;
+import capstone2015.entity.EntityBase;
 import capstone2015.entity.EntityFactory;
 import capstone2015.game.Direction;
 import capstone2015.game.MapTraversableAdapter;
@@ -12,9 +13,7 @@ import static capstone2015.messaging.Message.Type.EntityMove;
 import static capstone2015.messaging.Message.Type.InflictDamage;
 import capstone2015.pathfinding.AStar;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
 
@@ -27,14 +26,33 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
     
     @Override
     public void invoke(Actor entity, double timeDelta) {
+        /*********
+         * Decrease damage ignore timers
+         */
+
+        HashMap<EntityBase, Double> damage_ignore_timers = entity.getDamageIgnoreTimers();
+
+        for(Iterator<Map.Entry<EntityBase, Double>> it = damage_ignore_timers.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<EntityBase, Double> entry = it.next();
+            double damage_timer = entry.getValue();
+            double new_damage_timer = Math.max(0, damage_timer - timeDelta);
+
+            if(new_damage_timer == 0.f){
+                it.remove();
+            } else {
+                entry.setValue(new_damage_timer);
+            }
+        }
+
         /********************
          * Inflict damage at our current location
          */
-        InflictDamageParams msg_obj = new InflictDamageParams(
-                entity, 
-                new Vec2i(entity.getXPos(), entity.getYPos()), 
-                DAMAGE
-        );
+        InflictDamageParams msg_obj = new InflictDamageParams();
+        msg_obj.damagingEntity = entity;
+        msg_obj.position = entity.getPos();
+        msg_obj.damage = DAMAGE;
+        msg_obj.teamId = entity.getTeamId();
+
         entity.sendBusMessage(new Message(InflictDamage, msg_obj));
 
         /************************
@@ -59,7 +77,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
         /*********************************
          * If no target was found, find a random spot to go to
          */
-        while(path.isEmpty()){
+        while(path == null || path.isEmpty()){
             Random rand = new Random();
             Vec2i random_point = entity.getPos().add(new Vec2i(rand.nextInt(RANDOM_MOVE_RADIUS * 2) - RANDOM_MOVE_RADIUS,
                     rand.nextInt(RANDOM_MOVE_RADIUS * 2) - RANDOM_MOVE_RADIUS));

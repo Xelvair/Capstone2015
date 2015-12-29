@@ -44,7 +44,9 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
          */
         moveTimeoutCounter = Math.max(0.f, moveTimeoutCounter - timeDelta);
         
-        Direction direction = Direction.NONE;
+        Direction move_dir = Direction.NONE;
+        Direction use_dir = Direction.NONE;
+        boolean do_use = false;
         
         MessageBus message_bus = entity.getMessageBus();
         
@@ -54,16 +56,16 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                     Key key = (Key)m.getMsgObject();
                     switch(key.getKind()){
                         case ArrowLeft:
-                            direction = Direction.LEFT;
+                            move_dir = Direction.LEFT;
                             break;
                         case ArrowRight:
-                            direction = Direction.RIGHT;
+                            move_dir = Direction.RIGHT;
                             break;
                         case ArrowUp:
-                            direction = Direction.UP;
+                            move_dir = Direction.UP;
                             break;
                         case ArrowDown:
-                            direction = Direction.DOWN;
+                            move_dir = Direction.DOWN;
                             break;
                         case NormalKey:
                             switch(key.getCharacter()){
@@ -74,23 +76,24 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                                     entity.sendBusMessage(new Message(Drop, entity));
                                     break;
                                 case 'f':
-                                    Item sel_item = entity.getSelectedItem();
-                                    if(sel_item != null){
-                                        sel_item.onUse(entity);
-                                    }
+                                    do_use = true;
                                     break;
-                                //WASD controls as alternative to arrow keys
+                                //WASD controls use direction
                                 case 'w':
-                                    direction = Direction.UP;
+                                    do_use = true;
+                                    use_dir = Direction.UP;
                                     break;
                                 case 'a':
-                                    direction = Direction.LEFT;
+                                    do_use = true;
+                                    use_dir = Direction.LEFT;
                                     break;
                                 case 's':
-                                    direction = Direction.DOWN;
+                                    do_use = true;
+                                    use_dir = Direction.DOWN;
                                     break;
                                 case 'd':
-                                    direction = Direction.RIGHT;
+                                    do_use = true;
+                                    use_dir = Direction.RIGHT;
                                     break;
                                 //Inventory select keys
                                 case '0':
@@ -116,10 +119,17 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                     break;
             }
         }
+
+        if(do_use){
+            Item sel_item = entity.getSelectedItem();
+            if(sel_item != null){
+                sel_item.onUse(entity, use_dir.toVector());
+            }
+        }
         
-        if(moveTimeoutCounter == 0.f && direction != Direction.NONE){
+        if(moveTimeoutCounter == 0.f && move_dir != Direction.NONE){
             moveTimeoutCounter = MOVE_TIMEOUT;
-            EntityMoveParams msg_obj = new EntityMoveParams(entity, direction);
+            EntityMoveParams msg_obj = new EntityMoveParams(entity, move_dir);
             entity.sendBusMessage(new Message(EntityMove, msg_obj));
         }
     } 

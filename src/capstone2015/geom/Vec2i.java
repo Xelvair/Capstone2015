@@ -75,6 +75,8 @@ public class Vec2i implements Comparable<Vec2i>{
     public boolean equals(Vec2i rhs){
         return (this.x == rhs.x && this.y == rhs.y);
     }
+
+    public int orthoMagnitude() {return Math.abs(this.x) + Math.abs(this.y);}
     
     @Override
     public int hashCode(){
