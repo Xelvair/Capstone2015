@@ -28,7 +28,7 @@ public class MapTraversableAdapter implements Traversable<Vec2i>{
         Vec2i node_vec = node.getNodeVal();
         
         for(Direction dir : dirs){
-            Vec2i adjacent_node = node_vec.translate(dir.toVector());
+            Vec2i adjacent_node = node_vec.add(dir.toVector());
             if(map.inBounds(adjacent_node) && !map.isSolidAt(adjacent_node)){
                 incidental_edge_list.add(new TraversableTransition(adjacent_node, 1));
             }
@@ -39,7 +39,7 @@ public class MapTraversableAdapter implements Traversable<Vec2i>{
 
     @Override
     public float calculateHeuristic(Vec2i start, Vec2i target) {
-        Vec2i delta = target.translate(start.invert());
+        Vec2i delta = target.add(start.invert());
         return (float)Math.sqrt(delta.getX() * delta.getX() + delta.getY() * delta.getY());
     }
 }

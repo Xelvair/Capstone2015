@@ -25,6 +25,8 @@ import capstone2015.pathfinding.AStar;
 import capstone2015.util.Array2D;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -46,6 +48,24 @@ public class Game extends AppState{
         map.loadFromProperties(mapFile);
         maskedMapView = new MaskedMapView(map);
         notifications.push("You enter the dungeon...", Color.YELLOW);
+
+        /* TEST CODE */
+
+        MapTraversableAdapter mta = new MapTraversableAdapter(map);
+        LinkedList<Vec2i> path = AStar.find(mta, new Vec2i(0, 32), new Vec2i(499, 235));
+
+        String s_path = PointListPanel.render(path).toString();
+
+        try(PrintWriter out = new PrintWriter("path.txt")) {
+            out.write(s_path);
+            out.write("Fuck ya");
+            out.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+        }
+
+        /* TEST CODE */
     }
     
     private void handleMessage(Message m){
@@ -103,14 +123,6 @@ public class Game extends AppState{
     
     @Override
     protected void onTick(double timeDelta) {
-        
-        /* TEST CODE */
-        
-        MapTraversableAdapter mta = new MapTraversableAdapter(map);
-        
-        System.out.println(AStar.find(mta, new Vec2i(0, 32), new Vec2i(499, 235)).size());
-        
-        /* END TEST CODE */
         for(Message m : messageBus){
             handleMessage(m);
         }
@@ -122,7 +134,6 @@ public class Game extends AppState{
         Panel p_notif;
         p_notif = NotificationPanel.render(notifications, screen.width());
         screen.insert(p_notif, 0, 0);
-    
         
         Actor player = map.getPlayer();
         Recti map_render_rect = getPlayerRenderRect();

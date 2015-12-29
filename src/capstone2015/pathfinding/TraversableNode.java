@@ -1,6 +1,6 @@
 package capstone2015.pathfinding;
 
-public class TraversableNode<T extends Comparable> implements Comparable<TraversableNode<T>>{
+public class TraversableNode<T extends Comparable<T>> implements Comparable<TraversableNode<T>>{
     private TraversableNode<T> prevNode;
     private T nodeVal;
     private float distance;
@@ -38,14 +38,10 @@ public class TraversableNode<T extends Comparable> implements Comparable<Travers
     public int compareTo(TraversableNode<T> o) {
         return nodeVal.compareTo(o.getNodeVal());
     }
-    
+
     @Override
     public boolean equals(Object rhs){
-        if(rhs instanceof TraversableNode){
-            return nodeVal.equals(((TraversableNode<T>)rhs).getNodeVal());
-        } else {
-            return super.equals(rhs);
-        }
+        return nodeVal.equals(((TraversableNode<T>)rhs).getNodeVal());
     }
     
     @Override

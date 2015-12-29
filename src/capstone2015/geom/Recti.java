@@ -147,7 +147,7 @@ public class Recti {
      * @return relative vector
      */
     public Vec2i toRel(Vec2i absolute){
-        return absolute.translate(new Vec2i(-this.getLeft(), -this.getTop()));
+        return absolute.add(new Vec2i(-this.getLeft(), -this.getTop()));
     }
     
     /*******************************************************
@@ -156,7 +156,7 @@ public class Recti {
      * @return absolute vector
      */
     public Vec2i toAbs(Vec2i relative){
-        return relative.translate(new Vec2i(this.getLeft(), this.getTop()));
+        return relative.add(new Vec2i(this.getLeft(), this.getTop()));
     }
     
     /*******************************

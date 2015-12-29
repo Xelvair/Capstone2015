@@ -32,7 +32,7 @@ public class Geom {
          * Determine the longer component of the vector
          * diff = end - start
          */
-        Vec2i diff = end.translate(start.invert());
+        Vec2i diff = end.add(start.invert());
         
         
         int x_sign = (diff.getX() == 0 ? 0 : diff.getX() / Math.abs(diff.getX()));
@@ -46,14 +46,14 @@ public class Geom {
                 double coef = (double)i / (double)diff.getX();
                 int y_component = (int)Math.round((double)diff.getY() * coef);
                 Vec2i startOffset = new Vec2i(i, y_component);
-                linePoints.add(start.translate(startOffset));
+                linePoints.add(start.add(startOffset));
             }
         } else {
             for(int i = 0; i != diff.getY(); i += y_sign){
                 double coef = (double)i / (double)diff.getY();
                 int x_component = (int)Math.round((double)diff.getX() * coef);
                 Vec2i startOffset = new Vec2i(x_component, i);
-                linePoints.add(start.translate(startOffset));
+                linePoints.add(start.add(startOffset));
             }
         }
         
@@ -76,7 +76,7 @@ public class Geom {
             
             Vec2i pos = new Vec2i((int)Math.round((double)radius * Math.cos(rad)), 
                                   (int)Math.round((double)radius * Math.sin(rad)));
-            pos = pos.translate(center);
+            pos = pos.add(center);
             
             circle_points.add(pos);
         }

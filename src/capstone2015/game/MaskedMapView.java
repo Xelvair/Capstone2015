@@ -9,6 +9,8 @@ import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
 import capstone2015.util.Array2D;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class MaskedMapView implements MapInterface{
 
@@ -17,7 +19,7 @@ public class MaskedMapView implements MapInterface{
     
     public MaskedMapView(Map map){
         this.map = map;
-        visionMask = new Array2D<>(map.width(), map.height());
+        visionMask = new Array2D<VisionType>(map.width(), map.height());
         visionMask.fill(VisionType.Invisible);
     }
     
@@ -59,7 +61,7 @@ public class MaskedMapView implements MapInterface{
                 Vec2i vismask_pos = vismask_rect.toRel(intersect_rect.toAbs(intersect_pos));
                 Vec2i this_pos = this_rect.toRel(intersect_rect.toAbs(intersect_pos));
                 
-                if(visibilityMask.get(vismask_pos) == true)
+                if(visibilityMask.get(vismask_pos))
                     visionMask.set(this_pos, Visible);
             }
         }
@@ -77,6 +79,18 @@ public class MaskedMapView implements MapInterface{
         if(visionMask.get(x, y).entitiesVisible())
             return map.getActorsAt(x, y);
         return null;
+    }
+
+    @Override
+    public LinkedList<Actor> getActors() {
+        LinkedList<Actor> visible_actors = new LinkedList<Actor>();
+        for(int i = 0; i < visionMask.height(); ++i){
+            for(int j = 0; j < visionMask.width(); ++j){
+                if(visionMask.get(j, i) == VisionType.Visible)
+                    visible_actors.addAll(map.getActorsAt(j, i));
+            }
+        }
+        return visible_actors;
     }
 
     @Override
@@ -103,5 +117,15 @@ public class MaskedMapView implements MapInterface{
     @Override
     public int height() {
         return map.height();
+    }
+
+    public ArrayList<Actor> getActorsById(int actorId){
+        ArrayList actors = new ArrayList<Actor>();
+        for(Actor a  : this.getActors()){
+            if(a.getProto().id == actorId){
+                actors.add(a);
+            }
+        }
+        return actors;
     }
 }

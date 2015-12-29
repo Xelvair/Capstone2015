@@ -36,12 +36,19 @@ public class Vec2i implements Comparable<Vec2i>{
      * Translate vector by another vector
      * This operation is essentially the same
      * as adding two vectors
-     * @param translate translate vector
-     * @return translated vector
+     * @param rhs add vector
+     * @return added(translatedI vector
      */
-    public Vec2i translate(Vec2i translate){
-        return new Vec2i(this.x + translate.x, this.y + translate.y);
+    public Vec2i add(Vec2i rhs){
+        return new Vec2i(this.x + rhs.x, this.y + rhs.y);
     }
+
+    /*********************
+     * Subtracts another vector from this vector
+     * @param rhs the other vector
+     * @return new subtracted vector
+     */
+    public Vec2i subtract(Vec2i rhs){return new Vec2i(this.x - rhs.x, this.y - rhs.y);}
     
     /***************************
      * Inverts or negates the vector

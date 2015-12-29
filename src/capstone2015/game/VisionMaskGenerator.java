@@ -68,7 +68,7 @@ public class VisionMaskGenerator {
          * of each entity. Then traverse and set the visibility mask
          * until a non-opaque point on the map is reached
          */        
-        Array2D<Boolean> vision_mask = new Array2D<>(
+        Array2D<Boolean> vision_mask = new Array2D<Boolean>(
                 Math.max(0, area.getWidth()), 
                 Math.max(0, area.getHeight())
         );
@@ -110,15 +110,15 @@ public class VisionMaskGenerator {
                     vision_mask.set(vision_mask_pos.getX(), vision_mask_pos.getY(), true);
                     
                     /* Also make any adjacent walls visible */
-                    List<Direction> directions = Arrays.asList(new Direction[]{
-                        Direction.LEFT,
-                        Direction.UP,
-                        Direction.RIGHT,
-                        Direction.DOWN
-                    });
+                    List<Direction> directions = Arrays.asList(
+                            Direction.LEFT,
+                            Direction.UP,
+                            Direction.RIGHT,
+                            Direction.DOWN
+                    );
                     
                     for(Direction direction : directions){
-                        Vec2i surrounding_point = line_point.translate(direction.toVector());
+                        Vec2i surrounding_point = line_point.add(direction.toVector());
                         vision_mask_pos = area.toRel(surrounding_point);
                         if(   map.inBounds(surrounding_point)
                            && vision_mask.inBounds(vision_mask_pos)

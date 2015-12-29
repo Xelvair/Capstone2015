@@ -5,6 +5,7 @@ import capstone2015.entity.MapEntity;
 import capstone2015.entity.Tile;
 import capstone2015.geom.Vec2i;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public interface MapInterface {
     public Tile getTileAt(int x, int y);
@@ -16,7 +17,9 @@ public interface MapInterface {
     public default ArrayList<Actor> getActorsAt(Vec2i pos){
         return getActorsAt(pos.getX(), pos.getY());
     }
-    
+
+    public LinkedList<Actor> getActors();
+
     public ArrayList<MapEntity> getMapEntitiesAt(int x, int y);
     public default ArrayList<MapEntity> getMapEntitiesAt(Vec2i pos){
         return getMapEntitiesAt(pos.getX(), pos.getY());

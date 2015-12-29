@@ -68,7 +68,7 @@ public class Map implements MapInterface{
       props.remove("Width");
       props.remove("Height");
 
-      tilemap = new Array2D<>(width, height);
+      tilemap = new Array2D<Tile>(width, height);
 
       for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
@@ -329,7 +329,12 @@ public class Map implements MapInterface{
 
         return local_entities;
     }
-  
+
+    @Override
+    public LinkedList<Actor> getActors() {
+        return actors;
+    }
+
     public boolean inBounds(Vec2i pos) {
       return inBounds(pos.getX(), pos.getY());
     }
