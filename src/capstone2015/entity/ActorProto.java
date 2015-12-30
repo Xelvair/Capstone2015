@@ -7,6 +7,9 @@ import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.game.behavior.OnPickedUpItemBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 
+import java.util.Map;
+import java.util.function.BiConsumer;
+
 public class ActorProto {
     public static final int TEAM_NONE = 0;
     public static final int TEAM_PLAYER = 1;
@@ -18,6 +21,7 @@ public class ActorProto {
     public Class<? extends OnPickedUpItemBehavior> onPickedUpItemBehaviorClass;
     public Class<? extends OnDroppedItemBehavior> onDroppedItemBehaviorClass;
     public Class<? extends OnHealBehavior> onHealBehaviorClass;
+    public BiConsumer<Actor, Map<String, Object>> onInstantiationFunction;
     public int visionRadius;
     public boolean visionRevealedByDefault;
     public int maxHealth;

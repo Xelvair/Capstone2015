@@ -18,11 +18,10 @@ import java.util.*;
 public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
 
     public static final int DAMAGE = 1;
-    public static final float MOVE_TIMEOUT = 1.f;
+    public static final float MOVE_TIMEOUT = 0.7f;
     public static final int RANDOM_MOVE_RADIUS = 10;
             
     private LinkedList<Vec2i> path = new LinkedList<>();
-    private float moveTimeout = 0.f;
     
     @Override
     public void invoke(Actor entity, double timeDelta) {
@@ -56,12 +55,10 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
         entity.sendBusMessage(new Message(InflictDamage, msg_obj));
 
         /************************
-         * If we can't move yet, decrement move timeout and exit
+         * If we can't move yet, exit
          */
-        if(moveTimeout > 0.f){
-            moveTimeout = (float) Math.max(0.f, moveTimeout - timeDelta);
+        if(!entity.canMove())
             return;
-        }
 
         /***************************
          * If there's a potential target for us, and we aren't yet aiming for that spot,
@@ -110,7 +107,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
 
         EntityMoveParams emp = new EntityMoveParams(entity, dir);
         entity.sendBusMessage(new Message(EntityMove, emp));
-        moveTimeout = MOVE_TIMEOUT;
+        entity.setMoveTimeout(MOVE_TIMEOUT);
     }
     
 }

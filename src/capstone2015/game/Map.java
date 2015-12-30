@@ -8,19 +8,14 @@ import capstone2015.entity.MapEntity;
 import capstone2015.entity.Tile;
 import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
-import capstone2015.messaging.AttemptKeyUsageParams;
-import capstone2015.messaging.EntityMoveParams;
-import capstone2015.messaging.InflictDamageParams;
-import capstone2015.messaging.Message;
+import capstone2015.messaging.*;
+
 import static capstone2015.messaging.Message.Type.GameWon;
-import capstone2015.messaging.MessageBus;
+
 import capstone2015.util.Array2D;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Properties;
+import java.util.*;
 
 public class Map implements MapInterface{
     private Array2D<Tile> tilemap;
@@ -222,6 +217,14 @@ public class Map implements MapInterface{
             messageBus.enqueue(new Message(GameWon));
         }
     }
+
+    private void onSpawnEffect(SpawnEffectParams sep){
+        TreeMap<String, Object> instantiation_params = new TreeMap<>();
+        instantiation_params.put("RepresentOverride", sep.represent);
+        instantiation_params.put("Duration", sep.duration);
+        Actor effect = EntityFactory.createActor(EntityFactory.ID_EFFECT, sep.pos, instantiation_params);
+        this.add(effect);
+    }
     
     public void tick(double timeDelta){
        
@@ -278,6 +281,10 @@ public class Map implements MapInterface{
                 {
                     onAttemptKeyUsage((AttemptKeyUsageParams)m.getMsgObject());
                     break;
+                }
+                case SpawnEffect:
+                {
+                    onSpawnEffect((SpawnEffectParams)m.getMsgObject());
                 }
             }
         }

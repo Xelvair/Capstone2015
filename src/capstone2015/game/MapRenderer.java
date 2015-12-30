@@ -21,8 +21,18 @@ public class MapRenderer {
           if(entities.size() > 1){ //If we need to display something else than the tilemap
               int current_time_msec = (int)(System.currentTimeMillis() % Integer.MAX_VALUE);
               int shownEntityIndex = 1 + (current_time_msec / ITEM_DISPLAY_SWITCHTIME) % (entities.size() - 1);
-              
-              p.set(j, i, entities.get(shownEntityIndex).getRepresent());
+
+              /*****************************
+               * Character and foreground color are determined by the actor,
+               * background color is determined by the tile
+               */
+              TerminalChar tile = new TerminalChar(
+                      entities.get(shownEntityIndex).getRepresent().getCharacter(),
+                      entities.get(shownEntityIndex).getRepresent().getFGColor(),
+                      entities.get(0).getRepresent().getBGColor()
+              );
+
+              p.set(j, i, tile);
           }  else {
             p.set(j, i, entities.get(0).getRepresent());
           }

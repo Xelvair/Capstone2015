@@ -7,6 +7,8 @@ import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.MessageBus;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 /***********************************
  * Creates Tiles, Items and Actors from a shared pool of entity
@@ -28,11 +30,12 @@ public class EntityFactory {
     public static final int ID_SWORD = 9;
     public static final int ID_BOW = 10;
     public static final int ID_ARROW = 11;
+    public static final int ID_EFFECT = 99;
     
     public static final Color COLOR_FLOOR = new Color(87,59,12);
     public static final Color COLOR_FLOOR_HIDDEN = new Color(26, 20, 4);
     
-    private static ArrayList<EntityProto> entityProtos;
+    private static TreeMap<Integer, EntityProto> entityProtos;
     private static MessageBus messageBus;
     
     public static EntityProto getProto(int entityProtoId){
@@ -79,11 +82,17 @@ public class EntityFactory {
     public static Actor createActor(int entityProtoId, Vec2i pos){
         return createActor(entityProtoId, pos.getX(), pos.getY());
     }
+    public static Actor createActor(int entityProtoId, Vec2i pos, Map<String, Object> instantiationParams){
+        return createActor(entityProtoId, pos.getX(), pos.getY(), instantiationParams);
+    }
     public static Actor createActor(int entityProtoId, int x, int y){
+        return createActor(entityProtoId, x, y, new TreeMap<String, Object>());
+    }
+    public static Actor createActor(int entityProtoId, int x, int y, Map<String, Object> instantiationParams){
         try{
             EntityProto e_proto = getProto(entityProtoId);
 
-            if(   
+            if(
                   e_proto.entityBaseProto == null
                 || e_proto.mapEntityProto == null
                 || e_proto.actorProto == null
@@ -92,38 +101,58 @@ public class EntityFactory {
                 return null;
             }
 
+            /***********************************
+             * Set members according to proto
+             */
             Actor actor = new Actor();
             actor.proto = e_proto;
             actor.messageBus = messageBus;
             actor.pos = new Vec2i(x, y);
             actor.health = e_proto.actorProto.maxHealth;
             actor.visionRadius = e_proto.actorProto.visionRadius;
-            
-            if(e_proto.actorProto.onMovedBehaviorClass != null){
+
+            /***********************************
+             * Set members according to instantiation params
+             */
+            if(instantiationParams.containsKey("Duration"))
+                actor.duration = (double) instantiationParams.get("Duration");
+
+            /***********************************
+             * Load behaviors
+             */
+            if(e_proto.actorProto.onMovedBehaviorClass != null)
                 actor.onMovedBehavior = e_proto.actorProto.onMovedBehaviorClass.newInstance();
-            }
-            if(e_proto.actorProto.onTickBehaviorClass != null){
+
+            if(e_proto.actorProto.onTickBehaviorClass != null)
                 actor.onTickBehavior = e_proto.actorProto.onTickBehaviorClass.newInstance();
-            }
-            if(e_proto.mapEntityProto.onWalkedOverBehaviorClass != null){
+
+            if(e_proto.mapEntityProto.onWalkedOverBehaviorClass != null)
                 actor.onWalkedOverBehavior = e_proto.mapEntityProto.onWalkedOverBehaviorClass.newInstance();
-            }
-            if(e_proto.actorProto.onDamageBehaviorClass != null){
+
+            if(e_proto.actorProto.onDamageBehaviorClass != null)
                 actor.onDamageBehavior = e_proto.actorProto.onDamageBehaviorClass.newInstance();
-            }
-            if(e_proto.actorProto.onPickedUpItemBehaviorClass != null){
+
+            if(e_proto.actorProto.onPickedUpItemBehaviorClass != null)
                 actor.onPickedUpItemBehavior = e_proto.actorProto.onPickedUpItemBehaviorClass.newInstance();
-            }
-            if(e_proto.actorProto.onDroppedItemBehaviorClass != null){
+
+            if(e_proto.actorProto.onDroppedItemBehaviorClass != null)
                 actor.onDroppedItemBehavior = e_proto.actorProto.onDroppedItemBehaviorClass.newInstance();
-            }
-            if(e_proto.actorProto.onHealBehaviorClass != null){
+
+            if(e_proto.actorProto.onHealBehaviorClass != null)
                 actor.onHealBehavior = e_proto.actorProto.onHealBehaviorClass.newInstance();
-            }
-            
-            if(e_proto.actorProto.inventorySize > 0){
+
+            /***********************************
+             * If the actor has inventory space, instantiate an inventory
+             */
+            if(e_proto.actorProto.inventorySize > 0)
                 actor.inventory = new Inventory(e_proto.actorProto.inventorySize);
-            }
+
+            /***********************************
+             * At last, call the onInstantiationFunction to let the entity do its own thing
+             * with the custom data passed over instantiationParams
+             */
+            if(e_proto.actorProto.onInstantiationFunction != null)
+                e_proto.actorProto.onInstantiationFunction.accept(actor, instantiationParams);
         
             return actor;
         } catch(Exception e){
@@ -143,10 +172,17 @@ public class EntityFactory {
                 System.out.println("Failed to create Item with id #" + entityProtoId);
                 return null;
             }
-            
+
+            /***********************************
+             * Set members according to proto
+             */
             Item item = new Item();
             item.proto = e_proto;
             item.messageBus = messageBus;
+
+            /***********************************
+             * Load behaviors
+             */
             if(e_proto.itemProto.onItemPickedUpBehaviorClass != null){
                 item.onItemPickedUpBehavior = e_proto.itemProto.onItemPickedUpBehaviorClass.newInstance();
             }
@@ -180,7 +216,7 @@ public class EntityFactory {
      * then I noticed I wasn't allowed to - meh.
      */
     private static void loadEntityProtos(){     
-        entityProtos = new ArrayList<>();
+        entityProtos = new TreeMap<>();
         EntityProto ep;
         /******************************************
          * #0 - WALL - TILE
@@ -203,7 +239,7 @@ public class EntityFactory {
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
         
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
         
         /******************************************
          * #1 - ENTRY - TILE
@@ -223,8 +259,8 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25BC', Color.BLUE, COLOR_FLOOR_HIDDEN);
-        
-        entityProtos.add(ep);
+
+        entityProtos.put(ep.id, ep);
         
         /******************************************
          * #2 - EXIT - TILE
@@ -245,8 +281,8 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25B2', Color.GREEN, COLOR_FLOOR_HIDDEN);
-        
-        entityProtos.add(ep);
+
+        entityProtos.put(ep.id, ep);
         
         /******************************************
          * #3 - BONFIRE - ACTOR
@@ -278,7 +314,7 @@ public class EntityFactory {
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
         
         /******************************************
          * #4 - RATTLESNAKE - ACTOR
@@ -312,7 +348,7 @@ public class EntityFactory {
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
         
         /******************************************
          * #5 - KEY - ACTOR, ITEM
@@ -350,7 +386,7 @@ public class EntityFactory {
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = KeyOnUseBehavior.class;
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
         
         /******************************************
          * #6 - FLOOR - TILE
@@ -369,7 +405,7 @@ public class EntityFactory {
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_FLOOR_HIDDEN);
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
         
         /******************************************
          * #7 - PLAYER - ACTOR
@@ -403,7 +439,7 @@ public class EntityFactory {
         ep.actorProto.inventorySize = 3;
         ep.actorProto.teamId = ActorProto.TEAM_PLAYER;
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
     
         /******************************************
          * #8 - HEALTH_POTION - ACTOR, ITEM
@@ -438,7 +474,7 @@ public class EntityFactory {
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = HealthPotionOnUseBehavior.class;
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
 
         /*********************************************
          * #9 - SWORD - ACTOR, ITEM
@@ -474,7 +510,7 @@ public class EntityFactory {
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = SwordOnUseBehavior.class;
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
 
         /*********************************************
          * #10 - BOW - ACTOR, ITEM
@@ -511,7 +547,7 @@ public class EntityFactory {
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = null;
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
 
         /*********************************************
          * #11 - ARROW - ACTOR, ITEM
@@ -548,6 +584,42 @@ public class EntityFactory {
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = null;
 
-        entityProtos.add(ep);
+        entityProtos.put(ep.id, ep);
+
+        /*********************************************
+         * #99 - EFFECT - ACTOR
+         */
+
+        ep = new EntityProto(ID_EFFECT);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+
+        ep.entityBaseProto.represent = new TerminalChar();
+        ep.entityBaseProto.name = "Effect";
+        ep.entityBaseProto.description =
+                "You should not be able to read this.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar();
+        ep.actorProto.onInstantiationFunction = (Actor actor, Map<String, Object> params) -> {
+            TerminalChar represent_override = (TerminalChar)params.get("RepresentOverride");
+            actor.setRepresentOverride(represent_override);
+        };
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = DurationOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
+
+        entityProtos.put(ep.id, ep);
     }
 }

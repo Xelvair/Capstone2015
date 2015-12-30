@@ -15,9 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class PlayerOnTickBehavior implements OnTickBehavior{
-    public static final double MOVE_TIMEOUT = 0.05f;
-
-    private double moveTimeoutCounter = 0;
+    public static final double MOVE_TIMEOUT = 0.03f;
     
     @Override
     public void invoke(Actor entity, double timeDelta) {
@@ -42,7 +40,6 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
         /********
          * Check for movement
          */
-        moveTimeoutCounter = Math.max(0.f, moveTimeoutCounter - timeDelta);
         
         Direction move_dir = Direction.NONE;
         Direction use_dir = Direction.NONE;
@@ -127,8 +124,8 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
             }
         }
         
-        if(moveTimeoutCounter == 0.f && move_dir != Direction.NONE){
-            moveTimeoutCounter = MOVE_TIMEOUT;
+        if(entity.canMove() && move_dir != Direction.NONE){
+            entity.setMoveTimeout(MOVE_TIMEOUT);
             EntityMoveParams msg_obj = new EntityMoveParams(entity, move_dir);
             entity.sendBusMessage(new Message(EntityMove, msg_obj));
         }

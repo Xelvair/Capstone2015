@@ -31,6 +31,10 @@ public class Actor extends MapEntity {
     protected int visionRadius;
     protected HashMap<EntityBase, Double> damageIgnoreTimers = new HashMap<>();
     protected Inventory inventory;
+    protected TerminalChar representOverride = null;
+    protected double duration = -1.f;
+    protected double moveTimeout = 0.f;
+    protected double useTimeout = 0.f;
 
     public void setMap(Map map){
         if(hasVision()){
@@ -57,7 +61,35 @@ public class Actor extends MapEntity {
             view.updateVisibilityMask(x, y, visibilityMap);
         }
     }
-    
+
+    public void setUseTimeout(double time){
+        useTimeout = time;
+    }
+
+    public void setMoveTimeout(double time){
+        moveTimeout = time;
+    }
+
+    public void decreaseUseTimeout(double time){
+        useTimeout = Math.max(0.d, useTimeout - time);
+    }
+
+    public void decreaseMoveTimeout(double time){
+        moveTimeout = Math.max(0.d, moveTimeout - time);
+    }
+
+    public boolean canMove(){
+        return moveTimeout == 0.f;
+    }
+
+    public boolean canUse(){
+        return useTimeout == 0.f;
+    }
+
+    public double getDuration(){return duration;}
+
+    public void setDuration(double duration){this.duration = duration;}
+
     public MaskedMapView getView(){
         return view;
     }
@@ -173,7 +205,18 @@ public class Actor extends MapEntity {
 
     @Override
     public TerminalChar getRepresent() {
-        return proto.entityBaseProto.represent;
+        if(representOverride == null)
+            return proto.entityBaseProto.represent;
+        else
+            return representOverride;
+    }
+
+    public void setRepresentOverride(TerminalChar representOverride){
+        this.representOverride = representOverride;
+    }
+
+    public void disableRepresentOverride(){
+        this.representOverride = null;
     }
 
     public int getHealth() {
@@ -223,6 +266,8 @@ public class Actor extends MapEntity {
     }
 
     public void onTick(double timeDelta) {
+        decreaseMoveTimeout(timeDelta);
+        decreaseUseTimeout(timeDelta);
         if(inventory != null){
             inventory.tick();
         }
