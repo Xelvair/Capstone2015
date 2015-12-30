@@ -1,5 +1,7 @@
 package capstone2015.pathfinding;
 
+import capstone2015.entity.SolidType;
+
 import java.util.LinkedList;
 
 public interface Traversable<T extends Comparable<T>>{

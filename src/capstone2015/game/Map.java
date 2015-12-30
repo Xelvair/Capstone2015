@@ -124,7 +124,7 @@ public class Map implements MapInterface{
             return;
         }
 
-        if(!isSolidAt(dest_pos.getX(), dest_pos.getY())){
+        if(!getSolidTypeAt(dest_pos).collidesWith(entity.getSolidType())){
             entity.setXPos(dest_pos.getX());
             entity.setYPos(dest_pos.getY());
             entity.onMoved(this.getMapEntitiesAt(dest_pos));

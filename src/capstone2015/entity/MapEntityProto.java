@@ -5,7 +5,7 @@ import capstone2015.graphics.TerminalChar;
 
 public class MapEntityProto {
     public TerminalChar representInvisible;
-    public boolean isSolid;
+    public SolidType solidType;
     public boolean isOpaque;
     public boolean isEncounterNotified;
     public Class<? extends OnWalkedOverBehavior> onWalkedOverBehaviorClass;

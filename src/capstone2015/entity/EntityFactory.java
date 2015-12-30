@@ -6,7 +6,7 @@ import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.MessageBus;
 import java.awt.Color;
-import java.util.ArrayList;
+import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -47,6 +47,40 @@ public class EntityFactory {
     
     public static void setMessageBus(MessageBus messageBus){
         EntityFactory.messageBus = messageBus;
+    }
+
+    public static <T> T adaptiveInstantiate(Class<T> clazz, Map<String, Object> instantiationParams){
+        /*******************************
+         * If no class was passed, don't instantiatie anything
+         * hence, adaptive ;)
+         */
+        if(clazz == null)
+            return null;
+
+        /*******************************
+         * Check if a ctor exists that takes instantiation parameters
+         */
+        try{
+            Constructor ctor_ip = clazz.getConstructor(Map.class);
+            try {
+                return (T)ctor_ip.newInstance(instantiationParams);
+            } catch(Exception e){
+                System.out.println("Instantiation failed for parameterized ctor!");
+            }
+        } catch(NoSuchMethodException e){
+            //Fallthrough
+        }
+
+        /*******************************
+         * else call default ctor
+         */
+        try {
+            return clazz.newInstance();
+        } catch(Exception e){
+            System.out.println("Instantiation failed for default ctor!");
+        }
+
+        return null;
     }
     
     public static Tile createTile(int entityProtoId){
@@ -120,26 +154,13 @@ public class EntityFactory {
             /***********************************
              * Load behaviors
              */
-            if(e_proto.actorProto.onMovedBehaviorClass != null)
-                actor.onMovedBehavior = e_proto.actorProto.onMovedBehaviorClass.newInstance();
-
-            if(e_proto.actorProto.onTickBehaviorClass != null)
-                actor.onTickBehavior = e_proto.actorProto.onTickBehaviorClass.newInstance();
-
-            if(e_proto.mapEntityProto.onWalkedOverBehaviorClass != null)
-                actor.onWalkedOverBehavior = e_proto.mapEntityProto.onWalkedOverBehaviorClass.newInstance();
-
-            if(e_proto.actorProto.onDamageBehaviorClass != null)
-                actor.onDamageBehavior = e_proto.actorProto.onDamageBehaviorClass.newInstance();
-
-            if(e_proto.actorProto.onPickedUpItemBehaviorClass != null)
-                actor.onPickedUpItemBehavior = e_proto.actorProto.onPickedUpItemBehaviorClass.newInstance();
-
-            if(e_proto.actorProto.onDroppedItemBehaviorClass != null)
-                actor.onDroppedItemBehavior = e_proto.actorProto.onDroppedItemBehaviorClass.newInstance();
-
-            if(e_proto.actorProto.onHealBehaviorClass != null)
-                actor.onHealBehavior = e_proto.actorProto.onHealBehaviorClass.newInstance();
+            actor.onMovedBehavior = adaptiveInstantiate(e_proto.actorProto.onMovedBehaviorClass, instantiationParams);
+            actor.onTickBehavior = adaptiveInstantiate(e_proto.actorProto.onTickBehaviorClass, instantiationParams);
+            actor.onWalkedOverBehavior = adaptiveInstantiate(e_proto.mapEntityProto.onWalkedOverBehaviorClass, instantiationParams);
+            actor.onDamageBehavior = adaptiveInstantiate(e_proto.actorProto.onDamageBehaviorClass, instantiationParams);
+            actor.onPickedUpItemBehavior = adaptiveInstantiate(e_proto.actorProto.onPickedUpItemBehaviorClass, instantiationParams);
+            actor.onDroppedItemBehavior = adaptiveInstantiate(e_proto.actorProto.onDroppedItemBehaviorClass, instantiationParams);
+            actor.onHealBehavior = adaptiveInstantiate(e_proto.actorProto.onHealBehaviorClass, instantiationParams);
 
             /***********************************
              * If the actor has inventory space, instantiate an inventory
@@ -234,7 +255,7 @@ public class EntityFactory {
             + "stop you from running away from your foes.\n"
             + "Be very wary of these strange creatures.";
         ep.mapEntityProto.isOpaque = true;
-        ep.mapEntityProto.isSolid = true;
+        ep.mapEntityProto.solidType = SolidType.SOLID;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
@@ -255,7 +276,7 @@ public class EntityFactory {
               "The place where you entered the dungeon.\n"
             + "There's no turning back now!";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25BC', Color.BLUE, COLOR_FLOOR_HIDDEN);
@@ -277,7 +298,7 @@ public class EntityFactory {
             + "dungeon. However, you cannot leave until you have\n"
             + "found a dungeon key.";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.SOLID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25B2', Color.GREEN, COLOR_FLOOR_HIDDEN);
@@ -298,7 +319,7 @@ public class EntityFactory {
               "A warm and cozy bonfire.\n"
             + "Don't even think about stepping on it, it will burn you!";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\uFB63', new Color(156, 42, 0), COLOR_FLOOR_HIDDEN);
@@ -331,7 +352,7 @@ public class EntityFactory {
             + "very quick if you come too close to it. Keep your\n"
             + "distance, or be prepared for a fight.";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.NORMAL;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u08B0', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
@@ -367,7 +388,7 @@ public class EntityFactory {
             + "up in your inventory, and you will be able to leave\n"
             + "through any of the numerous exits within this place.";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u2C61', Color.YELLOW, COLOR_FLOOR_HIDDEN);
@@ -400,7 +421,7 @@ public class EntityFactory {
         ep.entityBaseProto.name = "Floor";
         ep.entityBaseProto.description = "\"If you fall, I'll be there.\" - Floor, 2015\n";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.GHOST;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_FLOOR_HIDDEN);
@@ -422,7 +443,7 @@ public class EntityFactory {
             + "dungeon, screaming after passing every corner, afraid\n"
             + "of what will happen next.";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID; //TODO: CHANGE TO NORMAL AND ADAPT ASTAR
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('@', Color.CYAN, COLOR_FLOOR_HIDDEN);
@@ -436,7 +457,7 @@ public class EntityFactory {
         ep.actorProto.visionRadius = 10;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
-        ep.actorProto.inventorySize = 3;
+        ep.actorProto.inventorySize = 5;
         ep.actorProto.teamId = ActorProto.TEAM_PLAYER;
 
         entityProtos.put(ep.id, ep);
@@ -455,7 +476,7 @@ public class EntityFactory {
         ep.entityBaseProto.description = 
               "It heals you, duh.";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\uFBEA', Color.RED, COLOR_FLOOR_HIDDEN);
@@ -491,7 +512,7 @@ public class EntityFactory {
         ep.entityBaseProto.description =
                 "Swing it at your foes to deal damage1";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u019A', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
@@ -528,7 +549,7 @@ public class EntityFactory {
                 "Hurls arrows towards your enemies, provided you have any.\n\n"
               + "Arrows, that is. You'll have plenty of enemies alright.";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(')', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
@@ -565,7 +586,7 @@ public class EntityFactory {
                 "Used as ammunition for the bow. After the arrow strikes its target,\n"
               + "you will be able to pick it up and shoot it again";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('I', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
@@ -600,7 +621,7 @@ public class EntityFactory {
         ep.entityBaseProto.description =
                 "You should not be able to read this.";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.isSolid = false;
+        ep.mapEntityProto.solidType = SolidType.GHOST;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar();

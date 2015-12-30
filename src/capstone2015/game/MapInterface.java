@@ -2,6 +2,7 @@ package capstone2015.game;
 
 import capstone2015.entity.Actor;
 import capstone2015.entity.MapEntity;
+import capstone2015.entity.SolidType;
 import capstone2015.entity.Tile;
 import capstone2015.geom.Vec2i;
 import java.util.ArrayList;
@@ -36,19 +37,17 @@ public interface MapInterface {
                 && 0 <= y && y < height());
     }
     
-    public default boolean isSolidAt(Vec2i pos){
-        return isSolidAt(pos.getX(), pos.getY());
+    public default SolidType getSolidTypeAt(Vec2i pos){
+        return getSolidTypeAt(pos.getX(), pos.getY());
     }
-    public default boolean isSolidAt(int x, int y){
-        boolean is_solid = false;
+    public default SolidType getSolidTypeAt(int x, int y){
+        SolidType solid_max = SolidType.GHOST;
 
         ArrayList<MapEntity> local_entities = getMapEntitiesAt(x, y);
         for(MapEntity e : local_entities){
-            if(e.isSolid()){
-                is_solid = true;
-            }
+            solid_max = SolidType.max(solid_max, e.getSolidType());
         }
-        return is_solid;
+        return solid_max;
     }
     
     public default boolean isOpaqueAt(Vec2i pos){

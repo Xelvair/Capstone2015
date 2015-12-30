@@ -67,7 +67,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
         ArrayList<Actor> targets = entity.getView().getActorsById(EntityFactory.ID_PLAYER);
 
         if(targets.size() > 0 && (path.isEmpty() || !path.peekLast().equals(targets.get(0).getPos()))){
-            MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView());
+            MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
             path = AStar.find(mta, entity.getPos(), targets.get(0).getPos());
         }
 
@@ -79,8 +79,8 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
             Vec2i random_point = entity.getPos().add(new Vec2i(rand.nextInt(RANDOM_MOVE_RADIUS * 2) - RANDOM_MOVE_RADIUS,
                     rand.nextInt(RANDOM_MOVE_RADIUS * 2) - RANDOM_MOVE_RADIUS));
 
-            if(entity.getView().inBounds(random_point) && !entity.getView().isSolidAt(random_point)){
-                MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView());
+            if(entity.getView().inBounds(random_point) && !entity.getView().getSolidTypeAt(random_point).collidesWith(entity.getSolidType())){
+                MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
                 path = AStar.find(mta, entity.getPos(), random_point);
             }
         }

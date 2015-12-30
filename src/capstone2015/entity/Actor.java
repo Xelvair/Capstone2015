@@ -194,8 +194,8 @@ public class Actor extends MapEntity {
     }
 
     @Override
-    public boolean isSolid() {
-        return proto.mapEntityProto.isSolid;
+    public SolidType getSolidType() {
+        return proto.mapEntityProto.solidType;
     }
 
     @Override

@@ -17,13 +17,15 @@ public class Capstone2015 {
     
     public static final int FRAME_RATE = 60;
     public static final int FRAME_TIME = 1000 / FRAME_RATE;
-    
+
     public static void main(String[] args) throws Exception {
         AppStateManager asm = new AppStateManager();
         Screen screen = new Screen();
         MessageBus messageBus = new MessageBus();
         
         EntityFactory.setMessageBus(messageBus);
+
+
 
         asm.pushState(new MainMenu(screen, messageBus));
        
