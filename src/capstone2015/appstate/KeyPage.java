@@ -9,8 +9,7 @@ import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
 
 public class KeyPage extends AppState{
-
-    public static final int ENTITY_COUNT = 9;
+    public static final int ENTITY_COUNT = 12;
     
     private Screen screen;
     private MessageBus messageBus;
