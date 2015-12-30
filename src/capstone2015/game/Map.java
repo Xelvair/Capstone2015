@@ -225,6 +225,10 @@ public class Map implements MapInterface{
         Actor effect = EntityFactory.createActor(EntityFactory.ID_EFFECT, sep.pos, instantiation_params);
         this.add(effect);
     }
+
+    private void onSpawnActor(SpawnActorParams sep){
+        add(EntityFactory.createActor(sep.entityId, sep.position, sep.instantiationParams));
+    }
     
     public void tick(double timeDelta){
        
@@ -258,7 +262,7 @@ public class Map implements MapInterface{
                 case EntityMove:
                 {
                     EntityMoveParams msg_obj = (EntityMoveParams)m.getMsgObject();
-                    onMove(msg_obj.getEntity(), msg_obj.getDirection());
+                    onMove(msg_obj.entity, msg_obj.direction);
                     break;
                 }
                 case InflictDamage:
@@ -285,6 +289,12 @@ public class Map implements MapInterface{
                 case SpawnEffect:
                 {
                     onSpawnEffect((SpawnEffectParams)m.getMsgObject());
+                    break;
+                }
+                case SpawnActor:
+                {
+                    onSpawnActor((SpawnActorParams)m.getMsgObject());
+                    break;
                 }
             }
         }

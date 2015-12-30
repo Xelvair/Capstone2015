@@ -1,5 +1,8 @@
 package capstone2015.util;
 
+import capstone2015.game.Direction;
+import capstone2015.geom.Vec2i;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -29,5 +32,21 @@ public class Util {
             longest_elem = Math.max(longest_elem, elem.length());
         }
         return longest_elem;
+    }
+
+    public static Direction toDirection(Vec2i vec){
+        if(vec.equals(new Vec2i(0, 0))){
+            return Direction.NONE;
+        } else if(vec.equals(new Vec2i(-1, 0))){
+            return Direction.LEFT;
+        } else if(vec.equals(new Vec2i(1, 0))){
+            return Direction.RIGHT;
+        } else if(vec.equals(new Vec2i(0, -1))){
+            return Direction.UP;
+        } else if(vec.equals(new Vec2i(0, 1))){
+            return Direction.DOWN;
+        } else {
+            throw new RuntimeException("Failed to generate direction from vector!" + vec);
+        }
     }
 }

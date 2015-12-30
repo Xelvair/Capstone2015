@@ -105,7 +105,9 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
             dir = Direction.DOWN;
         }
 
-        EntityMoveParams emp = new EntityMoveParams(entity, dir);
+        EntityMoveParams emp = new EntityMoveParams();
+        emp.entity = entity;
+        emp.direction = dir;
         entity.sendBusMessage(new Message(EntityMove, emp));
         entity.setMoveTimeout(MOVE_TIMEOUT);
     }

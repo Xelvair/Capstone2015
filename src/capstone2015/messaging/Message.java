@@ -16,6 +16,7 @@ public class Message {
         Pickup,                 //Entity wants to pick something up
         Drop,                   //Entity wants to drop an item
         SpawnEffect,            //An effect entity should be spawned on the map
+        SpawnActor,             //An entity should be spawned on the map
         Terminate,              //Entity has terminated
         GameWon,                //Game has been won
         QuitToDesktop;          //Game has to close

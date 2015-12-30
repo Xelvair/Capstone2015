@@ -126,7 +126,9 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
         
         if(entity.canMove() && move_dir != Direction.NONE){
             entity.setMoveTimeout(MOVE_TIMEOUT);
-            EntityMoveParams msg_obj = new EntityMoveParams(entity, move_dir);
+            EntityMoveParams msg_obj = new EntityMoveParams();
+            msg_obj.entity = entity;
+            msg_obj.direction = move_dir;
             entity.sendBusMessage(new Message(EntityMove, msg_obj));
         }
     } 

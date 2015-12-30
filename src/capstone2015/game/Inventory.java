@@ -35,6 +35,15 @@ public class Inventory {
             return null;
         }
     }
+
+    public int findById(int id){
+        for(int i = 0; i < items.length; ++i){
+            if(items[i] != null && items[i].getProto().id == id){
+                return i;
+            }
+        }
+        return -1;
+    }
     
     public int getSelectIndex(){
         return select_idx;

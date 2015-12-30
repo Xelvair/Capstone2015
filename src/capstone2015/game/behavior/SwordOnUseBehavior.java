@@ -12,7 +12,7 @@ import capstone2015.messaging.SpawnEffectParams;
 import java.awt.*;
 
 public class SwordOnUseBehavior implements OnUseBehavior {
-    public static final int SWORD_DAMAGE = 3;
+    public static final int SWORD_DAMAGE = 5;
     public static final double SWORD_EFFECT_DURATION = 0.2d;
     public static final double SWORD_USE_TIMEOUT = 0.75d;
 

@@ -566,7 +566,7 @@ public class EntityFactory {
         ep.actorProto.teamId = ActorProto.TEAM_NONE;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
-        ep.itemProto.onUseBehaviorClass = null;
+        ep.itemProto.onUseBehaviorClass = BowOnUseBehavior.class;
 
         entityProtos.put(ep.id, ep);
 
@@ -592,7 +592,7 @@ public class EntityFactory {
         ep.mapEntityProto.representInvisible = new TerminalChar('I', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
-        ep.actorProto.onTickBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = ArrowOnTickBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
