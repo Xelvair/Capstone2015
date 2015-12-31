@@ -88,7 +88,10 @@ public class Game extends AppState{
     }
     
     private void onReceivedDamage(ReceivedDamageParams msg_obj){
-        if(msg_obj.damagedEntity == map.getPlayer()) {
+        /********************************************
+         * Check if the player was damaged
+         */
+        if(msg_obj.damagedActor == map.getPlayer()) {
             String notif_text = String.format(
                     "You take %d damage from %s!",
                     msg_obj.damage,
@@ -98,18 +101,40 @@ public class Game extends AppState{
             notifications.push(notif_text, notif_color);
             return;
         }
+
+        /********************************************
+         * Check if an entity was damaged by the player directly
+         */
         if(msg_obj.damagingEntity == map.getPlayer()){
             String notif_text = String.format(
                     "You inflict %d damage on %s!",
                     msg_obj.damage,
-                    msg_obj.damagedEntity.getName()
+                    msg_obj.damagedActor.getName()
             );
             Color notif_color = msg_obj.damagingEntity.getRepresent().getFGColor();
             notifications.push(notif_text, notif_color);
             return;
         }
+
+        /********************************************
+         * Check if an entity was damaged by the player indirectly
+         */
+        EntityBase parent = msg_obj.damagingEntity.getParent();
+        while(parent != null){
+            if(parent == map.getPlayer()){
+                String notif_text = String.format(
+                        "You inflict %d damage on %s!",
+                        msg_obj.damage,
+                        msg_obj.damagedActor.getName()
+                );
+                Color notif_color = parent.getRepresent().getFGColor();
+                notifications.push(notif_text, notif_color);
+                return;
+            }
+            parent = parent.getParent();
+        }
     }
-    
+
     private void onPushNotification(PushNotificationParams pnp){
         notifications.push(pnp.notification, pnp.color);
     }

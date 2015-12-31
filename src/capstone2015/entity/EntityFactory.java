@@ -109,20 +109,26 @@ public class EntityFactory {
             return null;
         }
     }
-    
-    public static Actor createActor(int entityProtoId){
-        return createActor(entityProtoId, 0, 0);
-    }
+
     public static Actor createActor(int entityProtoId, Vec2i pos){
-        return createActor(entityProtoId, pos.getX(), pos.getY());
+        return createActor(entityProtoId, pos.getX(), pos.getY(), null);
     }
     public static Actor createActor(int entityProtoId, Vec2i pos, Map<String, Object> instantiationParams){
-        return createActor(entityProtoId, pos.getX(), pos.getY(), instantiationParams);
+        return createActor(entityProtoId, pos.getX(), pos.getY(), instantiationParams, null);
     }
     public static Actor createActor(int entityProtoId, int x, int y){
-        return createActor(entityProtoId, x, y, new TreeMap<String, Object>());
+        return createActor(entityProtoId, x, y, new TreeMap<String, Object>(), null);
     }
-    public static Actor createActor(int entityProtoId, int x, int y, Map<String, Object> instantiationParams){
+    public static Actor createActor(int entityProtoId, Vec2i pos, EntityBase parent){
+        return createActor(entityProtoId, pos.getX(), pos.getY(), parent);
+    }
+    public static Actor createActor(int entityProtoId, Vec2i pos, Map<String, Object> instantiationParams, EntityBase parent){
+        return createActor(entityProtoId, pos.getX(), pos.getY(), instantiationParams, parent);
+    }
+    public static Actor createActor(int entityProtoId, int x, int y, EntityBase parent){
+        return createActor(entityProtoId, x, y, new TreeMap<String, Object>(), parent);
+    }
+    public static Actor createActor(int entityProtoId, int x, int y, Map<String, Object> instantiationParams, EntityBase parent){
         try{
             EntityProto e_proto = getProto(entityProtoId);
 
@@ -144,6 +150,9 @@ public class EntityFactory {
             actor.pos = new Vec2i(x, y);
             actor.health = e_proto.actorProto.maxHealth;
             actor.visionRadius = e_proto.actorProto.visionRadius;
+
+            if(parent != null)
+                actor.parent = parent;
 
             /***********************************
              * Set members according to instantiation params

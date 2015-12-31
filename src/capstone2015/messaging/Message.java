@@ -11,6 +11,7 @@ public class Message {
         ReceivedDamage,         //Entity has received damage
         PushNotification,       //New notification should be pushed
         EntityMove,             //Entity wants to move
+        EntityMoveFailed,       //Entity was denied its move because of a collision
         InflictDamage,          //When something is dealing damage on an area
         AttemptKeyUsage,        //Key trying to open a door
         Pickup,                 //Entity wants to pick something up

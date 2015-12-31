@@ -226,6 +226,8 @@ public class Actor extends MapEntity {
     public int getMaxHealth() {
         return proto.actorProto.maxHealth;
     }
+
+    public boolean isInvulnerable(){return proto.actorProto.maxHealth < 0;}
     
     public void heal(Item source, int heal) {
         if(onHealBehavior != null){
@@ -276,10 +278,11 @@ public class Actor extends MapEntity {
         }
     }
 
-    public void onDamage(Actor damagingEntity, int damage) {
+    public boolean onDamage(Actor damagingEntity, int damage) {
         if (onDamageBehavior != null) {
-            onDamageBehavior.invoke(this, damagingEntity, damage);
+            return onDamageBehavior.invoke(this, damagingEntity, damage);
         }
+        return false;
     }
 
     public void setHealthPoints(int healthPoints) {

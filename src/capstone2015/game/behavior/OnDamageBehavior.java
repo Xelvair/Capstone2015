@@ -5,5 +5,5 @@ import capstone2015.entity.EntityBase;
 import capstone2015.messaging.MessageBus;
 
 public interface OnDamageBehavior {
-     public void invoke(Actor entity, EntityBase damagingEntity, int damage);
+     public boolean invoke(Actor entity, EntityBase damagingEntity, int damage);
 }

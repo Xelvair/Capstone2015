@@ -37,6 +37,7 @@ public class BowOnUseBehavior implements OnUseBehavior{
         sep.entityId = EntityFactory.ID_ARROW;
         sep.position = user.getPos();
         sep.instantiationParams = instantiationParams;
+        sep.parent = user;
 
         user.sendBusMessage(new Message(Message.Type.SpawnActor, sep));
 

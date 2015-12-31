@@ -7,6 +7,9 @@ import capstone2015.messaging.MessageBus;
 public abstract class EntityBase {
     /*package private*/ EntityProto proto;
     /*package private*/ MessageBus messageBus;
+    /*package private*/ EntityBase parent;
+
+    public final EntityBase getParent(){return parent;}
     
     public final EntityProto getProto(){
         return proto;

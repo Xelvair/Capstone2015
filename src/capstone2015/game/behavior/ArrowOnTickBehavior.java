@@ -4,13 +4,11 @@ import capstone2015.entity.Actor;
 import capstone2015.game.Direction;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
-import capstone2015.messaging.EntityMoveParams;
-import capstone2015.messaging.InflictDamageParams;
-import capstone2015.messaging.Message;
+import capstone2015.messaging.*;
 import capstone2015.util.Util;
-
-import java.awt.*;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class ArrowOnTickBehavior implements OnTickBehavior{
 
@@ -34,8 +32,46 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
 
     @Override
     public void invoke(Actor entity, double timeDelta) {
+
+        /*********************************************
+         * NOP if we're not airborne
+         */
         if(!isAirborne)
             return;
+
+        /*********************************************
+         * If the arrow collided with a wall, stop the flying and return to
+         * normal state
+         */
+        Runnable exit_airborne = () -> {
+            entity.disableRepresentOverride();
+            isAirborne = false;
+            flightDirection = Direction.NONE;
+            teamId = -1;
+        };
+
+        for(Message m : entity.getMessageBus()){
+            switch(m.getType()){
+                case EntityMoveFailed:
+                {
+                    Actor a = (Actor)m.getMsgObject();
+                    if(a == entity){
+                        exit_airborne.run();
+                        return;
+                    }
+                    break;
+                }
+                case ReceivedDamage:
+                {
+                    ReceivedDamageParams rdp = (ReceivedDamageParams)m.getMsgObject();
+                    if(rdp.damagingEntity == entity){
+                        exit_airborne.run();
+                        return;
+                    }
+                    break;
+                }
+            }
+        }
 
         if(flightDirection == Direction.LEFT || flightDirection == Direction.RIGHT){
             entity.setRepresentOverride(new TerminalChar('-', entity.getRepresent().getFGColor(), entity.getRepresent().getBGColor()));

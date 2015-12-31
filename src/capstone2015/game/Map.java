@@ -1,11 +1,9 @@
 package capstone2015.game;
 
-import capstone2015.entity.Actor;
-import capstone2015.entity.EntityFactory;
+import capstone2015.entity.*;
+
 import static capstone2015.entity.EntityFactory.ID_EXIT;
-import capstone2015.entity.Item;
-import capstone2015.entity.MapEntity;
-import capstone2015.entity.Tile;
+
 import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.*;
@@ -120,14 +118,14 @@ public class Map implements MapInterface{
         Vec2i dest_pos = new Vec2i( cur_pos.getX() + dir.toVector().getX(), 
                                           cur_pos.getY() + dir.toVector().getY());
 
-        if(!tilemap.inBounds(dest_pos.getX(), dest_pos.getY())){
-            return;
-        }
-
-        if(!getSolidTypeAt(dest_pos).collidesWith(entity.getSolidType())){
+        if(     tilemap.inBounds(dest_pos.getX(), dest_pos.getY())
+            &&  !getSolidTypeAt(dest_pos).collidesWith(entity.getSolidType())
+        ){
             entity.setXPos(dest_pos.getX());
             entity.setYPos(dest_pos.getY());
             entity.onMoved(this.getMapEntitiesAt(dest_pos));
+        } else {
+            messageBus.enqueue(new Message(Message.Type.EntityMoveFailed, entity));
         }
     }
     
@@ -156,8 +154,14 @@ public class Map implements MapInterface{
         ArrayList<Actor> entities = this.getActorsAt(position.getX(), position.getY());
         
         for(Actor e : entities){
-            if(e.getTeamId() != teamId) {
-                e.onDamage(damagingEntity, damage);
+            if(e.getTeamId() != teamId && !e.isInvulnerable()) {
+                if(e.onDamage(damagingEntity, damage)) {
+                    ReceivedDamageParams rdp = new ReceivedDamageParams();
+                    rdp.damage = damage;
+                    rdp.damagingEntity = damagingEntity;
+                    rdp.damagedActor = e;
+                    messageBus.enqueue(new Message(Message.Type.ReceivedDamage, rdp));
+                }
             }
         }
     }
@@ -227,7 +231,7 @@ public class Map implements MapInterface{
     }
 
     private void onSpawnActor(SpawnActorParams sep){
-        add(EntityFactory.createActor(sep.entityId, sep.position, sep.instantiationParams));
+        add(EntityFactory.createActor(sep.entityId, sep.position, sep.instantiationParams, sep.parent));
     }
     
     public void tick(double timeDelta){
