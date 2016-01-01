@@ -20,6 +20,8 @@ public class Message {
         SpawnActor,             //An entity should be spawned on the map
         Terminate,              //Entity has terminated
         GameWon,                //Game has been won
+        SaveGame,               //Game should be saved to file
+        LoadGame,               //Game should be loaded from file
         QuitToDesktop;          //Game has to close
     }
     

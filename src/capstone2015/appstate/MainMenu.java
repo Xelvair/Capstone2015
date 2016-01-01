@@ -70,6 +70,7 @@ public class MainMenu extends AppState{
                         messageBus.enqueue(new Message(PushLaunchGameState));
                         break;
                     case 1:
+                        messageBus.enqueue(new Message(Message.Type.LoadGame, "savegame.properties"));
                         break;
                     case 2:
                         messageBus.enqueue(new Message(PushKeyPageState));

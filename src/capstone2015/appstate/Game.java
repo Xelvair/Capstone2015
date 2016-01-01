@@ -2,33 +2,23 @@ package capstone2015.appstate;
 
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
-import capstone2015.entity.EntityFactory;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
-import capstone2015.game.MapTraversableAdapter;
 import capstone2015.game.MaskedMapView;
 import capstone2015.game.NotificationList;
-import capstone2015.game.VisionMaskGenerator;
 import capstone2015.game.panel.HudPanel;
 import capstone2015.game.panel.EntityListPanel;
 import capstone2015.game.panel.NotificationPanel;
-import capstone2015.game.panel.PointListPanel;
 import capstone2015.geom.Recti;
-import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import capstone2015.messaging.PushNotificationParams;
 import capstone2015.messaging.ReceivedDamageParams;
-import capstone2015.pathfinding.AStar;
-import capstone2015.util.Array2D;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Game extends AppState{
     public static final int NOTIFICATION_LIST_SIZE = 2;
@@ -76,6 +66,9 @@ public class Game extends AppState{
                 break;
             case GameWon:
                 notifications.push("You unlock the door and exit the dungeon!", Color.YELLOW);
+                break;
+            case SaveGame:
+                map.storeToProperties((String)m.getMsgObject());
                 break;
             case Terminate:
             {

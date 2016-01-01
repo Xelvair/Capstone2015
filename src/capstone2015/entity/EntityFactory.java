@@ -111,13 +111,16 @@ public class EntityFactory {
     }
 
     public static Actor createActor(int entityProtoId, Vec2i pos){
-        return createActor(entityProtoId, pos.getX(), pos.getY(), null);
+        return createActor(entityProtoId, pos.getX(), pos.getY(), null, null);
     }
     public static Actor createActor(int entityProtoId, Vec2i pos, Map<String, Object> instantiationParams){
         return createActor(entityProtoId, pos.getX(), pos.getY(), instantiationParams, null);
     }
     public static Actor createActor(int entityProtoId, int x, int y){
-        return createActor(entityProtoId, x, y, new TreeMap<String, Object>(), null);
+        return createActor(entityProtoId, x, y, new TreeMap<>(), null);
+    }
+    public static Actor createActor(int entityProtoId, int x, int y, Map<String, Object> instantiationParams){
+        return createActor(entityProtoId, x, y, instantiationParams, null);
     }
     public static Actor createActor(int entityProtoId, Vec2i pos, EntityBase parent){
         return createActor(entityProtoId, pos.getX(), pos.getY(), parent);
@@ -126,7 +129,7 @@ public class EntityFactory {
         return createActor(entityProtoId, pos.getX(), pos.getY(), instantiationParams, parent);
     }
     public static Actor createActor(int entityProtoId, int x, int y, EntityBase parent){
-        return createActor(entityProtoId, x, y, new TreeMap<String, Object>(), parent);
+        return createActor(entityProtoId, x, y, new TreeMap<>(), parent);
     }
     public static Actor createActor(int entityProtoId, int x, int y, Map<String, Object> instantiationParams, EntityBase parent){
         try{
@@ -159,6 +162,10 @@ public class EntityFactory {
              */
             if(instantiationParams.containsKey("Duration"))
                 actor.duration = (double) instantiationParams.get("Duration");
+            if(instantiationParams.containsKey("Health"))
+                actor.health = (Integer) instantiationParams.get("Health");
+            if(instantiationParams.containsKey("Inventory"))
+                actor.inventory = (Inventory) instantiationParams.get("Inventory");
 
             /***********************************
              * Load behaviors
@@ -174,7 +181,7 @@ public class EntityFactory {
             /***********************************
              * If the actor has inventory space, instantiate an inventory
              */
-            if(e_proto.actorProto.inventorySize > 0)
+            if(e_proto.actorProto.inventorySize > 0 && actor.inventory == null)
                 actor.inventory = new Inventory(e_proto.actorProto.inventorySize);
 
             /***********************************

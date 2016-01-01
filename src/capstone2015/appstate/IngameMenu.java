@@ -52,9 +52,11 @@ public class IngameMenu extends AppState{
                                     terminate();
                                     break;
                                 case 1:
+                                    messageBus.enqueue(new Message(Message.Type.SaveGame, "savegame.properties"));
                                     terminate();
                                     break;
                                 case 2:
+                                    messageBus.enqueue(new Message(Message.Type.LoadGame, "savegame.properties"));
                                     terminate();
                                     break;
                                 case 3:

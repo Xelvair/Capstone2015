@@ -11,8 +11,8 @@ import capstone2015.messaging.*;
 import static capstone2015.messaging.Message.Type.GameWon;
 
 import capstone2015.util.Array2D;
-import java.io.File;
-import java.io.FileInputStream;
+
+import java.io.*;
 import java.util.*;
 
 public class Map implements MapInterface{
@@ -42,8 +42,98 @@ public class Map implements MapInterface{
     public Actor getPlayer(){
         return player;
     }
-  
+
+    private boolean isLegacySavegame(String fileName){
+        FileInputStream file = null;
+        try {
+            file = new FileInputStream(fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Properties props = new Properties();
+        try {
+            props.load(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Legacy properties always contain "Width"
+        boolean is_legacy = props.containsKey("Width");
+
+        try {
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return is_legacy;
+    }
+
     public void loadFromProperties(String fileName){
+        if(isLegacySavegame(fileName)){
+            loadFromLegacyProperties(fileName);
+        } else {
+            loadFromNewProperties(fileName);
+        }
+    }
+
+    private void loadFromNewProperties(String fileName){
+        Properties props = new Properties();
+        try{
+            props.load(new FileInputStream(new File(fileName)));
+        } catch(Exception e){
+            System.out.println("Failed to load map: " + e.getMessage());
+        }
+
+        int tiles_width = Integer.parseInt(props.getProperty("tiles.width"));
+        int tiles_height = Integer.parseInt(props.getProperty("tiles.height"));
+
+        tilemap = new Array2D<Tile>(tiles_width, tiles_height);
+
+        for(int i = 0; i < tiles_height; ++i){
+            for(int j = 0; j < tiles_width; j++){
+                int tile_id = Integer.parseInt(props.getProperty(String.format("tiles[%d,%d]", j, i)));
+                tilemap.set(j, i, EntityFactory.createTile(tile_id));
+            }
+        }
+
+        int entity_count = Integer.parseInt(props.getProperty("actors.count"));
+
+        for(int i = 0; i < entity_count; ++i){
+            int actor_id = Integer.parseInt(props.getProperty(String.format("actors[%d].id", i)));
+            int actor_health = Integer.parseInt(props.getProperty(String.format("actors[%d].health", i)));
+            int actor_xpos = Integer.parseInt(props.getProperty(String.format("actors[%d].pos.x", i)));
+            int actor_ypos = Integer.parseInt(props.getProperty(String.format("actors[%d].pos.y", i)));
+            int actor_inv_size = Integer.parseInt(props.getProperty(String.format("actors[%d].inventory.count", i)));
+
+            TreeMap<String, Object> inst_params = new TreeMap<>();
+            inst_params.put("Health", actor_health);
+
+            if(actor_inv_size > 0){
+                Inventory inv = new Inventory(actor_inv_size);
+                for(int j = 0; j < actor_inv_size; ++j){
+                    int actor_inv_item_id = Integer.parseInt(props.getProperty(String.format("actors[%d].inventory[%d]", i, j)));
+
+                    if(actor_inv_item_id == -1)
+                        inv.set(i, null);
+                    else
+                        inv.set(j, EntityFactory.createItem(actor_inv_item_id));
+                }
+                inst_params.put("Inventory", inv);
+
+            }
+
+            Actor actor = EntityFactory.createActor(actor_id, actor_xpos, actor_ypos, inst_params);
+
+            if(actor_id == EntityFactory.ID_PLAYER)
+                this.player = actor;
+
+            add(actor);
+        }
+    }
+
+    private void loadFromLegacyProperties(String fileName){
       Properties props = new Properties();
       try{
         props.load(new FileInputStream(new File(fileName)));
@@ -102,6 +192,54 @@ public class Map implements MapInterface{
                 break;
         }
       }
+    }
+
+    public void storeToProperties(String fileName){
+        FileOutputStream savefile = null;
+        try {
+            savefile = new FileOutputStream(fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Properties props = new Properties();
+
+        props.setProperty("tiles.width", Integer.toString(width()));
+        props.setProperty("tiles.height", Integer.toString(height()));
+
+        for(int i = 0; i < height(); ++i){
+            for(int j = 0; j < width(); ++j){
+                props.setProperty(String.format("tiles[%d,%d]", j, i), Integer.toString(this.getTileAt(j, i).getProto().id));
+            }
+        }
+
+        props.setProperty("actors.count", Integer.toString(actors.size()));
+
+        for(int i = 0; i < actors.size(); ++i){
+            Actor a = actors.get(i);
+
+            props.setProperty(String.format("actors[%d].id", i), Integer.toString(a.getProto().id));
+            props.setProperty(String.format("actors[%d].health", i), Integer.toString(a.getHealth()));
+            props.setProperty(String.format("actors[%d].pos.x", i), Integer.toString(a.getPos().getX()));
+            props.setProperty(String.format("actors[%d].pos.y", i), Integer.toString(a.getPos().getY()));
+            if(a.getInventory() != null) {
+                props.setProperty(String.format("actors[%d].inventory.count", i), Integer.toString(a.getInventory().size()));
+
+                for(int j = 0; j < actors.get(i).getInventory().size(); ++j){
+                    if(a.getInventory().get(j) != null)
+                        props.setProperty(String.format("actors[%d].inventory[%d]", i, j), Integer.toString(a.getInventory().get(j).getProto().id));
+                    else
+                        props.setProperty(String.format("actors[%d].inventory[%d]", i, j), "-1");
+                }
+            }
+            else
+                props.setProperty(String.format("actors[%d].inventory.count", i), "0");
+        }
+
+        try {
+            props.store(savefile, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
   
     public int width(){

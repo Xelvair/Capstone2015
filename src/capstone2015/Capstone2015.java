@@ -57,6 +57,9 @@ public class Capstone2015 {
                     case GameWon:
                         asm.pushState(new GameWonState(screen, messageBus));
                         break;
+                    case LoadGame:
+                        asm.pushState(new Game(screen, messageBus, (String)m.getMsgObject()));
+                        break;
                     case QuitToDesktop:
                         asm.terminateStates();
                         break;
