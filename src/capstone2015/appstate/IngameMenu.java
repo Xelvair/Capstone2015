@@ -18,7 +18,7 @@ public class IngameMenu extends AppState{
         "Quit to Main Menu",
         "Quit to Desktop"
     };
-    private int selection = 0;
+    private OptionPanel optionPanel = new OptionPanel(options, new OptionPanel.Config(), 0);
     
     public IngameMenu(Screen screen, MessageBus messageBus){
         this.screen = screen;
@@ -39,24 +39,22 @@ public class IngameMenu extends AppState{
                     Key key = (Key)m.getMsgObject();
                     switch(key.getKind()){
                         case ArrowUp:
-                            selection += options.length - 1;
-                            selection %= options.length;
+                            optionPanel.prevSelection();
                             break;
                         case ArrowDown:
-                            ++selection;
-                            selection %= options.length;
+                            optionPanel.nextSelection();
                             break;
                         case Enter:
-                            switch(selection){
+                            switch(optionPanel.getSelection()){
                                 case 0:
                                     terminate();
                                     break;
                                 case 1:
-                                    messageBus.enqueue(new Message(Message.Type.SaveGame, "savegame.properties"));
+                                    messageBus.enqueue(new Message(Message.Type.SaveGame, "./savegame/savegame.properties"));
                                     terminate();
                                     break;
                                 case 2:
-                                    messageBus.enqueue(new Message(Message.Type.LoadGame, "savegame.properties"));
+                                    messageBus.enqueue(new Message(Message.Type.PushLoadSavegameState));
                                     terminate();
                                     break;
                                 case 3:
@@ -81,7 +79,7 @@ public class IngameMenu extends AppState{
             }
         }
         
-        screen.insertCenter(OptionPanel.render(options, new OptionPanel.Config(), selection));
+        screen.insertCenter(optionPanel.render());
     }
 
     @Override

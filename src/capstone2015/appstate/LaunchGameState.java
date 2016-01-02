@@ -17,7 +17,7 @@ public class LaunchGameState extends AppState{
     
     private String[] maps;
     private int mapCount;
-    private int selection = 0;
+    private OptionPanel optionPanel;
     
     public LaunchGameState(Screen screen, MessageBus messageBus){
         this.screen = screen;
@@ -40,23 +40,26 @@ public class LaunchGameState extends AppState{
         }
         
         mapCount = map_list.size();
+
+        OptionPanel.Config options_cfg = new OptionPanel.Config();
+        options_cfg.heading = "Select a map";
+
+        optionPanel = new OptionPanel(maps, options_cfg, 0);
     }
     
     private void handleKeyEvent(Key key){
         switch(key.getKind()){
             case ArrowUp:
-                selection += mapCount - 1;
-                selection %= mapCount;
+                optionPanel.prevSelection();
                 break;
             case ArrowDown:
-                ++selection;
-                selection %= mapCount;
+                optionPanel.nextSelection();
                 break;
             case Escape:
                 terminate();
                 break;
             case Enter:
-                String map_path = "./maps/" + maps[selection] + ".properties";
+                String map_path = "./maps/" + maps[optionPanel.getSelection()] + ".properties";
                 messageBus.enqueue(new Message(PushGameState, map_path));
                 terminate();
                 break;
@@ -73,10 +76,9 @@ public class LaunchGameState extends AppState{
             }
         }
         
-        OptionPanel.Config options_cfg = new OptionPanel.Config();
-        options_cfg.heading = "Select a map";
+
         
-        Panel p_options = OptionPanel.render(maps, options_cfg, selection);
+        Panel p_options = optionPanel.render();
         
         screen.insertCenter(p_options);
     }

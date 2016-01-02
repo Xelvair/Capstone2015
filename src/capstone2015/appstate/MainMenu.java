@@ -15,28 +15,30 @@ public class MainMenu extends AppState{
 
     private Screen screen;
     private MessageBus messageBus;
-    
-    private int selection = 0;
+
     private String[] options = {
         "Start Game",
         "Load Game",
         "Key",
         "Quit to Desktop"
     };
+    private OptionPanel optionPanel;
     
     public MainMenu(Screen screen, MessageBus messageBus){
         this.screen = screen;
         this.messageBus = messageBus;
-    }
-    
-    private void draw(){
+
         OptionPanel.Config menu_config = new OptionPanel.Config();
         menu_config.bgColor = Color.BLACK;
         menu_config.borderColor = Color.BLACK;
-        
+
+        optionPanel = new OptionPanel(options, menu_config, 0);
+    }
+    
+    private void draw(){
         Panel p_background = Panel.fillPanel(screen.width(), screen.height(), new TerminalChar());
         Panel p_title = TitleScreenPanel.render();
-        Panel p_options = OptionPanel.render(options, menu_config, selection);
+        Panel p_options = optionPanel.render();
         
         int menu_width = Math.max(p_title.width(), p_options.width());
         int menu_height = p_title.height() + p_options.height();
@@ -54,23 +56,21 @@ public class MainMenu extends AppState{
     private void handleKeyEvent(Key key){
         switch(key.getKind()){
             case ArrowUp:
-                selection += options.length - 1;
-                selection %= options.length;
+                optionPanel.prevSelection();
                 break;
             case ArrowDown:
-                ++selection;
-                selection %= options.length;
+                optionPanel.nextSelection();
                 break;
             case Escape:
                 terminate();
                 break;
             case Enter:
-                switch(selection){
+                switch(optionPanel.getSelection()){
                     case 0:
                         messageBus.enqueue(new Message(PushLaunchGameState));
                         break;
                     case 1:
-                        messageBus.enqueue(new Message(Message.Type.LoadGame, "savegame.properties"));
+                        messageBus.enqueue(new Message(PushLoadSavegameState));
                         break;
                     case 2:
                         messageBus.enqueue(new Message(PushKeyPageState));

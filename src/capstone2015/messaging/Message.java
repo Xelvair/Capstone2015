@@ -22,6 +22,7 @@ public class Message {
         GameWon,                //Game has been won
         SaveGame,               //Game should be saved to file
         LoadGame,               //Game should be loaded from file
+        PushLoadSavegameState,  //Push the savegame loader
         QuitToDesktop;          //Game has to close
     }
     

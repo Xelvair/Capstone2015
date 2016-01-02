@@ -21,6 +21,8 @@ public class Map implements MapInterface{
     private Actor player; // for fast lookup;
     private MessageBus messageBus;
 
+    private String mapName;
+
     public Map(MessageBus messageBus){
         this.messageBus = messageBus;
         actors = new LinkedList<>();
@@ -88,6 +90,12 @@ public class Map implements MapInterface{
 
         int tiles_width = Integer.parseInt(props.getProperty("tiles.width"));
         int tiles_height = Integer.parseInt(props.getProperty("tiles.height"));
+
+        if(props.containsKey("loaded_map_name")){
+            mapName = props.getProperty("loaded_map_name");
+        } else {
+            mapName = fileName.substring(fileName.lastIndexOf("/"), fileName.lastIndexOf("."));
+        }
 
         tilemap = new Array2D<Tile>(tiles_width, tiles_height);
 
@@ -192,6 +200,8 @@ public class Map implements MapInterface{
                 break;
         }
       }
+
+      mapName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
     }
 
     public void storeToProperties(String fileName){
@@ -205,6 +215,8 @@ public class Map implements MapInterface{
 
         props.setProperty("tiles.width", Integer.toString(width()));
         props.setProperty("tiles.height", Integer.toString(height()));
+        props.setProperty("loaded_map_name", mapName);
+        props.setProperty("store_timestamp", Long.toString(System.currentTimeMillis()));
 
         for(int i = 0; i < height(); ++i){
             for(int j = 0; j < width(); ++j){

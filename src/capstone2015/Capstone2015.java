@@ -1,17 +1,16 @@
 package capstone2015;
 
-import capstone2015.appstate.AppStateManager;
-import capstone2015.appstate.Game;
-import capstone2015.appstate.GameWonState;
-import capstone2015.appstate.IngameMenu;
-import capstone2015.appstate.KeyPage;
-import capstone2015.appstate.LaunchGameState;
-import capstone2015.appstate.MainMenu;
+import capstone2015.appstate.*;
 import capstone2015.entity.EntityFactory;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
+import sun.util.calendar.Gregorian;
+
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 public class Capstone2015 {
     
@@ -24,8 +23,6 @@ public class Capstone2015 {
         MessageBus messageBus = new MessageBus();
         
         EntityFactory.setMessageBus(messageBus);
-
-
 
         asm.pushState(new MainMenu(screen, messageBus));
        
@@ -59,6 +56,9 @@ public class Capstone2015 {
                         break;
                     case LoadGame:
                         asm.pushState(new Game(screen, messageBus, (String)m.getMsgObject()));
+                        break;
+                    case PushLoadSavegameState:
+                        asm.pushState(new LoadSavegameState(screen, messageBus));
                         break;
                     case QuitToDesktop:
                         asm.terminateStates();
