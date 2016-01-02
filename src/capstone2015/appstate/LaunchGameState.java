@@ -60,7 +60,7 @@ public class LaunchGameState extends AppState{
                 break;
             case Enter:
                 String map_path = "./maps/" + maps[optionPanel.getSelection()] + ".properties";
-                messageBus.enqueue(new Message(PushGameState, map_path));
+                messageBus.enqueue(new Message(LoadGame, map_path));
                 terminate();
                 break;
         }

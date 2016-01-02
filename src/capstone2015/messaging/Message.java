@@ -3,7 +3,6 @@ package capstone2015.messaging;
 public class Message {
     public enum Type{
         KeyEvent,               //A Lanterna key event has happened
-        PushGameState,          //Game should be started / displayed
         PushIngameMenuState,    //Ingame menu should be displayed
         PushKeyPageState,       //Key page should be displayed
         PushLaunchGameState,    //Game launcher should be opened
@@ -22,7 +21,8 @@ public class Message {
         GameWon,                //Game has been won
         SaveGame,               //Game should be saved to file
         LoadGame,               //Game should be loaded from file
-        PushLoadSavegameState,  //Push the savegame loader
+        PushSelectGamesaveState,//Push the savegame loader
+        PushUserTextInputState, //Push the user input reader
         QuitToDesktop;          //Game has to close
     }
     

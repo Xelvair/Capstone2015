@@ -7,6 +7,8 @@ import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 
+import java.util.function.Consumer;
+
 public class IngameMenu extends AppState{
     private Screen screen;
     private MessageBus messageBus;
@@ -49,14 +51,31 @@ public class IngameMenu extends AppState{
                                 case 0:
                                     terminate();
                                     break;
-                                case 1:
-                                    messageBus.enqueue(new Message(Message.Type.SaveGame, "./savegame/savegame.properties"));
-                                    terminate();
+                                case 1: {
+                                    Consumer<String> callback_func = (String s) -> {
+                                        if (s == null)
+                                            return;
+
+                                        //Amend string for full qualified URI
+                                        s = "./savegame/" + s + ".properties";
+
+                                        messageBus.enqueue(new Message(Message.Type.SaveGame, s));
+                                    };
+                                    messageBus.enqueue(new Message(Message.Type.PushUserTextInputState, callback_func));
                                     break;
+                                }
                                 case 2:
-                                    messageBus.enqueue(new Message(Message.Type.PushLoadSavegameState));
-                                    terminate();
+                                {
+                                    Consumer<String> callback_func = (String s) -> {
+                                        if (s == null)
+                                            return;
+
+                                        messageBus.enqueue(new Message(Message.Type.LoadGame, s));
+                                        terminate();
+                                    };
+                                    messageBus.enqueue(new Message(PushSelectGamesaveState, callback_func));
                                     break;
+                                }
                                 case 3:
                                     messageBus.enqueue(new Message(Message.Type.PushKeyPageState));
                                     break;

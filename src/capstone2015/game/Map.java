@@ -124,7 +124,7 @@ public class Map implements MapInterface{
                     int actor_inv_item_id = Integer.parseInt(props.getProperty(String.format("actors[%d].inventory[%d]", i, j)));
 
                     if(actor_inv_item_id == -1)
-                        inv.set(i, null);
+                        inv.set(j, null);
                     else
                         inv.set(j, EntityFactory.createItem(actor_inv_item_id));
                 }

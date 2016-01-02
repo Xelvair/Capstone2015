@@ -10,6 +10,7 @@ import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
+import java.util.function.Consumer;
 
 public class MainMenu extends AppState{
 
@@ -70,7 +71,13 @@ public class MainMenu extends AppState{
                         messageBus.enqueue(new Message(PushLaunchGameState));
                         break;
                     case 1:
-                        messageBus.enqueue(new Message(PushLoadSavegameState));
+                        Consumer<String> callback_func = (String s) -> {
+                            if(s == null)
+                                return;
+
+                            messageBus.enqueue(new Message(Message.Type.LoadGame, s));
+                        };
+                        messageBus.enqueue(new Message(PushSelectGamesaveState, callback_func));
                         break;
                     case 2:
                         messageBus.enqueue(new Message(PushKeyPageState));

@@ -6,11 +6,8 @@ import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
-import sun.util.calendar.Gregorian;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.function.Consumer;
 
 public class Capstone2015 {
     
@@ -21,12 +18,20 @@ public class Capstone2015 {
         AppStateManager asm = new AppStateManager();
         Screen screen = new Screen();
         MessageBus messageBus = new MessageBus();
-        
+
+        /****************************
+         * Link the MessageBus to the entity
+         * factory for simplified entiy creation
+         */
         EntityFactory.setMessageBus(messageBus);
 
+        /****************************
+         * Start with the main menu
+         */
         asm.pushState(new MainMenu(screen, messageBus));
        
         long lastClock = System.currentTimeMillis();
+
         while(!asm.isEmpty()){
             /****************************
              * Calculate exact time since last cycle
@@ -39,9 +44,6 @@ public class Capstone2015 {
              */
             for(Message m : messageBus){
                 switch(m.getType()){
-                    case PushGameState:
-                        asm.pushState(new Game(screen, messageBus, (String)m.getMsgObject()));
-                        break;
                     case PushIngameMenuState:
                         asm.pushState(new IngameMenu(screen, messageBus));
                         break;
@@ -57,8 +59,11 @@ public class Capstone2015 {
                     case LoadGame:
                         asm.pushState(new Game(screen, messageBus, (String)m.getMsgObject()));
                         break;
-                    case PushLoadSavegameState:
-                        asm.pushState(new LoadSavegameState(screen, messageBus));
+                    case PushSelectGamesaveState:
+                        asm.pushState(new SelectSavegameState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
+                        break;
+                    case PushUserTextInputState:
+                        asm.pushState(new UserTextInputState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
                         break;
                     case QuitToDesktop:
                         asm.terminateStates();
@@ -82,10 +87,12 @@ public class Capstone2015 {
              * Tick the state machine
              */
             asm.tick((double)deltatime_msec / 1000.d);
+
             /****************************
              * Draw the screen
              */
             screen.flip();
+
             /****************************
              * Wait until next cycle
              */
