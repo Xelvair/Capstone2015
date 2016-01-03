@@ -25,10 +25,9 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
     
     @Override
     public void invoke(Actor entity, double timeDelta) {
-        /*********
+        /***************************
          * Decrease damage ignore timers
          */
-
         HashMap<EntityBase, Double> damage_ignore_timers = entity.getDamageIgnoreTimers();
 
         for(Iterator<Map.Entry<EntityBase, Double>> it = damage_ignore_timers.entrySet().iterator(); it.hasNext(); ) {
@@ -43,7 +42,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
             }
         }
 
-        /************************
+        /***************************
          * If we can't move yet, exit
          */
         if(!entity.canMove())
@@ -84,7 +83,6 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
 
                 entity.sendBusMessage(new Message(InflictDamage, msg_obj));
                 entity.setMoveTimeout(MOVE_TIMEOUT);
-                System.out.println("fak");
                 return;
                 //For this Behavior, move and attack share a timeout, so that this
                 //entity doesn't attack instantly after entering the targets vincinity
@@ -92,8 +90,11 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
                 /****************************
                  * Else, pathfind to it
                  */
-                MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
-                path = AStar.find(mta, entity.getPos(), closest_target_pos, true);
+                if(path.size() == 0 || path.get(path.size() - 1).deltaOrthoMagnitude(closest_target_pos) > 1) {
+                    //Only recalculate path if path is empty or we're not already aiming for that entity
+                    MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
+                    path = AStar.find(mta, entity.getPos(), closest_target_pos, true);
+                }
             }
         }
 

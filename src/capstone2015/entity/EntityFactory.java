@@ -490,7 +490,8 @@ public class EntityFactory {
         ep.entityBaseProto.represent = new TerminalChar('!', Color.RED, COLOR_FLOOR);
         ep.entityBaseProto.name = "Health Potion";
         ep.entityBaseProto.description = 
-              "It heals you, duh.";
+              "Upon drinking this potion, you will instantly be\n"
+            + "healed for 3 HP.";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
@@ -526,7 +527,7 @@ public class EntityFactory {
         ep.entityBaseProto.represent = new TerminalChar('\u019A', new Color(160, 160, 160), COLOR_FLOOR);
         ep.entityBaseProto.name = "Sword";
         ep.entityBaseProto.description =
-                "Swing it at your foes to deal damage1";
+                "Swing it at your foes to deal damage.";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;

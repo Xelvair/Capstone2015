@@ -47,8 +47,8 @@ public class Capstone2015 {
                     case PushIngameMenuState:
                         asm.pushState(new IngameMenu(screen, messageBus));
                         break;
-                    case PushKeyPageState:
-                        asm.pushState(new KeyPage(screen, messageBus));
+                    case PushHelpPageState:
+                        asm.pushState(new HelpPageState(screen, messageBus));
                         break;
                     case PushLaunchGameState:
                         asm.pushState(new LaunchGameState(screen, messageBus));

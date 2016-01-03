@@ -321,7 +321,7 @@ public class Map implements MapInterface{
         int pickup_y = pickupper.getYPos();
 
         ArrayList<Actor> picked_up_actors = this.getPickupableAt(pickup_x, pickup_y);
-        
+
         while(!picked_up_actors.isEmpty()){
             Actor picked_up_actor = picked_up_actors.remove(0);
             

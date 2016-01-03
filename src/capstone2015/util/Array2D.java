@@ -1,5 +1,6 @@
 package capstone2015.util;
 
+import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Panel;
 import java.util.Arrays;
@@ -110,5 +111,18 @@ public class Array2D<T> implements Array2DInterface<T>{
         int x = (this.width() - array.width()) / 2;
         this.insert(array, x, y);
     }
-    
+
+    @Override
+    public Array2D<T> subArray(Recti subRect) {
+        Array2D<T> sub_array = new Array2D<T>(subRect.getWidth(), subRect.getHeight());
+        for(int i = 0; i < subRect.getHeight(); ++i){
+            for(int j = 0; j < subRect.getWidth(); ++j){
+                Vec2i rel_pos = new Vec2i(j, i);
+                Vec2i abs_pos = subRect.toAbs(rel_pos);
+                sub_array.set(rel_pos, this.get(abs_pos));
+            }
+        }
+        return sub_array;
+    }
+
 }

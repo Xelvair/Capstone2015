@@ -20,7 +20,7 @@ public class MainMenu extends AppState{
     private String[] options = {
         "Start Game",
         "Load Game",
-        "Legend",
+        "Help/Legend",
         "Quit to Desktop"
     };
     private OptionPanel optionPanel;
@@ -80,7 +80,7 @@ public class MainMenu extends AppState{
                         messageBus.enqueue(new Message(PushSelectGamesaveState, callback_func));
                         break;
                     case 2:
-                        messageBus.enqueue(new Message(PushKeyPageState));
+                        messageBus.enqueue(new Message(PushHelpPageState));
                         break;
                     case 3:
                         terminate();

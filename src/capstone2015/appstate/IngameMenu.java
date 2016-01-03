@@ -16,7 +16,7 @@ public class IngameMenu extends AppState{
         "Resume",
         "Save Game",
         "Load Game",
-        "Legend",
+        "Help/Legend",
         "Quit to Main Menu",
         "Quit to Desktop"
     };
@@ -77,7 +77,7 @@ public class IngameMenu extends AppState{
                                     break;
                                 }
                                 case 3:
-                                    messageBus.enqueue(new Message(Message.Type.PushKeyPageState));
+                                    messageBus.enqueue(new Message(Message.Type.PushHelpPageState));
                                     break;
                                 case 4:
                                     messageBus.enqueue(new Message(TerminateGameState));

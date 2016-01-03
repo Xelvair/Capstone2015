@@ -4,7 +4,7 @@ public class Message {
     public enum Type{
         KeyEvent,               //A Lanterna key event has happened
         PushIngameMenuState,    //Ingame menu should be displayed
-        PushKeyPageState,       //Key page should be displayed
+        PushHelpPageState,      //Help page should be displayed
         PushLaunchGameState,    //Game launcher should be opened
         TerminateGameState,     //GameState needs to be terminated
         ReceivedDamage,         //Entity has received damage

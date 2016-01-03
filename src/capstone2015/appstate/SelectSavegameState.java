@@ -15,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static capstone2015.messaging.Message.Type.PushGameState;
-
 public class SelectSavegameState extends AppState{
 
     private Screen screen;

@@ -8,7 +8,7 @@ import java.awt.Color;
 /***********
  * Key Panels are the panels describing the icons the player
  * encounters ingame. Each panel shall have a width of 60 while
- * the height stays variable, but can only go up to 20
+ * the height stays variable
  */
 
 public class KeyPanels {
@@ -18,18 +18,26 @@ public class KeyPanels {
         String entity_name = EntityFactory.getProto(entityId).entityBaseProto.name;
         String entity_desc = EntityFactory.getProto(entityId).entityBaseProto.description;
         int header_length = entity_name.length() + 2;
-        
-        Panel p = Panel.fillPanel(60, 20, bg_char);
-        
+
+        /********************
+         * Header panel
+         */
         Panel p_header = Panel.fillPanel(header_length, 1, bg_char);
         p_header.set(0, 0, entity_represent);
-        
         p_header.insert(Panel.textPanel(entity_name, Color.WHITE, Color.DARK_GRAY), 2, 0);
-        
-        p.insert(Panel.textPanel(entity_desc, Color.WHITE, Color.DARK_GRAY), 1, 3);
-        
+
+        /********************
+         * Content panel
+         */
+        Panel p_content = Panel.textPanel(entity_desc, Color.WHITE, Color.DARK_GRAY);
+
+        /********************
+         * Putting it together
+         */
+        Panel p = Panel.fillPanel(60, p_header.height() + p_content.height() + 3, bg_char);
         p.insertCenterHorizontally(p_header, 1);
-        
+        p.insert(p_content, 1, 3);
+
         return p;
     }
 }

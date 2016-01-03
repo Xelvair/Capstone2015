@@ -58,8 +58,8 @@ public class Screen implements Array2DInterface<TerminalChar>{
         buffers.clear();
         this.width = terminal.getTerminalSize().getColumns();
         this.height = terminal.getTerminalSize().getRows();
-        buffers.add(new Array2D<>(width, height)); //buf1
-        buffers.add(new Array2D<>(width, height)); //buf2
+        buffers.add(new Array2D<TerminalChar>(width, height)); //buf1
+        buffers.add(new Array2D<TerminalChar>(width, height)); //buf2
     }
     
     public void flip(){      
@@ -185,6 +185,11 @@ public class Screen implements Array2DInterface<TerminalChar>{
     @Override
     public void insertCenter(Array2D<TerminalChar> array) {
         buffers.get(getMemBufId()).insertCenter(array);
+    }
+
+    @Override
+    public Array2DInterface<TerminalChar> subArray(Recti subRect) {
+        return buffers.get(getScreenBufId()).subArray(subRect);
     }
 
     @Override
