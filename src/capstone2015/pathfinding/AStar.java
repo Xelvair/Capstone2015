@@ -9,13 +9,17 @@ import java.util.LinkedList;
 
 public class AStar {
     public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target){
+        return find(traversable, start, target, false);
+    }
+    public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target, boolean adjacentOk){
         long start_time = System.currentTimeMillis();
         boolean target_found = false;
         HashMap<TraversableNode<T>, TraversableNode<T>> nodes_closed = new HashMap<>();
         LinkedList<TraversableNode<T>> nodes_open = new LinkedList<>();
+        TraversableNode<T> final_node = null;
         
         nodes_open.add(new TraversableNode<T>(start, 0, null)); //Add starting node, no distance no previous node
-        
+
         while(!nodes_open.isEmpty()){
             /********************
              * Sort nodes by their "relvance" to finding the correct path
@@ -41,12 +45,23 @@ public class AStar {
             TraversableNode<T> cur_node = nodes_open.pollFirst();
             nodes_closed.put(cur_node, cur_node);
 
-            /***************
+            /************************
+             * If we're only looking for adjacent positions,
+             * scan all adjacencies for targetness #ripenglish
+             */
+            if(adjacentOk && traversable.getAdjacentNodes(cur_node).contains(new TraversableNode<T>(target))){
+                target_found = true;
+                final_node = cur_node;
+                break;
+            }
+
+            /************************
              * If final node was found, all required nodes are in nodes_closed
              * And ready to be searched for a path in reverse order
              */
             if(cur_node.equals(new TraversableNode<T>(target, 0.f, null))){
                 target_found = true;
+                final_node = cur_node;
                 break;
             }
 
@@ -94,13 +109,12 @@ public class AStar {
          * If a target was found, traverse nodes in reverse order and return traversed nodes
          * If not, return null
          */
-        if(target_found){
+        if(target_found && final_node != null){
             LinkedList<T> path = new LinkedList<>();
-            TraversableNode<T> cur_node = nodes_closed.get(new TraversableNode<T>(target, 0.f, null));
             
-            while(cur_node.getNodeVal().compareTo(start) != 0){
-                path.addFirst(cur_node.getNodeVal());
-                cur_node = cur_node.getPrevNode();
+            while(final_node.getNodeVal().compareTo(start) != 0){
+                path.addFirst(final_node.getNodeVal());
+                final_node = final_node.getPrevNode();
             }
 
             System.out.println("Path is " + path.size() + " transitions.");

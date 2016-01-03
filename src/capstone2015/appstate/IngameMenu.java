@@ -16,7 +16,7 @@ public class IngameMenu extends AppState{
         "Resume",
         "Save Game",
         "Load Game",
-        "Key",
+        "Legend",
         "Quit to Main Menu",
         "Quit to Desktop"
     };

@@ -361,7 +361,7 @@ public class EntityFactory {
         ep.mapEntityProto = new MapEntityProto();
         ep.actorProto = new ActorProto();
         
-        ep.entityBaseProto.represent = new TerminalChar('\u08B0', new Color(0, 153, 76), COLOR_FLOOR);
+        ep.entityBaseProto.represent = new TerminalChar('S', new Color(0, 153, 76), COLOR_FLOOR);
         ep.entityBaseProto.name = "Rattlesnake";
         ep.entityBaseProto.description = 
               "This dangerous creature can become very deadly \n"
@@ -371,7 +371,7 @@ public class EntityFactory {
         ep.mapEntityProto.solidType = SolidType.NORMAL;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('\u08B0', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.representInvisible = new TerminalChar('S', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
         ep.actorProto.maxHealth = 5;
         ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onMovedBehaviorClass = null;
@@ -459,7 +459,7 @@ public class EntityFactory {
             + "dungeon, screaming after passing every corner, afraid\n"
             + "of what will happen next.";
         ep.mapEntityProto.isOpaque = false;
-        ep.mapEntityProto.solidType = SolidType.FLUID; //TODO: CHANGE TO NORMAL AND ADAPT ASTAR
+        ep.mapEntityProto.solidType = SolidType.NORMAL;
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('@', Color.CYAN, COLOR_FLOOR_HIDDEN);
@@ -487,7 +487,7 @@ public class EntityFactory {
         ep.actorProto = new ActorProto();
         ep.itemProto = new ItemProto();
         
-        ep.entityBaseProto.represent = new TerminalChar('\uFBEA', Color.RED, COLOR_FLOOR);
+        ep.entityBaseProto.represent = new TerminalChar('!', Color.RED, COLOR_FLOOR);
         ep.entityBaseProto.name = "Health Potion";
         ep.entityBaseProto.description = 
               "It heals you, duh.";
@@ -495,7 +495,7 @@ public class EntityFactory {
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('\uFBEA', Color.RED, COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.representInvisible = new TerminalChar('!', Color.RED, COLOR_FLOOR_HIDDEN);
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;

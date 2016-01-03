@@ -76,6 +76,10 @@ public class Vec2i implements Comparable<Vec2i>{
         return (this.x == rhs.x && this.y == rhs.y);
     }
 
+    public int deltaOrthoMagnitude(Vec2i rhs){
+        return this.subtract(rhs).orthoMagnitude();
+    }
+
     public int orthoMagnitude() {return Math.abs(this.x) + Math.abs(this.y);}
     
     @Override

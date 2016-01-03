@@ -43,33 +43,60 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
             }
         }
 
-        /********************
-         * Inflict damage at our current location
-         */
-        InflictDamageParams msg_obj = new InflictDamageParams();
-        msg_obj.damagingEntity = entity;
-        msg_obj.position = entity.getPos();
-        msg_obj.damage = DAMAGE;
-        msg_obj.teamId = entity.getTeamId();
-
-        entity.sendBusMessage(new Message(InflictDamage, msg_obj));
-
         /************************
          * If we can't move yet, exit
          */
         if(!entity.canMove())
             return;
 
+
         /***************************
-         * If there's a potential target for us, and we aren't yet aiming for that spot,
-         * pathfind to that location
+         * Determine closest target
          */
         ArrayList<Actor> targets = entity.getView().getActorsById(EntityFactory.ID_PLAYER);
 
-        if(targets.size() > 0 && (path.isEmpty() || !path.peekLast().equals(targets.get(0).getPos()))){
-            MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
-            path = AStar.find(mta, entity.getPos(), targets.get(0).getPos());
+        Vec2i closest_target_pos = null;
+        for(Actor target : targets){
+            if(closest_target_pos == null) {
+                closest_target_pos = target.getPos();
+                continue;
+            }
+
+            if(target.getPos().deltaOrthoMagnitude(entity.getPos()) > closest_target_pos.deltaOrthoMagnitude(entity.getPos())){
+                closest_target_pos = target.getPos();
+            }
         }
+
+        /***************************
+         * If there's a potential target for us, and we aren't yet aiming for that spot,
+         * either deal damage if it's adjacent to out position, or pathfind to that location
+         */
+        if(closest_target_pos != null){
+            if(entity.getPos().deltaOrthoMagnitude(closest_target_pos) == 1){
+                /*****************************
+                 * If we're right next to the closest target, deal damage to it
+                 */
+                InflictDamageParams msg_obj = new InflictDamageParams();
+                msg_obj.damagingEntity = entity;
+                msg_obj.position = closest_target_pos;
+                msg_obj.damage = DAMAGE;
+                msg_obj.teamId = entity.getTeamId();
+
+                entity.sendBusMessage(new Message(InflictDamage, msg_obj));
+                entity.setMoveTimeout(MOVE_TIMEOUT);
+                System.out.println("fak");
+                return;
+                //For this Behavior, move and attack share a timeout, so that this
+                //entity doesn't attack instantly after entering the targets vincinity
+            } else {
+                /****************************
+                 * Else, pathfind to it
+                 */
+                MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
+                path = AStar.find(mta, entity.getPos(), closest_target_pos, true);
+            }
+        }
+
 
         /*********************************
          * If no target was found, find a random spot to go to

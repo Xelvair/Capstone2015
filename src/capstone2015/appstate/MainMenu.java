@@ -20,7 +20,7 @@ public class MainMenu extends AppState{
     private String[] options = {
         "Start Game",
         "Load Game",
-        "Key",
+        "Legend",
         "Quit to Desktop"
     };
     private OptionPanel optionPanel;
