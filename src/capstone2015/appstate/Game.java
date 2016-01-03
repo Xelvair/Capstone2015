@@ -154,7 +154,8 @@ public class Game extends AppState{
         drawPickupableList();
         
         Panel p_hud;
-        p_hud = HudPanel.render(map.getPlayer(), screen.width());
+        Actor plr = map.getPlayer();
+        p_hud = HudPanel.render(plr.getHealth(), plr.getMaxHealth(), plr.getInventory(), screen.width());
         screen.insert(p_hud, 0, screen.height() - 1);
     }
     

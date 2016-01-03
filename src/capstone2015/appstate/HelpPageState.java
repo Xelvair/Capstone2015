@@ -3,6 +3,7 @@ package capstone2015.appstate;
 import capstone2015.entity.EntityFactory;
 import capstone2015.game.panel.HelpPanel;
 import capstone2015.game.panel.HowToPlayPanel;
+import capstone2015.game.panel.HudExplanationPanel;
 import capstone2015.game.panel.KeyPanels;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
@@ -44,7 +45,7 @@ public class HelpPageState extends AppState {
 
         helpPanel.addPanel("How to Play", HowToPlayPanel.render());
         helpPanel.addPanel("Controls", Panel.textPanel("Nothing here yet, sorry!", Color.WHITE, Color.DARK_GRAY));
-        helpPanel.addPanel("HUD", Panel.textPanel("Nothing here yet, sorry!", Color.WHITE, Color.DARK_GRAY));
+        helpPanel.addPanel("HUD", HudExplanationPanel.render());
         helpPanel.addPanel("Legend", legend_panel);
     }
 
