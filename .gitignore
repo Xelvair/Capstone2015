@@ -4,3 +4,5 @@ build/
 nbproject/
 out/
 savegame/
+dist/
+manifest.mf
