@@ -379,7 +379,7 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
-        ep.actorProto.visionRadius = 14;
+        ep.actorProto.visionRadius = 7;
         ep.actorProto.visionRevealedByDefault = true;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
