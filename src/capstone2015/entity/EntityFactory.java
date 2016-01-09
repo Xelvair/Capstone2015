@@ -275,6 +275,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
+        ep.tileProto.colorVariation = 3;
         
         entityProtos.put(ep.id, ep);
         
@@ -296,6 +297,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25BC', Color.BLUE, COLOR_FLOOR_HIDDEN);
+        ep.tileProto.colorVariation = 1;
 
         entityProtos.put(ep.id, ep);
         
@@ -318,6 +320,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25B2', Color.GREEN, COLOR_FLOOR_HIDDEN);
+        ep.tileProto.colorVariation = 1;
 
         entityProtos.put(ep.id, ep);
         
@@ -441,6 +444,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_FLOOR_HIDDEN);
+        ep.tileProto.colorVariation = 3;
 
         entityProtos.put(ep.id, ep);
         

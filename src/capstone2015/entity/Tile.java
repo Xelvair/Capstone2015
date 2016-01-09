@@ -11,6 +11,10 @@ public class Tile extends MapEntity{
     public String getName() {
         return proto.entityBaseProto.name;
     }
+    
+    public int getColorVariation(){
+        return proto.tileProto.colorVariation;
+    }
 
     @Override
     public String getDescription() {

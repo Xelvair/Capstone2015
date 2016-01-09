@@ -49,4 +49,12 @@ public class Util {
             throw new RuntimeException("Failed to generate direction from vector!" + vec);
         }
     }
+    
+    public static int cap(int val, int min, int max){
+        if(val < min)
+            return min;
+        if(val > max)
+            return max;
+        return val;
+    }
 }
