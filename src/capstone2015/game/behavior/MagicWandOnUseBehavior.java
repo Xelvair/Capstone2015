@@ -16,10 +16,14 @@ public class MagicWandOnUseBehavior implements OnUseBehavior{
     @Override
     public void invoke(Item item, Actor user, Vec2i useDir) {
         /*******************
-        * Only allow directional use
-        */
+         * Respect use timeout
+         */
         if(!item.canUse())
             return;
+        
+        /*******************
+        * Only allow directional use
+        */
         if(useDir.orthoMagnitude() <= 0)
             return;
 
