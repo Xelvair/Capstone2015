@@ -18,7 +18,7 @@ import java.util.*;
 public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
 
     public static final int DAMAGE = 1;
-    public static final float MOVE_TIMEOUT = 0.7f;
+    public static final float MOVE_TIMEOUT = 0.25f;
     public static final int RANDOM_MOVE_RADIUS = 10;
             
     private LinkedList<Vec2i> path = new LinkedList<>();

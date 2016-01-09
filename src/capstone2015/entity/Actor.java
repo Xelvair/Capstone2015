@@ -271,7 +271,7 @@ public class Actor extends MapEntity {
         decreaseMoveTimeout(timeDelta);
         decreaseUseTimeout(timeDelta);
         if(inventory != null){
-            inventory.tick();
+            inventory.tick(timeDelta);
         }
         if (onTickBehavior != null) {
             onTickBehavior.invoke(this, timeDelta);

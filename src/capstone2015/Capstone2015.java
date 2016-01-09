@@ -115,7 +115,18 @@ public class Capstone2015 {
              */
             Key key;
             while((key = screen.readInput()) != null){
-                Key fixed_key = new Key(key.getKind(), isCtrlPressed, isAltPressed);
+                /************************
+                 * Let me just fix Lanterna... :/
+                 */
+                Key fixed_key;
+                if(key.getKind() != Key.Kind.NormalKey)
+                    fixed_key = new Key(key.getKind(), isCtrlPressed, isAltPressed);
+                else
+                    fixed_key = new Key(key.getCharacter(), isCtrlPressed, isAltPressed);
+                
+                /************************
+                 * Enqueue fixed key event
+                 */
                 messageBus.enqueue(new Message(Message.Type.KeyEvent, fixed_key));
             }
             messageBus.refresh();

@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class PlayerOnTickBehavior implements OnTickBehavior{
     public static final double MOVE_TIMEOUT = 0.1f;
-    public static final int QUICK_MOVE_LENGTH = 7;
+    public static final int QUICK_MOVE_LENGTH = 30;
     
     private Direction quickMoveDirection = Direction.NONE;
     private int quickMoveCounter = 0;

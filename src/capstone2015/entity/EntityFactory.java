@@ -33,6 +33,8 @@ public class EntityFactory {
     public static final int ID_WATER = 12;
     public static final int ID_WOOD_FLOOR = 13;
     public static final int ID_FAKE_WALL = 14;
+    public static final int ID_MAGIC_WAND = 15;
+    public static final int ID_MAGIC_BOLT = 16;
     public static final int ID_EFFECT = 99;
     
     public static final Color COLOR_FLOOR = new Color(87,59,12);
@@ -686,6 +688,75 @@ public class EntityFactory {
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
         
+        entityProtos.put(ep.id, ep);
+        
+        /*********************************************
+         * #15 - MAGIC_WAND - ACTOR, ITEM
+         */
+
+        ep = new EntityProto(ID_MAGIC_WAND);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+        ep.itemProto = new ItemProto();
+
+        ep.entityBaseProto.represent = new TerminalChar('/', new Color(0, 0, 255), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Magic Wand";
+        ep.entityBaseProto.description =
+                "Shoots magic bolts at your enemies. The bolts will home\n"
+              + "in on your target.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('/', new Color(0, 0, 255), COLOR_FLOOR_HIDDEN);
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = true;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.itemProto.onItemPickedUpBehaviorClass = null;
+        ep.itemProto.onItemDroppedBehaviorClass = null;
+        ep.itemProto.onUseBehaviorClass = MagicWandOnUseBehavior.class;
+
+        entityProtos.put(ep.id, ep);
+        
+        /*********************************************
+         * #16 - MAGIC_BOLT - ACTOR
+         */
+
+        ep = new EntityProto(ID_MAGIC_BOLT);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+
+        ep.entityBaseProto.represent = new TerminalChar('*', new Color(30, 30, 255), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Magic Bolt";
+        ep.entityBaseProto.description =
+                "Homes in on its target and deals damage.\n";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('*', new Color(30, 30, 255), COLOR_FLOOR_HIDDEN);
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = MagicBoltOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 10;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
+
         entityProtos.put(ep.id, ep);
         
         /*********************************************

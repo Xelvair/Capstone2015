@@ -25,6 +25,9 @@ public class HelpPageState extends AppState {
 
         int[] items_in_legend = new int[]{
                 EntityFactory.ID_WALL,
+                EntityFactory.ID_FAKE_WALL,
+                EntityFactory.ID_WATER,
+                EntityFactory.ID_WOOD_FLOOR,
                 EntityFactory.ID_ENTRY,
                 EntityFactory.ID_EXIT,
                 EntityFactory.ID_BONFIRE,
@@ -33,7 +36,8 @@ public class HelpPageState extends AppState {
                 EntityFactory.ID_HEALTH_POTION,
                 EntityFactory.ID_SWORD,
                 EntityFactory.ID_BOW,
-                EntityFactory.ID_ARROW
+                EntityFactory.ID_ARROW,
+                EntityFactory.ID_MAGIC_WAND
         };
 
         LinkedList<Panel> legend_panels = new LinkedList<>();

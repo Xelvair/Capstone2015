@@ -82,6 +82,10 @@ public class Vec2i implements Comparable<Vec2i>{
 
     public int orthoMagnitude() {return Math.abs(this.x) + Math.abs(this.y);}
     
+    public int dotProduct(Vec2i rhs){
+        return this.x * rhs.x + this.y * rhs.y;
+    }
+    
     @Override
     public int hashCode(){
         return  this.y * 46370 + this.x;

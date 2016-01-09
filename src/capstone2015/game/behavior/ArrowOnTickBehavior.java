@@ -12,8 +12,8 @@ import java.util.function.Consumer;
 
 public class ArrowOnTickBehavior implements OnTickBehavior{
 
-    public static int BOW_DAMAGE = 3;
-    public static double BOW_MOVE_TIMEOUT = 0.03f;
+    public static int ARROW_DAMAGE = 3;
+    public static double ARROW_MOVE_TIMEOUT = 0.03f;
 
     private boolean isAirborne = false;
     private Direction flightDirection;
@@ -80,7 +80,7 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
         }
 
         InflictDamageParams idp = new InflictDamageParams();
-        idp.damage = BOW_DAMAGE;
+        idp.damage = ARROW_DAMAGE;
         idp.position = entity.getPos();
         idp.damagingEntity = entity;
         idp.teamId = teamId;
@@ -96,6 +96,6 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
 
         entity.sendBusMessage(new Message(Message.Type.EntityMove, emp));
 
-        entity.setMoveTimeout(BOW_MOVE_TIMEOUT);
+        entity.setMoveTimeout(ARROW_MOVE_TIMEOUT);
     }
 }

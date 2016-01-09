@@ -104,11 +104,14 @@ public class Inventory {
         }
     }
     
-    public void tick(){
+    public void tick(double timeDelta){
         for(int i = 0; i < items.length; i++){
             Item item = items[i];
-            if(item != null && item.isTerminated()){
-                remove(item);
+            
+            if(item != null){
+                item.onTick(timeDelta);
+                if(item.isTerminated())
+                    remove(item);
             }
         }
     }

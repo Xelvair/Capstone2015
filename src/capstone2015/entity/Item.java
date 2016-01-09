@@ -11,6 +11,7 @@ public class Item extends EntityBase{
     protected OnItemPickedUpBehavior onItemPickedUpBehavior;
     protected OnItemDroppedBehavior onItemDroppedBehavior;
     private boolean terminated = false;
+    private double useTimeout = 0.f;
 
     public void terminate(){
         terminated = true;
@@ -33,6 +34,18 @@ public class Item extends EntityBase{
     @Override
     public String getDescription() {
         return proto.entityBaseProto.description;
+    }
+    
+    public void setUseTimeout(double useTimeout){
+        this.useTimeout = useTimeout;
+    }
+    
+    public boolean canUse(){
+        return this.useTimeout == 0.f;
+    }
+    
+    public void onTick(double timeDelta){
+        useTimeout = Math.max(0.f, useTimeout - timeDelta);
     }
     
     public boolean isUsable(){
