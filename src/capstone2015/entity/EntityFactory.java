@@ -30,6 +30,9 @@ public class EntityFactory {
     public static final int ID_SWORD = 9;
     public static final int ID_BOW = 10;
     public static final int ID_ARROW = 11;
+    public static final int ID_WATER = 12;
+    public static final int ID_WOOD_FLOOR = 13;
+    public static final int ID_FAKE_WALL = 14;
     public static final int ID_EFFECT = 99;
     
     public static final Color COLOR_FLOOR = new Color(87,59,12);
@@ -275,7 +278,6 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
-        ep.tileProto.colorVariation = 3;
         
         entityProtos.put(ep.id, ep);
         
@@ -297,7 +299,6 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25BC', Color.BLUE, COLOR_FLOOR_HIDDEN);
-        ep.tileProto.colorVariation = 1;
 
         entityProtos.put(ep.id, ep);
         
@@ -320,7 +321,6 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25B2', Color.GREEN, COLOR_FLOOR_HIDDEN);
-        ep.tileProto.colorVariation = 1;
 
         entityProtos.put(ep.id, ep);
         
@@ -444,7 +444,6 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_FLOOR_HIDDEN);
-        ep.tileProto.colorVariation = 3;
 
         entityProtos.put(ep.id, ep);
         
@@ -605,7 +604,7 @@ public class EntityFactory {
         ep.entityBaseProto.name = "Arrow";
         ep.entityBaseProto.description =
                 "Used as ammunition for the bow. After the arrow strikes its target,\n"
-              + "you will be able to pick it up and shoot it again";
+              + "you will be able to pick it up and shoot it again.";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
@@ -628,6 +627,67 @@ public class EntityFactory {
 
         entityProtos.put(ep.id, ep);
 
+        /******************************************
+         * #12 - WATER - TILE
+         */
+        ep = new EntityProto(ID_WATER);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.tileProto = new TileProto();
+        
+        ep.entityBaseProto.represent = new TerminalChar('~', new Color(70, 140, 255), new Color(40, 80, 255));
+        ep.entityBaseProto.name = "Water";
+        ep.entityBaseProto.description = ""
+                + "You cannot pass water, seems like you haven't\n"
+                + "been attending your swimming lessons.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.NORMAL;
+        ep.mapEntityProto.isEncounterNotified = false;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('~', new Color(35, 70, 120), new Color(20, 40, 120));
+
+        entityProtos.put(ep.id, ep);
+        
+        /******************************************
+         * #13 - WOOD_FLOOR - TILE
+         */
+        ep = new EntityProto(ID_WOOD_FLOOR);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.tileProto = new TileProto();
+        
+        ep.entityBaseProto.represent = new TerminalChar('┼', new Color(70, 35, 0), new Color(100, 50, 0));
+        ep.entityBaseProto.name = "Wood Floor";
+        ep.entityBaseProto.description = ""
+                + "Exactly like the other kind of floor, but wooden.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.GHOST;
+        ep.mapEntityProto.isEncounterNotified = false;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('┼', new Color(25, 10, 5), new Color(35, 18, 7));
+
+        entityProtos.put(ep.id, ep);
+        
+        /******************************************
+         * #14 - FAKE_WALL - TILE
+         */
+        ep = new EntityProto(ID_FAKE_WALL);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.tileProto = new TileProto();
+        
+        ep.entityBaseProto.represent = new TerminalChar(' ', Color.WHITE, new Color(139, 141, 122));
+        ep.entityBaseProto.name = "Fake Wall";
+        ep.entityBaseProto.description = 
+              "Looks just like a real wall, but lets you pass through.";
+        ep.mapEntityProto.isOpaque = true;
+        ep.mapEntityProto.solidType = SolidType.GHOST;
+        ep.mapEntityProto.isEncounterNotified = false;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
+        
+        entityProtos.put(ep.id, ep);
+        
         /*********************************************
          * #99 - EFFECT - ACTOR
          */

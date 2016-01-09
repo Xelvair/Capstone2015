@@ -1,14 +1,10 @@
 package capstone2015.game;
 
 import capstone2015.entity.MapEntity;
-import capstone2015.entity.Tile;
 import capstone2015.geom.Recti;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.TerminalChar;
-import capstone2015.util.Util;
-import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class MapRenderer {
   public static final int ITEM_DISPLAY_SWITCHTIME = 500;
@@ -38,30 +34,10 @@ public class MapRenderer {
 
               p.set(j, i, tile);
           }  else {
-            Random rand = new Random(map_x * map_y);
-              
-            TerminalChar tile_represent = entities.get(0).getRepresent();
-            int color_variation_max = ((Tile)entities.get(0)).getColorVariation();
-            int color_variation = rand.nextInt(color_variation_max * 2) - color_variation_max;
-            Color tile_represent_bg_color = new Color(
-                    Util.cap(tile_represent.getBGColor().getRed() + color_variation, 0, 255),
-                    Util.cap(tile_represent.getBGColor().getGreen() + color_variation, 0, 255),
-                    Util.cap(tile_represent.getBGColor().getBlue() + color_variation, 0, 255)
-            );
-            p.set(j, i, new TerminalChar(tile_represent.getCharacter(), tile_represent.getFGColor(), tile_represent_bg_color));
+            p.set(j, i, entities.get(0).getRepresent());
           }
         } else if(map.inBounds(map_x, map_y) && map.getVisionAt(map_x, map_y).tileVisible()){
-            Random rand = new Random(map_x * map_y);
-
-            TerminalChar tile_represent = map.getMapEntitiesAt(map_x, map_y).get(0).getRepresentInvisible();
-            int color_variation_max = ((Tile)map.getMapEntitiesAt(map_x, map_y).get(0)).getColorVariation();
-            int color_variation = rand.nextInt(color_variation_max * 2) - color_variation_max;
-            Color tile_represent_bg_color = new Color(
-                    Util.cap(tile_represent.getBGColor().getRed() + color_variation, 0, 255),
-                    Util.cap(tile_represent.getBGColor().getGreen() + color_variation, 0, 255),
-                    Util.cap(tile_represent.getBGColor().getBlue() + color_variation, 0, 255)
-            );
-            p.set(j, i, new TerminalChar(tile_represent.getCharacter(), tile_represent.getFGColor(), tile_represent_bg_color));  
+            p.set(j, i, map.getMapEntitiesAt(map_x, map_y).get(0).getRepresentInvisible());  
         } else {
           p.set(j, i, new TerminalChar());
         }

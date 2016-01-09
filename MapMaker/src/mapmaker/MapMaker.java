@@ -27,6 +27,9 @@ public class MapMaker {
     private static final Color COLOR_SWORD = new Color(160, 160, 160);
     private static final Color COLOR_BOW = new Color(120, 120, 120);
     private static final Color COLOR_ARROW = new Color(90, 90, 90);
+    private static final Color COLOR_WATER = new Color(50, 100, 255);
+    private static final Color COLOR_WOOD_FLOOR = new Color(100, 50, 20);
+    private static final Color COLOR_FAKE_WALL = new Color(30, 30, 30);
     
     public static final int ID_WALL = 0;
     public static final int ID_ENTRY = 1;
@@ -40,6 +43,9 @@ public class MapMaker {
     public static final int ID_SWORD = 9;
     public static final int ID_BOW = 10;
     public static final int ID_ARROW = 11;
+    public static final int ID_WATER = 12;
+    public static final int ID_WOOD_FLOOR = 13;
+    public static final int ID_FAKE_WALL = 14;
     
     private static TreeMap<Color, Integer> colorCodes = new TreeMap(new Comparator<Color>(){
         @Override
@@ -88,6 +94,9 @@ public class MapMaker {
         MapMaker.colorCodes.put(COLOR_SWORD, ID_SWORD);
         MapMaker.colorCodes.put(COLOR_BOW, ID_BOW);
         MapMaker.colorCodes.put(COLOR_ARROW, ID_ARROW);
+        MapMaker.colorCodes.put(COLOR_WATER, ID_WATER);
+        MapMaker.colorCodes.put(COLOR_WOOD_FLOOR, ID_WOOD_FLOOR);
+        MapMaker.colorCodes.put(COLOR_FAKE_WALL, ID_FAKE_WALL);
 
         
         File mapfile = new File(map_name);
