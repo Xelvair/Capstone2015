@@ -15,7 +15,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class PlayerOnTickBehavior implements OnTickBehavior{
-    public static final double MOVE_TIMEOUT = 0.03f;
+    public static final double MOVE_TIMEOUT = 0.1f;
+    public static final int QUICK_MOVE_LENGTH = 7;
+    
+    private Direction quickMoveDirection = Direction.NONE;
+    private int quickMoveCounter = 0;
     
     @Override
     public void invoke(Actor entity, double timeDelta) {
@@ -53,16 +57,36 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                     Key key = (Key)m.getMsgObject();
                     switch(key.getKind()){
                         case ArrowLeft:
-                            move_dir = Direction.LEFT;
+                            if(key.isCtrlPressed()){
+                                quickMoveDirection = Direction.LEFT;
+                                quickMoveCounter = QUICK_MOVE_LENGTH;
+                            } else {
+                                move_dir = Direction.LEFT;
+                            }
                             break;
                         case ArrowRight:
-                            move_dir = Direction.RIGHT;
+                            if(key.isCtrlPressed()){
+                                quickMoveDirection = Direction.RIGHT;
+                                quickMoveCounter = QUICK_MOVE_LENGTH;
+                            } else {
+                                move_dir = Direction.RIGHT;
+                            }
                             break;
                         case ArrowUp:
-                            move_dir = Direction.UP;
+                            if(key.isCtrlPressed()){
+                                quickMoveDirection = Direction.UP;
+                                quickMoveCounter = QUICK_MOVE_LENGTH;
+                            } else {
+                                move_dir = Direction.UP;
+                            }
                             break;
                         case ArrowDown:
-                            move_dir = Direction.DOWN;
+                            if(key.isCtrlPressed()){
+                                quickMoveDirection = Direction.DOWN;
+                                quickMoveCounter = QUICK_MOVE_LENGTH;
+                            } else {
+                                move_dir = Direction.DOWN;
+                            }
                             break;
                         case NormalKey:
                             switch(key.getCharacter()){
@@ -124,12 +148,40 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
             }
         }
         
-        if(entity.canMove() && move_dir != Direction.NONE){
-            entity.setMoveTimeout(MOVE_TIMEOUT);
-            EntityMoveParams msg_obj = new EntityMoveParams();
-            msg_obj.entity = entity;
-            msg_obj.direction = move_dir;
-            entity.sendBusMessage(new Message(EntityMove, msg_obj));
+        if(move_dir != Direction.NONE && quickMoveCounter > 1){
+            quickMoveDirection = move_dir;
+            quickMoveCounter = 1;
         }
+        
+        if(!entity.canMove())
+            return;
+        
+        /********************
+         * Any new input overwrites the quickMove
+         */
+        if(move_dir != Direction.NONE){
+            quickMoveDirection = Direction.NONE;
+            quickMoveCounter = 0;
+        }
+        
+        /********************
+         * If no input was given, use quickMove if available
+         */
+        if(   move_dir == Direction.NONE 
+           && quickMoveDirection != Direction.NONE
+           && quickMoveCounter > 0
+        ){
+            move_dir = quickMoveDirection;
+            quickMoveCounter--;
+        }
+        
+        if(move_dir == Direction.NONE)
+            return;
+        
+        entity.setMoveTimeout(MOVE_TIMEOUT);
+        EntityMoveParams msg_obj = new EntityMoveParams();
+        msg_obj.entity = entity;
+        msg_obj.direction = move_dir;
+        entity.sendBusMessage(new Message(EntityMove, msg_obj));
     } 
 }

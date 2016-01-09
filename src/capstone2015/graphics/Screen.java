@@ -10,12 +10,13 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.awt.Color;
 import com.googlecode.lanterna.terminal.Terminal.ResizeListener;
 import com.googlecode.lanterna.terminal.TerminalSize;
+import com.googlecode.lanterna.terminal.swing.SwingTerminal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Screen implements Array2DInterface<TerminalChar>{
 
-    private Terminal terminal;
+    private SwingTerminal terminal;
     private final ArrayList<Array2D<TerminalChar>> buffers = new ArrayList<>();
     private int width;
     private int height;
@@ -60,6 +61,10 @@ public class Screen implements Array2DInterface<TerminalChar>{
         this.height = terminal.getTerminalSize().getRows();
         buffers.add(new Array2D<TerminalChar>(width, height)); //buf1
         buffers.add(new Array2D<TerminalChar>(width, height)); //buf2
+    }
+    
+    public SwingTerminal getTerminal(){
+        return terminal;
     }
     
     public void flip(){      

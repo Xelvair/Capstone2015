@@ -93,7 +93,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
                 if(path.size() == 0 || path.get(path.size() - 1).deltaOrthoMagnitude(closest_target_pos) > 1) {
                     //Only recalculate path if path is empty or we're not already aiming for that entity
                     MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
-                    path = AStar.find(mta, entity.getPos(), closest_target_pos, true);
+                    path = AStar.find(mta, entity.getPos(), closest_target_pos, 1.f);
                 }
             }
         }

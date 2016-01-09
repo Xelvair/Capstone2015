@@ -6,6 +6,10 @@ import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
+import com.googlecode.lanterna.terminal.Terminal;
+import com.googlecode.lanterna.terminal.swing.SwingTerminal;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import java.util.function.Consumer;
 
@@ -13,11 +17,43 @@ public class Capstone2015 {
     
     public static final int FRAME_RATE = 60;
     public static final int FRAME_TIME = 1000 / FRAME_RATE;
+    
+    private static boolean isCtrlPressed = false;
+    private static boolean isAltPressed = false;
 
     public static void main(String[] args) throws Exception {
         AppStateManager asm = new AppStateManager();
         Screen screen = new Screen();
         MessageBus messageBus = new MessageBus();
+        
+        /****************************
+         * Fixing lanterna's not working CTRL and ALT detection
+         */
+        SwingTerminal terminal = screen.getTerminal();
+        terminal.getJFrame().addKeyListener(new KeyListener(){
+
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_CONTROL)
+                    isCtrlPressed = true;
+                
+                if(e.getKeyCode() == KeyEvent.VK_ALT)
+                    isAltPressed = true;
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_CONTROL)
+                    isCtrlPressed = false;
+                
+                if(e.getKeyCode() == KeyEvent.VK_ALT)
+                    isAltPressed = true;
+            }
+            
+        });
 
         /****************************
          * Link the MessageBus to the entity
@@ -79,7 +115,8 @@ public class Capstone2015 {
              */
             Key key;
             while((key = screen.readInput()) != null){
-                messageBus.enqueue(new Message(Message.Type.KeyEvent, key));
+                Key fixed_key = new Key(key.getKind(), isCtrlPressed, isAltPressed);
+                messageBus.enqueue(new Message(Message.Type.KeyEvent, fixed_key));
             }
             messageBus.refresh();
             

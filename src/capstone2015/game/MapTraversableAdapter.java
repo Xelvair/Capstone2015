@@ -41,26 +41,6 @@ public class MapTraversableAdapter implements Traversable<Vec2i>{
     }
 
     @Override
-    public LinkedList<TraversableNode<Vec2i>> getAdjacentNodes(TraversableNode<Vec2i> node) {
-        Vec2i pos = node.getNodeVal();
-
-        LinkedList<TraversableNode<Vec2i>> adjacent = new LinkedList<>();
-
-        Direction[] dirs = new Direction[]{
-                Direction.LEFT,
-                Direction.RIGHT,
-                Direction.UP,
-                Direction.DOWN
-        };
-
-        for(Direction dir : dirs){
-            adjacent.add(new TraversableNode<Vec2i>(pos.add(dir.toVector()), node.getDistance() + 1.f, node));
-        }
-
-        return adjacent;
-    }
-
-    @Override
     public float calculateHeuristic(Vec2i start, Vec2i target) {
         Vec2i delta = target.add(start.invert());
         return (float)Math.sqrt(delta.getX() * delta.getX() + delta.getY() * delta.getY());

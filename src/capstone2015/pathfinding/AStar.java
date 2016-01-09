@@ -9,9 +9,9 @@ import java.util.LinkedList;
 
 public class AStar {
     public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target){
-        return find(traversable, start, target, false);
+        return find(traversable, start, target, Float.NEGATIVE_INFINITY);
     }
-    public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target, boolean adjacentOk){
+    public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target, float minHeuristic){
         long start_time = System.currentTimeMillis();
         boolean target_found = false;
         HashMap<TraversableNode<T>, TraversableNode<T>> nodes_closed = new HashMap<>();
@@ -49,7 +49,7 @@ public class AStar {
              * If we're only looking for adjacent positions,
              * scan all adjacencies for targetness #ripenglish
              */
-            if(adjacentOk && traversable.getAdjacentNodes(cur_node).contains(new TraversableNode<T>(target))){
+            if(traversable.calculateHeuristic(cur_node.getNodeVal(), target) <= minHeuristic){
                 target_found = true;
                 final_node = cur_node;
                 break;
