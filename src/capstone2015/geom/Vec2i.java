@@ -42,6 +42,15 @@ public class Vec2i implements Comparable<Vec2i>{
     public Vec2i add(Vec2i rhs){
         return new Vec2i(this.x + rhs.x, this.y + rhs.y);
     }
+    
+    /***************************
+     * Check whether the vector only has
+     * one component that is nonzero
+     * @return 
+     */
+    public boolean isOrthogonal(){
+        return Math.max(Math.abs(x), Math.abs(y)) != 0 && Math.min(Math.abs(x), Math.abs(y)) == 0;
+    }
 
     /*********************
      * Subtracts another vector from this vector

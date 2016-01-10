@@ -37,13 +37,13 @@ public class Util {
     public static Direction toDirection(Vec2i vec){
         if(vec.equals(new Vec2i(0, 0))){
             return Direction.NONE;
-        } else if(vec.equals(new Vec2i(-1, 0))){
+        } else if(vec.getX() < 0 && vec.getY() == 0){
             return Direction.LEFT;
-        } else if(vec.equals(new Vec2i(1, 0))){
+        } else if(vec.getX() > 0 && vec.getY() == 0){
             return Direction.RIGHT;
-        } else if(vec.equals(new Vec2i(0, -1))){
+        } else if(vec.getY() < 0 && vec.getX() == 0){
             return Direction.UP;
-        } else if(vec.equals(new Vec2i(0, 1))){
+        } else if(vec.getY() > 0 && vec.getX() == 0){
             return Direction.DOWN;
         } else {
             throw new RuntimeException("Failed to generate direction from vector!" + vec);

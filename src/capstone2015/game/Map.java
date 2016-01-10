@@ -190,6 +190,7 @@ public class Map implements MapInterface{
             case EntityFactory.ID_BOW:
             case EntityFactory.ID_ARROW:
             case EntityFactory.ID_MAGIC_WAND:
+            case EntityFactory.ID_FIRE_IMP:
                 add(EntityFactory.createActor(tile_id, xcoord, ycoord));
                 tilemap.set(xcoord, ycoord, EntityFactory.createTile(EntityFactory.ID_FLOOR));
                 break;
@@ -386,7 +387,6 @@ public class Map implements MapInterface{
     }
     
     public void tick(double timeDelta){
-       
         Iterator<Actor> it = actors.iterator();
         while(it.hasNext()){
             Actor e = it.next();

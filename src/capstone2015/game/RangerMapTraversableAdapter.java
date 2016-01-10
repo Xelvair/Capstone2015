@@ -1,20 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package capstone2015.game;
 
 import capstone2015.entity.SolidType;
 import capstone2015.geom.Vec2i;
 import capstone2015.pathfinding.Traversable;
-import capstone2015.pathfinding.TraversableTransition;
 import capstone2015.pathfinding.TraversableNode;
+import capstone2015.pathfinding.TraversableTransition;
 import java.util.LinkedList;
 
-public class MapTraversableAdapter implements Traversable<Vec2i>{
-
+public class RangerMapTraversableAdapter implements Traversable<Vec2i>{
     private MapInterface map;
     private SolidType traverserSolidType;
+    private int range;
 
-    public MapTraversableAdapter(MapInterface map, SolidType traverserSolidType){
+    public RangerMapTraversableAdapter(MapInterface map, SolidType traverserSolidType, int range){
         this.map = map;
         this.traverserSolidType = traverserSolidType;
+        this.range = range;
     }
     
     @Override
@@ -42,7 +48,15 @@ public class MapTraversableAdapter implements Traversable<Vec2i>{
 
     @Override
     public float calculateHeuristic(Vec2i start, Vec2i target) {
-        Vec2i delta = target.subtract(start);
-        return (float)Math.sqrt(delta.getX() * delta.getX() + delta.getY() * delta.getY());
+        Vec2i delta = target.add(start.invert());
+        int min_comp = Math.min(Math.abs(delta.getX()), Math.abs(delta.getY()));
+        int max_comp = Math.max(Math.abs(delta.getX()), Math.abs(delta.getY()));
+        if((delta.isOrthogonal() && max_comp <= range) || delta.orthoMagnitude() == 0){
+            return 0.f;
+        } else if(max_comp <= range){
+            return min_comp;
+        } else {
+            return (max_comp - 3) + min_comp;
+        }
     }
 }

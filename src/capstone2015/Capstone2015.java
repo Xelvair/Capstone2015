@@ -2,6 +2,8 @@ package capstone2015;
 
 import capstone2015.appstate.*;
 import capstone2015.entity.EntityFactory;
+import capstone2015.game.RangerMapTraversableAdapter;
+import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
@@ -21,7 +23,7 @@ public class Capstone2015 {
     private static boolean isCtrlPressed = false;
     private static boolean isAltPressed = false;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {        
         AppStateManager asm = new AppStateManager();
         Screen screen = new Screen();
         MessageBus messageBus = new MessageBus();

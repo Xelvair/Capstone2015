@@ -37,6 +37,8 @@ public class EntityFactory {
     public static final int ID_MAGIC_BOLT = 16;
     public static final int ID_FERN = 17;
     public static final int ID_SOIL = 18;
+    public static final int ID_FIRE_IMP = 19;
+    public static final int ID_FIRE_BOLT = 20;
     public static final int ID_EFFECT = 99;
     
     public static final Color COLOR_SOIL = new Color(56,34,8);
@@ -202,7 +204,7 @@ public class EntityFactory {
         
             return actor;
         } catch(Exception e){
-            System.out.println("Failed to create Actor with id #" + entityProtoId);
+            System.out.println("Failed to create Actor with id #" + entityProtoId + ": " + e.getMessage());
             return null;
         }
     }
@@ -803,6 +805,74 @@ public class EntityFactory {
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_SOIL_HIDDEN);
         
         entityProtos.put(ep.id, ep);
+        
+        /******************************************
+         * #19 - FIRE_IMP - ACTOR
+         */
+        ep = new EntityProto(ID_FIRE_IMP);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+        
+        ep.entityBaseProto.represent = new TerminalChar('F', new Color(226, 88, 34), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Fire Imp";
+        ep.entityBaseProto.description = 
+              "An imp who made its way all the way from hell\n"
+            + "to end up in this dungeon. In his frustration, it\n"
+            + "has decided to unleash a fiery inferno on anyone\n"
+            + "who dares enter his vincinity.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.NORMAL;
+        ep.mapEntityProto.isEncounterNotified = false;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('F', new Color(226, 88, 34), COLOR_FLOOR_HIDDEN);
+        ep.actorProto.maxHealth = 9;
+        ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = FireImpOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 10;
+        ep.actorProto.visionRevealedByDefault = true;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+
+        entityProtos.put(ep.id, ep);
+        
+        /*********************************************
+         * #20 - FIRE_BOLT - ACTOR
+         */
+
+        ep = new EntityProto(ID_FIRE_BOLT);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+
+        ep.entityBaseProto.represent = new TerminalChar('*', new Color(226, 88, 34), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Fire Bolt";
+        ep.entityBaseProto.description =
+                "Fired by Imps.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('*', new Color(226, 88, 34), COLOR_FLOOR_HIDDEN);
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = FireBoltOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+
+        entityProtos.put(ep.id, ep);
+        
         /*********************************************
          * #99 - EFFECT - ACTOR
          */

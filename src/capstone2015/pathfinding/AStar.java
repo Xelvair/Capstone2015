@@ -102,8 +102,8 @@ public class AStar {
             }
         }
         
-        System.out.println("AStar finished in " + (System.currentTimeMillis() - start_time) + "ms with " + nodes_closed.size() + " considered nodes.");
-        System.out.println("(" + nodes_open.size() + " still in open list.)");
+        //System.out.println("AStar finished in " + (System.currentTimeMillis() - start_time) + "ms with " + nodes_closed.size() + " considered nodes.");
+        //System.out.println("(" + nodes_open.size() + " still in open list.)");
 
         /******************************
          * If a target was found, traverse nodes in reverse order and return traversed nodes

@@ -11,8 +11,6 @@ import java.io.FileOutputStream;
 import java.util.Comparator;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MapMaker {
     private static final Color COLOR_WALL = new Color(0, 0, 0);
@@ -33,6 +31,7 @@ public class MapMaker {
     private static final Color COLOR_MAGIC_WAND = new Color(150, 150, 255);
     private static final Color COLOR_FERN = new Color(0, 50, 0);
     private static final Color COLOR_SOIL = new Color(50, 40, 15);
+    private static final Color COLOR_FIRE_IMP = new Color(226, 88, 34);
     
     public static final int ID_WALL = 0;
     public static final int ID_ENTRY = 1;
@@ -52,6 +51,7 @@ public class MapMaker {
     public static final int ID_MAGIC_WAND = 15;
     public static final int ID_FERN = 17;
     public static final int ID_SOIL = 18;
+    public static final int ID_FIRE_IMP = 19;
     
     private static TreeMap<Color, Integer> colorCodes = new TreeMap(new Comparator<Color>(){
         @Override
@@ -106,6 +106,7 @@ public class MapMaker {
         MapMaker.colorCodes.put(COLOR_MAGIC_WAND, ID_MAGIC_WAND);
         MapMaker.colorCodes.put(COLOR_FERN, ID_FERN);
         MapMaker.colorCodes.put(COLOR_SOIL, ID_SOIL);
+        MapMaker.colorCodes.put(COLOR_FIRE_IMP, ID_FIRE_IMP);
 
         
         File mapfile = new File(map_name);
@@ -134,6 +135,7 @@ public class MapMaker {
                             break;
                     }
                 } else {
+                    System.out.println("rgb(" + c + ") is not an entity type!");
                     map_props.setProperty("" + j + "," + i, Integer.toString(ID_FLOOR));
                 }
             }
