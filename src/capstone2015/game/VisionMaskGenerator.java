@@ -96,11 +96,7 @@ public class VisionMaskGenerator {
                     if(!map.inBounds(line_point.getX(), line_point.getY())){
                         continue;
                     }
-                    if(map.isOpaqueAt(line_point.getX(), line_point.getY())){
-                        break;
-                    }
                     
-                  
                     Vec2i vision_mask_pos = area.toRel(line_point);
                     
                     if(!vision_mask.inBounds(vision_mask_pos)){
@@ -108,6 +104,10 @@ public class VisionMaskGenerator {
                     }
                     
                     vision_mask.set(vision_mask_pos.getX(), vision_mask_pos.getY(), true);
+                    
+                    if(map.isOpaqueAt(line_point.getX(), line_point.getY())){
+                        break;
+                    }
                     
                     /* Also make any adjacent walls visible */
                     List<Direction> directions = Arrays.asList(

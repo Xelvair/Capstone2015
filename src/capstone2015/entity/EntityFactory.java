@@ -35,8 +35,12 @@ public class EntityFactory {
     public static final int ID_FAKE_WALL = 14;
     public static final int ID_MAGIC_WAND = 15;
     public static final int ID_MAGIC_BOLT = 16;
+    public static final int ID_FERN = 17;
+    public static final int ID_SOIL = 18;
     public static final int ID_EFFECT = 99;
     
+    public static final Color COLOR_SOIL = new Color(56,34,8);
+    public static final Color COLOR_SOIL_HIDDEN = new Color(20,15,3);
     public static final Color COLOR_FLOOR = new Color(87,59,12);
     public static final Color COLOR_FLOOR_HIDDEN = new Color(26, 20, 4);
     
@@ -759,6 +763,46 @@ public class EntityFactory {
 
         entityProtos.put(ep.id, ep);
         
+        /******************************************
+         * #17 - FERN - TILE
+         */
+        ep = new EntityProto(ID_FERN);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.tileProto = new TileProto();
+        
+        ep.entityBaseProto.represent = new TerminalChar('\u03D2', new Color(0, 110, 40), COLOR_SOIL);
+        ep.entityBaseProto.name = "Fern";
+        ep.entityBaseProto.description = 
+                  "It obstructs your view. But you're willing to take\n"
+                + "that disadvantage because you're someone who cares\n"
+                + "about the biologic stability of this place.";
+        ep.mapEntityProto.isOpaque = true;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
+        ep.mapEntityProto.isEncounterNotified = false;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('\u03D2', new Color(0, 75, 40), COLOR_SOIL_HIDDEN);
+        
+        entityProtos.put(ep.id, ep);
+        /******************************************
+         * #18 - SOIL - TILE
+         */
+        ep = new EntityProto(ID_SOIL);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.tileProto = new TileProto();
+        
+        ep.entityBaseProto.represent = new TerminalChar(' ', Color.WHITE, COLOR_SOIL);
+        ep.entityBaseProto.name = "Soil";
+        ep.entityBaseProto.description = 
+                  "This seems like a nice place to grow plants.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
+        ep.mapEntityProto.isEncounterNotified = false;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_SOIL_HIDDEN);
+        
+        entityProtos.put(ep.id, ep);
         /*********************************************
          * #99 - EFFECT - ACTOR
          */

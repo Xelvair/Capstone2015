@@ -7,4 +7,12 @@ public class SpawnEffectParams {
     public TerminalChar represent;
     public double duration;
     public Vec2i pos;
+    
+    public SpawnEffectParams(){}
+    
+    public SpawnEffectParams(SpawnEffectParams other){
+        represent = other.represent;
+        duration = other.duration;
+        pos = other.pos;
+    }
 }

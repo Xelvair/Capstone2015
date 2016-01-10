@@ -15,6 +15,7 @@ import capstone2015.graphics.TerminalChar;
 import capstone2015.util.Array2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Actor extends MapEntity {
     protected OnWalkedOverBehavior onWalkedOverBehavior;
@@ -268,11 +269,39 @@ public class Actor extends MapEntity {
     }
 
     public void onTick(double timeDelta) {
+        /***************************
+         * Decrease damage ignore timers
+         */
+        HashMap<EntityBase, Double> damage_ignore_timers = getDamageIgnoreTimers();
+
+        for(Iterator<java.util.Map.Entry<EntityBase, Double>> it = damage_ignore_timers.entrySet().iterator(); it.hasNext(); ) {
+            java.util.Map.Entry<EntityBase, Double> entry = it.next();
+            double damage_timer = entry.getValue();
+            double new_damage_timer = Math.max(0, damage_timer - timeDelta);
+
+            if(new_damage_timer == 0.f){
+                it.remove();
+            } else {
+                entry.setValue(new_damage_timer);
+            }
+        }
+        
+        /***************************
+         * Decrease other timers
+         */
         decreaseMoveTimeout(timeDelta);
         decreaseUseTimeout(timeDelta);
+        
+        /***************************
+         * Tick inventory
+         */
         if(inventory != null){
             inventory.tick(timeDelta);
         }
+        
+        /***************************
+         * Call behavior
+         */
         if (onTickBehavior != null) {
             onTickBehavior.invoke(this, timeDelta);
         }

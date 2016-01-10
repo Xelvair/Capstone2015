@@ -19,36 +19,13 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
 
     public static final int DAMAGE = 1;
     public static final float MOVE_TIMEOUT = 0.25f;
+    public static final float ATTACK_TIMEOUT = 1.f;
     public static final int RANDOM_MOVE_RADIUS = 10;
             
     private LinkedList<Vec2i> path = new LinkedList<>();
     
     @Override
     public void invoke(Actor entity, double timeDelta) {
-        /***************************
-         * Decrease damage ignore timers
-         */
-        HashMap<EntityBase, Double> damage_ignore_timers = entity.getDamageIgnoreTimers();
-
-        for(Iterator<Map.Entry<EntityBase, Double>> it = damage_ignore_timers.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<EntityBase, Double> entry = it.next();
-            double damage_timer = entry.getValue();
-            double new_damage_timer = Math.max(0, damage_timer - timeDelta);
-
-            if(new_damage_timer == 0.f){
-                it.remove();
-            } else {
-                entry.setValue(new_damage_timer);
-            }
-        }
-
-        /***************************
-         * If we can't move yet, exit
-         */
-        if(!entity.canMove())
-            return;
-
-
         /***************************
          * Determine closest target
          */
@@ -73,6 +50,11 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
         if(closest_target_pos != null){
             if(entity.getPos().deltaOrthoMagnitude(closest_target_pos) == 1){
                 /*****************************
+                 * Do nothing if we can't attack yet
+                 */
+                if(!entity.canUse())
+                    return;
+                /*****************************
                  * If we're right next to the closest target, deal damage to it
                  */
                 InflictDamageParams msg_obj = new InflictDamageParams();
@@ -82,11 +64,16 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
                 msg_obj.teamId = entity.getTeamId();
 
                 entity.sendBusMessage(new Message(InflictDamage, msg_obj));
-                entity.setMoveTimeout(MOVE_TIMEOUT);
+                entity.setUseTimeout(ATTACK_TIMEOUT);
                 return;
                 //For this Behavior, move and attack share a timeout, so that this
                 //entity doesn't attack instantly after entering the targets vincinity
             } else {
+                /*****************************
+                 * Do nothing if we can't move yet
+                 */
+                if(!entity.canMove())
+                    return;
                 /****************************
                  * Else, pathfind to it
                  */
@@ -98,6 +85,8 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
             }
         }
 
+        if(!entity.canMove())
+                    return;
 
         /*********************************
          * If no target was found, find a random spot to go to
@@ -138,6 +127,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
         emp.direction = dir;
         entity.sendBusMessage(new Message(EntityMove, emp));
         entity.setMoveTimeout(MOVE_TIMEOUT);
+        entity.setUseTimeout(ATTACK_TIMEOUT);
     }
     
 }

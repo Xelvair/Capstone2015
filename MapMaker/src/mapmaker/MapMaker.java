@@ -31,6 +31,8 @@ public class MapMaker {
     private static final Color COLOR_WOOD_FLOOR = new Color(100, 50, 20);
     private static final Color COLOR_FAKE_WALL = new Color(30, 30, 30);
     private static final Color COLOR_MAGIC_WAND = new Color(150, 150, 255);
+    private static final Color COLOR_FERN = new Color(0, 50, 0);
+    private static final Color COLOR_SOIL = new Color(50, 40, 15);
     
     public static final int ID_WALL = 0;
     public static final int ID_ENTRY = 1;
@@ -48,6 +50,8 @@ public class MapMaker {
     public static final int ID_WOOD_FLOOR = 13;
     public static final int ID_FAKE_WALL = 14;
     public static final int ID_MAGIC_WAND = 15;
+    public static final int ID_FERN = 17;
+    public static final int ID_SOIL = 18;
     
     private static TreeMap<Color, Integer> colorCodes = new TreeMap(new Comparator<Color>(){
         @Override
@@ -100,6 +104,8 @@ public class MapMaker {
         MapMaker.colorCodes.put(COLOR_WOOD_FLOOR, ID_WOOD_FLOOR);
         MapMaker.colorCodes.put(COLOR_FAKE_WALL, ID_FAKE_WALL);
         MapMaker.colorCodes.put(COLOR_MAGIC_WAND, ID_MAGIC_WAND);
+        MapMaker.colorCodes.put(COLOR_FERN, ID_FERN);
+        MapMaker.colorCodes.put(COLOR_SOIL, ID_SOIL);
 
         
         File mapfile = new File(map_name);

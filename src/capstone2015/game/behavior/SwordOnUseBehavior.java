@@ -28,20 +28,35 @@ public class SwordOnUseBehavior implements OnUseBehavior {
         if(!user.canUse())
             return;
 
-        InflictDamageParams idp = new InflictDamageParams();
-        idp.damage = SWORD_DAMAGE;
-        idp.damagingEntity = user;
-        idp.position = user.getPos().add(useDir);
-        idp.teamId = user.getTeamId();
+        /**********************
+         * Deal damage
+         */
+        InflictDamageParams idp1 = new InflictDamageParams();
+        idp1.damage = SWORD_DAMAGE;
+        idp1.damagingEntity = user;
+        idp1.position = user.getPos().add(useDir);
+        idp1.teamId = user.getTeamId();
 
-        user.sendBusMessage(new Message(Message.Type.InflictDamage, idp));
+        user.sendBusMessage(new Message(Message.Type.InflictDamage, idp1));
+        
+        InflictDamageParams idp2 = new InflictDamageParams(idp1);
+        idp2.position = user.getPos().add(useDir).add(useDir);
+        user.sendBusMessage(new Message(Message.Type.InflictDamage, idp2));
 
-        SpawnEffectParams sep = new SpawnEffectParams();
-        sep.duration = SWORD_EFFECT_DURATION;
-        sep.pos = user.getPos().add(useDir);
-        sep.represent = EntityFactory.getProto(EntityFactory.ID_SWORD).entityBaseProto.represent;
-        user.sendBusMessage(new Message(Message.Type.SpawnEffect, sep));
-
+        /**********************
+         * Spawn visible effects
+         */
+        SpawnEffectParams sep1 = new SpawnEffectParams();
+        sep1.duration = SWORD_EFFECT_DURATION;
+        sep1.pos = user.getPos().add(useDir);
+        sep1.represent = EntityFactory.getProto(EntityFactory.ID_SWORD).entityBaseProto.represent;
+        
+        user.sendBusMessage(new Message(Message.Type.SpawnEffect, sep1));
+        
+        SpawnEffectParams sep2 = new SpawnEffectParams(sep1);
+        sep2.pos = user.getPos().add(useDir).add(useDir);
+        user.sendBusMessage(new Message(Message.Type.SpawnEffect, sep2));
+        
         user.setUseTimeout(SWORD_USE_TIMEOUT);
     }
 }
