@@ -50,7 +50,14 @@ public class Util {
         }
     }
     
-    public static int cap(int val, int min, int max){
+    public static int hash(int x) {
+        x = ((x >> 16) ^ x) * 0x45d9f3b;
+        x = ((x >> 16) ^ x) * 0x45d9f3b;
+        x = ((x >> 16) ^ x);
+        return x;
+    }
+    
+    public static int clamp(int val, int min, int max){
         if(val < min)
             return min;
         if(val > max)

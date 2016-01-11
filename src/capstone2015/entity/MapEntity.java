@@ -8,4 +8,5 @@ public abstract class MapEntity extends EntityBase{
     public abstract SolidType getSolidType();
     public abstract boolean isOpaque();
     public abstract void onWalkedOver();
+    public abstract int getShaderType();
 }

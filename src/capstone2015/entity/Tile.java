@@ -2,6 +2,9 @@ package capstone2015.entity;
 
 import capstone2015.game.behavior.OnWalkedOverBehavior;
 import capstone2015.graphics.TerminalChar;
+import capstone2015.shader.ShaderProgram;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 public class Tile extends MapEntity{
     
@@ -47,6 +50,11 @@ public class Tile extends MapEntity{
     @Override
     public boolean isEncounterNotified() {
         return proto.mapEntityProto.isEncounterNotified;
+    }
+
+    @Override
+    public int getShaderType(){
+        return proto.mapEntityProto.shaderType;
     }
     
 }

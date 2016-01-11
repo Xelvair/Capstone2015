@@ -12,10 +12,12 @@ import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.game.behavior.OnWalkedOverBehavior;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
+import capstone2015.shader.ShaderProgram;
 import capstone2015.util.Array2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.function.BiFunction;
 
 public class Actor extends MapEntity {
     protected OnWalkedOverBehavior onWalkedOverBehavior;
@@ -332,5 +334,10 @@ public class Actor extends MapEntity {
 
     public void setVisionRadius(int visionRadius) {
         this.visionRadius = visionRadius;
+    }
+
+    @Override
+    public int getShaderType(){
+        return proto.mapEntityProto.shaderType;
     }
 }

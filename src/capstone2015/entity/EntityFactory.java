@@ -5,10 +5,13 @@ import capstone2015.game.behavior.*;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.MessageBus;
+import capstone2015.util.Util;
 import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 
 /***********************************
  * Creates Tiles, Items and Actors from a shared pool of entity
@@ -17,7 +20,10 @@ import java.util.TreeMap;
  * general) development is to favor composition over inheritance!
  * https://en.wikipedia.org/wiki/Composition_over_inheritance
  */
-public class EntityFactory {
+public class EntityFactory {   
+    /*******************************
+     * ENTITY IDS
+     */
     public static final int ID_WALL = 0;
     public static final int ID_ENTRY = 1;
     public static final int ID_EXIT = 2;
@@ -41,10 +47,22 @@ public class EntityFactory {
     public static final int ID_FIRE_BOLT = 20;
     public static final int ID_EFFECT = 99;
     
+    /*******************************
+     * ENTITY COLORS
+     */
+    
     public static final Color COLOR_SOIL = new Color(56,34,8);
     public static final Color COLOR_SOIL_HIDDEN = new Color(20,15,3);
     public static final Color COLOR_FLOOR = new Color(87,59,12);
     public static final Color COLOR_FLOOR_HIDDEN = new Color(26, 20, 4);
+    
+    /*******************************
+     * SHADER_TYPES
+     */
+    public static final int SHADER_NONE = 0;
+    public static final int SHADER_COLOR_VARIATION = 1;
+    public static final int SHADER_WATER = 2;
+    public static final int SHADER_COUNT = 3;
     
     private static TreeMap<Integer, EntityProto> entityProtos;
     private static MessageBus messageBus;
@@ -286,6 +304,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
+        ep.mapEntityProto.shaderType = SHADER_COLOR_VARIATION;
         
         entityProtos.put(ep.id, ep);
         
@@ -307,6 +326,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25BC', Color.BLUE, COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
 
         entityProtos.put(ep.id, ep);
         
@@ -329,6 +349,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u25B2', Color.GREEN, COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
 
         entityProtos.put(ep.id, ep);
         
@@ -350,6 +371,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\uFB63', new Color(156, 42, 0), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
@@ -383,6 +405,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('S', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = 5;
         ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onMovedBehaviorClass = null;
@@ -419,6 +442,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u2C61', Color.YELLOW, COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;
@@ -452,6 +476,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_COLOR_VARIATION;
 
         entityProtos.put(ep.id, ep);
         
@@ -474,6 +499,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('@', Color.CYAN, COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = 5;
         ep.actorProto.onMovedBehaviorClass = PlayerOnMovedBehavior.class;
         ep.actorProto.onTickBehaviorClass = PlayerOnTickBehavior.class;
@@ -508,6 +534,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('!', Color.RED, COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;
@@ -544,6 +571,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u019A', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;
@@ -581,6 +609,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(')', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;
@@ -618,6 +647,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('I', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = ArrowOnTickBehavior.class;
@@ -653,6 +683,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('~', new Color(35, 70, 120), new Color(20, 40, 120));
+        ep.mapEntityProto.shaderType = SHADER_NONE; //TODO: ADD WATER SHADER
 
         entityProtos.put(ep.id, ep);
         
@@ -673,6 +704,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('┼', new Color(25, 10, 5), new Color(35, 18, 7));
+        ep.mapEntityProto.shaderType = SHADER_COLOR_VARIATION;
 
         entityProtos.put(ep.id, ep);
         
@@ -693,6 +725,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, new Color(46,47,45));
+        ep.mapEntityProto.shaderType = SHADER_COLOR_VARIATION;
         
         entityProtos.put(ep.id, ep);
         
@@ -716,6 +749,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('/', new Color(0, 0, 255), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = null;
@@ -751,6 +785,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('*', new Color(30, 30, 255), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = MagicBoltOnTickBehavior.class;
@@ -784,6 +819,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u03D2', new Color(0, 75, 40), COLOR_SOIL_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_COLOR_VARIATION;
         
         entityProtos.put(ep.id, ep);
         /******************************************
@@ -803,6 +839,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar(' ', Color.WHITE, COLOR_SOIL_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_COLOR_VARIATION;
         
         entityProtos.put(ep.id, ep);
         
@@ -826,6 +863,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('F', new Color(226, 88, 34), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = 9;
         ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onMovedBehaviorClass = null;
@@ -859,6 +897,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('*', new Color(226, 88, 34), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = FireBoltOnTickBehavior.class;
@@ -891,6 +930,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar();
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.onInstantiationFunction = (Actor actor, Map<String, Object> params) -> {
             TerminalChar represent_override = (TerminalChar)params.get("RepresentOverride");
             actor.setRepresentOverride(represent_override);
