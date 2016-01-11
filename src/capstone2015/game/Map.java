@@ -16,12 +16,15 @@ import java.io.*;
 import java.util.*;
 
 public class Map implements MapInterface{
+    public static final double NON_REALTIME_VIEW_UPDATE_TIME = 0.20f;
+
     private Array2D<Tile> tilemap;
     private LinkedList<Actor> actors;
     private Actor player; // for fast lookup;
     private MessageBus messageBus;
 
     private String mapName;
+    private double nonRealtimeViewUpdateAccum = 0.f;
 
     public Map(MessageBus messageBus){
         this.messageBus = messageBus;
@@ -39,7 +42,7 @@ public class Map implements MapInterface{
           actors.remove(player);
           player = null;
         }
-  }
+    }
     
     public Actor getPlayer(){
         return player;
@@ -390,8 +393,14 @@ public class Map implements MapInterface{
         Iterator<Actor> it = actors.iterator();
         while(it.hasNext()){
             Actor e = it.next();
-            
-            if(e.hasVision()){
+            boolean do_non_realtime_vision_update = false;
+            nonRealtimeViewUpdateAccum += timeDelta;
+            if(nonRealtimeViewUpdateAccum >= NON_REALTIME_VIEW_UPDATE_TIME){
+                do_non_realtime_vision_update = true;
+                nonRealtimeViewUpdateAccum -= NON_REALTIME_VIEW_UPDATE_TIME;
+            }
+
+            if(e.hasVision() && (e.hasRealtimeVisionUpdate() || do_non_realtime_vision_update)){
                 int vis_radius = e.getVisionRadius();
                 Vec2i pos = e.getPos();
                 Recti vision_rect = new Recti(

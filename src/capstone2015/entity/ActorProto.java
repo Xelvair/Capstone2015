@@ -24,6 +24,7 @@ public class ActorProto {
     public BiConsumer<Actor, Map<String, Object>> onInstantiationFunction;
     public int visionRadius;
     public boolean visionRevealedByDefault;
+    public boolean hasRealtimeVisionUpdate;
     public int maxHealth;
     public boolean pickupable;
     public int inventorySize;
