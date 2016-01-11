@@ -65,6 +65,10 @@ public class Actor extends MapEntity {
         }
     }
 
+    public boolean hasRealtimeVisionUpdate(){
+        return proto.actorProto.hasRealtimeVisionUpdate;
+    }
+
     public void setUseTimeout(double time){
         useTimeout = time;
     }

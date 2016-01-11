@@ -379,6 +379,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -414,6 +415,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 7;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = true;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -450,6 +452,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
@@ -508,6 +511,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = PlayerOnDroppedItemBehavior.class;
         ep.actorProto.onHealBehaviorClass = PlayerOnHealBehavior.class;
         ep.actorProto.visionRadius = 10;
+        ep.actorProto.hasRealtimeVisionUpdate = true;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 5;
@@ -542,6 +546,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
@@ -579,6 +584,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
@@ -617,6 +623,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
@@ -655,6 +662,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
@@ -757,6 +765,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
@@ -793,6 +802,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 10;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -872,6 +882,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 10;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = true;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -905,6 +916,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -942,6 +954,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
+        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;

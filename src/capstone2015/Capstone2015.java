@@ -76,6 +76,7 @@ public class Capstone2015 {
              */
             long deltatime_msec = System.currentTimeMillis() - lastClock;
             lastClock = System.currentTimeMillis();
+            System.out.println("Frametime: " + deltatime_msec + "msec.");
             
             /****************************
              * Handle messages on the buffer
