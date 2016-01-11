@@ -91,7 +91,11 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
         /*********************************
          * If no target was found, find a random spot to go to
          */
-        while(path == null || path.isEmpty()){
+        int n_trials = 10;
+        while((path == null || path.isEmpty())){
+            if(n_trials-- <= 0)
+                return;
+            
             Random rand = new Random();
             Vec2i random_point = entity.getPos().add(new Vec2i(rand.nextInt(RANDOM_MOVE_RADIUS * 2) - RANDOM_MOVE_RADIUS,
                     rand.nextInt(RANDOM_MOVE_RADIUS * 2) - RANDOM_MOVE_RADIUS));

@@ -56,7 +56,7 @@ public class RangerMapTraversableAdapter implements Traversable<Vec2i>{
         } else if(max_comp <= range){
             return min_comp;
         } else {
-            return (max_comp - 3) + min_comp;
+            return (max_comp - range) + min_comp;
         }
     }
 }
