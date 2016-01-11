@@ -17,9 +17,6 @@ import java.util.function.Consumer;
 
 public class Capstone2015 {
     
-    public static final int FRAME_RATE = 60;
-    public static final int FRAME_TIME = 1000 / FRAME_RATE;
-    
     private static boolean isCtrlPressed = false;
     private static boolean isAltPressed = false;
 
@@ -147,7 +144,7 @@ public class Capstone2015 {
             /****************************
              * Wait until next cycle
              */
-            Thread.sleep(FRAME_TIME);
+            Thread.sleep(1);
         }
         
         screen.close();

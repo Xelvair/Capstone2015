@@ -62,7 +62,8 @@ public class EntityFactory {
     public static final int SHADER_NONE = 0;
     public static final int SHADER_COLOR_VARIATION = 1;
     public static final int SHADER_WATER = 2;
-    public static final int SHADER_COUNT = 3;
+    public static final int SHADER_BONFIRE = 3;
+    public static final int SHADER_COUNT = 4;
     
     private static TreeMap<Integer, EntityProto> entityProtos;
     private static MessageBus messageBus;
@@ -371,7 +372,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\uFB63', new Color(156, 42, 0), COLOR_FLOOR_HIDDEN);
-        ep.mapEntityProto.shaderType = SHADER_NONE;
+        ep.mapEntityProto.shaderType = SHADER_BONFIRE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = DamageOnCollisionOnTickBehavior.class;
@@ -691,7 +692,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('~', new Color(35, 70, 120), new Color(20, 40, 120));
-        ep.mapEntityProto.shaderType = SHADER_NONE; //TODO: ADD WATER SHADER
+        ep.mapEntityProto.shaderType = SHADER_WATER;
 
         entityProtos.put(ep.id, ep);
         
