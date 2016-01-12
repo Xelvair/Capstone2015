@@ -1,5 +1,6 @@
 package capstone2015.pathfinding;
 
+import capstone2015.diagnostics.TimeStat;
 import capstone2015.geom.Vec2i;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +13,7 @@ public class AStar {
         return find(traversable, start, target, Float.NEGATIVE_INFINITY);
     }
     public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target, float minHeuristic){
+        TimeStat.enterState("AI.Pathfinding");
         long start_time = System.currentTimeMillis();
         boolean target_found = false;
         HashMap<TraversableNode<T>, TraversableNode<T>> nodes_closed = new HashMap<>();
@@ -109,19 +111,16 @@ public class AStar {
          * If a target was found, traverse nodes in reverse order and return traversed nodes
          * If not, return null
          */
+        LinkedList<T> path = null;
         if(target_found && final_node != null){
-            LinkedList<T> path = new LinkedList<>();
+            path = new LinkedList<>();
             
             while(final_node.getNodeVal().compareTo(start) != 0){
                 path.addFirst(final_node.getNodeVal());
                 final_node = final_node.getPrevNode();
             }
-
-            System.out.println("Path is " + path.size() + " transitions.");
-
-            return path;
-        } else {
-            return null;
         }
+        TimeStat.leaveState("AI.Pathfinding");
+        return path;
     }
 }

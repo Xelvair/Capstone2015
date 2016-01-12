@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 public class FireImpOnTickBehavior implements OnTickBehavior{
     public static final double MOVE_TIMEOUT = 0.75f;
-    public static final double ATTACK_TIMEOUT = 0.5f;
+    public static final double ATTACK_TIMEOUT = 0.65f;
     
     private LinkedList<Vec2i> path = new LinkedList<>();
     private Vec2i targetPosition = null;

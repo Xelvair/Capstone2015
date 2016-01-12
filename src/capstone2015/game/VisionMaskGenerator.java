@@ -1,5 +1,6 @@
 package capstone2015.game;
 
+import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.Actor;
 import capstone2015.geom.Geom;
 import capstone2015.geom.Recti;
@@ -17,6 +18,7 @@ public class VisionMaskGenerator {
         return generate(map, area, null);
     }
     public static Array2D<Boolean> generate(Map map, Recti area, Actor viewer){
+        TimeStat.enterState("EntityVision");
         Recti map_rect = new Recti(0, 0, map.width(), map.height());
         Recti dest_rect = new Recti(0, 0, area.getWidth(), area.getHeight());
         
@@ -132,6 +134,7 @@ public class VisionMaskGenerator {
             }
         }
         
+        TimeStat.leaveState("EntityVision");
         return vision_mask;
     }
 }

@@ -1,8 +1,10 @@
 package capstone2015;
 
 import capstone2015.appstate.*;
+import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.EntityFactory;
 import capstone2015.game.RangerMapTraversableAdapter;
+import capstone2015.game.panel.DiagnosticsPanel;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
@@ -12,6 +14,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.swing.SwingTerminal;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Map;
 
 import java.util.function.Consumer;
 
@@ -19,6 +22,7 @@ public class Capstone2015 {
     
     private static boolean isCtrlPressed = false;
     private static boolean isAltPressed = false;
+    private static boolean showDiagnostics = false;
 
     public static void main(String[] args) throws Exception {        
         AppStateManager asm = new AppStateManager();
@@ -41,6 +45,9 @@ public class Capstone2015 {
                 
                 if(e.getKeyCode() == KeyEvent.VK_ALT)
                     isAltPressed = true;
+                
+                if(e.getKeyCode() == KeyEvent.VK_F1)
+                    showDiagnostics = !showDiagnostics;
             }
 
             @Override
@@ -67,13 +74,15 @@ public class Capstone2015 {
        
         long lastClock = System.currentTimeMillis();
 
+        TimeStat.reset();
         while(!asm.isEmpty()){
             /****************************
              * Calculate exact time since last cycle
              */
             long deltatime_msec = System.currentTimeMillis() - lastClock;
             lastClock = System.currentTimeMillis();
-            System.out.println("Frametime: " + deltatime_msec + "msec.");
+            Map<String, Long> time_stat_summary = TimeStat.getStateSummary();
+            TimeStat.reset();
             
             /****************************
              * Handle messages on the buffer
@@ -136,6 +145,12 @@ public class Capstone2015 {
              */
             asm.tick((double)deltatime_msec / 1000.d);
 
+            /****************************
+             * Draw diagnostics window if toggled
+             */
+            if(showDiagnostics)
+                screen.insert(DiagnosticsPanel.render(), -1, -1);
+            
             /****************************
              * Draw the screen
              */

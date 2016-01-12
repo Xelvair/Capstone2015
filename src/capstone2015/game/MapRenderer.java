@@ -1,5 +1,6 @@
 package capstone2015.game;
 
+import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.EntityFactory;
 import capstone2015.entity.MapEntity;
 import capstone2015.geom.Recti;
@@ -144,6 +145,7 @@ public class MapRenderer {
     };
   
     public static Panel render(MaskedMapView map, Recti renderRect){
+        TimeStat.enterState("Rendering");
         /****************************
          * Create shader programs
          */
@@ -212,6 +214,7 @@ public class MapRenderer {
           }
         }
 
+        TimeStat.leaveState("Rendering");
         return p.render();
     }
 }

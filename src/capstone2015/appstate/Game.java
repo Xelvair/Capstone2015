@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
 import capstone2015.game.Map;
@@ -134,6 +135,7 @@ public class Game extends AppState{
     
     @Override
     protected void onTick(double timeDelta) {
+        TimeStat.enterState("AI.Tick");
         for(Message m : messageBus){
             handleMessage(m);
         }
@@ -157,6 +159,7 @@ public class Game extends AppState{
         Actor plr = map.getPlayer();
         p_hud = HudPanel.render(plr.getHealth(), plr.getMaxHealth(), plr.getInventory(), screen.width());
         screen.insert(p_hud, 0, screen.height() - 1);
+        TimeStat.leaveState("AI.Tick");
     }
     
     private Recti getPlayerRenderRect(){

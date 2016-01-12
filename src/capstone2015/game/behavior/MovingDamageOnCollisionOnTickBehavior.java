@@ -1,5 +1,6 @@
 package capstone2015.game.behavior;
 
+import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
 import capstone2015.entity.EntityFactory;
@@ -18,7 +19,7 @@ import java.util.*;
 public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
 
     public static final int DAMAGE = 1;
-    public static final float MOVE_TIMEOUT = 0.25f;
+    public static final float MOVE_TIMEOUT = 0.225f;
     public static final float ATTACK_TIMEOUT = 0.5f;
     public static final int RANDOM_MOVE_RADIUS = 10;
             
@@ -26,11 +27,16 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
     
     @Override
     public void invoke(Actor entity, double timeDelta) {
+        
         /***************************
          * Determine closest target
          */
         ArrayList<Actor> targets = entity.getView().getActorsById(EntityFactory.ID_PLAYER);
 
+        if(!entity.canMove() && !entity.canUse()){
+            return;
+        }
+        
         Vec2i closest_target_pos = null;
         for(Actor target : targets){
             if(closest_target_pos == null) {
@@ -84,9 +90,9 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
                 }
             }
         }
-
+        
         if(!entity.canMove())
-                    return;
+            return;
 
         /*********************************
          * If no target was found, find a random spot to go to
@@ -105,7 +111,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
                 path = AStar.find(mta, entity.getPos(), random_point);
             }
         }
-
+        
         /*****************
          * Go to the previously determined spot
          */
