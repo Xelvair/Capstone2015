@@ -135,13 +135,14 @@ public class Game extends AppState{
     
     @Override
     protected void onTick(double timeDelta) {
-        TimeStat.enterState("AI.Tick");
         for(Message m : messageBus){
             handleMessage(m);
         }
         
         if(this.isFocus()){
+            TimeStat.enterState("AI.Tick");
             map.tick(timeDelta);
+            TimeStat.leaveState("AI.Tick");
         } 
         
         Panel p_notif;
@@ -159,7 +160,6 @@ public class Game extends AppState{
         Actor plr = map.getPlayer();
         p_hud = HudPanel.render(plr.getHealth(), plr.getMaxHealth(), plr.getInventory(), screen.width());
         screen.insert(p_hud, 0, screen.height() - 1);
-        TimeStat.leaveState("AI.Tick");
     }
     
     private Recti getPlayerRenderRect(){
