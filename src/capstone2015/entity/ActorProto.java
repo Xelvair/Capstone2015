@@ -5,6 +5,7 @@ import capstone2015.game.behavior.OnDroppedItemBehavior;
 import capstone2015.game.behavior.OnHealBehavior;
 import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.game.behavior.OnPickedUpItemBehavior;
+import capstone2015.game.behavior.OnTamedBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 
 import java.util.Map;
@@ -21,12 +22,14 @@ public class ActorProto {
     public Class<? extends OnPickedUpItemBehavior> onPickedUpItemBehaviorClass;
     public Class<? extends OnDroppedItemBehavior> onDroppedItemBehaviorClass;
     public Class<? extends OnHealBehavior> onHealBehaviorClass;
+    public Class<? extends OnTamedBehavior> onTamedBehaviorClass;
     public BiConsumer<Actor, Map<String, Object>> onInstantiationFunction;
     public int visionRadius;
     public boolean visionRevealedByDefault;
-    public boolean hasRealtimeVisionUpdate;
     public int maxHealth;
     public boolean pickupable;
     public int inventorySize;
     public int teamId;
+    public double tameMinChance;
+    public double tameMaxChance;
 }

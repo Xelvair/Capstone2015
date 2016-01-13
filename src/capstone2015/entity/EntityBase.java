@@ -9,7 +9,9 @@ public abstract class EntityBase {
     /*package private*/ MessageBus messageBus;
     /*package private*/ EntityBase parent;
 
-    public final EntityBase getParent(){return parent;}
+    public final EntityBase getParent(){
+        return parent;
+    }
     
     public final EntityProto getProto(){
         return proto;

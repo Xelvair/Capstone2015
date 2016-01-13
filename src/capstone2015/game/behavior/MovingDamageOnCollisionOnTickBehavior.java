@@ -47,7 +47,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
                 continue;
             }
 
-            if(target.getPos().deltaOrthoMagnitude(entity.getPos()) > closest_target_pos.deltaOrthoMagnitude(entity.getPos())){
+            if(target.getPos().deltaOrthoMagnitude(entity.getPos()) < closest_target_pos.deltaOrthoMagnitude(entity.getPos())){
                 closest_target_pos = target.getPos();
             }
         }
@@ -86,7 +86,7 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
                 /****************************
                  * Else, pathfind to it
                  */
-                if(path.size() == 0 || path.get(path.size() - 1).deltaOrthoMagnitude(closest_target_pos) > 1) {
+                if(path == null || path.size() == 0 || path.get(path.size() - 1).deltaOrthoMagnitude(closest_target_pos) > 1) {
                     //Only recalculate path if path is empty or we're not already aiming for that entity
                     MapTraversableAdapter mta = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
                     path = AStar.find(mta, entity.getPos(), closest_target_pos, 1.f);

@@ -17,6 +17,7 @@ import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import capstone2015.messaging.PushNotificationParams;
 import capstone2015.messaging.ReceivedDamageParams;
+import capstone2015.messaging.TamedParams;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -57,6 +58,9 @@ public class Game extends AppState{
             case ReceivedDamage:
                 onReceivedDamage((ReceivedDamageParams)m.getMsgObject());
                 break;
+            case Tamed:
+                onTamed((TamedParams)m.getMsgObject());
+                break;
             case TerminateGameState:
                 terminate();
                 break;
@@ -68,14 +72,17 @@ public class Game extends AppState{
                 break;
             case SaveGame:
                 map.storeToProperties((String)m.getMsgObject());
-                break;
-            case Terminate:
-            {
-                if(m.getMsgObject() == map.getPlayer()){
-                    notifications.push("You died.", Color.RED);
-                }
+                break;                
+        }
+    }
+    
+    private void onTamed(TamedParams tp){
+        if(tp.tamerActor == map.getPlayer()){
+            if(tp.success){
+                notifications.push("You sucessfully tamed the " + tp.tamedActor.getName(), Color.GREEN);
+            } else {
+                notifications.push("You failed to tame the " + tp.tamedActor.getName(), Color.RED);
             }
-                
         }
     }
     
@@ -84,11 +91,19 @@ public class Game extends AppState{
          * Check if the player was damaged
          */
         if(msg_obj.damagedActor == map.getPlayer()) {
-            String notif_text = String.format(
-                    "You take %d damage from %s!",
-                    msg_obj.damage,
-                    msg_obj.damagingEntity.getName()
-            );
+            String notif_text;
+            if(msg_obj.damagedActor.getHealth() <= 0){
+                notif_text = String.format(
+                        "The %s kills you.",
+                        msg_obj.damagingEntity.getName()
+                );
+            } else {
+                 notif_text = String.format(
+                        "You take %d damage from %s!",
+                        msg_obj.damage,
+                        msg_obj.damagingEntity.getName()
+                );
+            }
             Color notif_color = msg_obj.damagingEntity.getRepresent().getFGColor();
             notifications.push(notif_text, notif_color);
             return;
@@ -98,11 +113,21 @@ public class Game extends AppState{
          * Check if an entity was damaged by the player directly
          */
         if(msg_obj.damagingEntity == map.getPlayer()){
-            String notif_text = String.format(
-                    "You inflict %d damage on %s!",
-                    msg_obj.damage,
-                    msg_obj.damagedActor.getName()
-            );
+            String notif_text;
+            if(msg_obj.damagedActor.getHealth() <= 0){
+                notif_text = String.format(
+                        "You kill the %s.", 
+                        msg_obj.damagedActor.getName()
+                );
+            } else {
+                notif_text = String.format(
+                        "You inflict %d damage on %s! (%d/%d)",
+                        msg_obj.damage,
+                        msg_obj.damagedActor.getName(),
+                        msg_obj.damagedActor.getHealth(),
+                        msg_obj.damagedActor.getMaxHealth()
+                );
+            }
             Color notif_color = msg_obj.damagingEntity.getRepresent().getFGColor();
             notifications.push(notif_text, notif_color);
             return;
@@ -114,11 +139,21 @@ public class Game extends AppState{
         EntityBase parent = msg_obj.damagingEntity.getParent();
         while(parent != null){
             if(parent == map.getPlayer()){
-                String notif_text = String.format(
-                        "You inflict %d damage on %s!",
-                        msg_obj.damage,
-                        msg_obj.damagedActor.getName()
-                );
+                String notif_text;
+                if(msg_obj.damagedActor.getHealth() <= 0){
+                    notif_text = String.format(
+                            "You kill the %s.", 
+                            msg_obj.damagedActor.getName()
+                    );
+                } else {
+                    notif_text = String.format(
+                            "You inflict %d damage on %s! (%d/%d)",
+                            msg_obj.damage,
+                            msg_obj.damagedActor.getName(),
+                            msg_obj.damagedActor.getHealth(),
+                            msg_obj.damagedActor.getMaxHealth()
+                    );
+                }
                 Color notif_color = parent.getRepresent().getFGColor();
                 notifications.push(notif_text, notif_color);
                 return;

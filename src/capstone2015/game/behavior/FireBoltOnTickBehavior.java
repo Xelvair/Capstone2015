@@ -1,6 +1,8 @@
 package capstone2015.game.behavior;
 
 import capstone2015.entity.Actor;
+import static capstone2015.entity.ActorProto.TEAM_DUNGEON;
+import capstone2015.entity.EntityFactory;
 import capstone2015.game.Direction;
 import static capstone2015.game.behavior.ArrowOnTickBehavior.ARROW_DAMAGE;
 import static capstone2015.game.behavior.ArrowOnTickBehavior.ARROW_MOVE_TIMEOUT;
@@ -15,6 +17,7 @@ import java.util.Map;
 public class FireBoltOnTickBehavior implements OnTickBehavior{
     private Direction shootDirection;
     private int moveSequence = 0;
+    private int teamId = TEAM_DUNGEON;
     
     public static final int DAMAGE = 1;
     public static final double MOVE_TIMEOUT = 0.1f;

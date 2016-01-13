@@ -44,7 +44,6 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
          * normal state
          */
         Runnable exit_airborne = () -> {
-            entity.disableRepresentOverride();
             isAirborne = false;
             flightDirection = Direction.NONE;
             teamId = -1;
@@ -73,11 +72,24 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
             }
         }
 
-        if(flightDirection == Direction.LEFT || flightDirection == Direction.RIGHT){
-            entity.setRepresentOverride(new TerminalChar('-', entity.getRepresent().getFGColor(), entity.getRepresent().getBGColor()));
-        } else {
-            entity.setRepresentOverride(new TerminalChar('|', entity.getRepresent().getFGColor(), entity.getRepresent().getBGColor()));
+        char arrow_represent_override;
+        switch(flightDirection){
+            case LEFT:
+                arrow_represent_override = '\u2190';
+                break;
+            case RIGHT:
+                arrow_represent_override = '\u2192';
+                break;
+            case UP:
+                arrow_represent_override = '\u2191';
+                break;
+            case DOWN:
+            default:
+                arrow_represent_override = '\u2193';
+                break;
         }
+        
+        entity.setRepresentOverride(new TerminalChar(arrow_represent_override, entity.getRepresent().getFGColor(), entity.getRepresent().getBGColor()));
 
         InflictDamageParams idp = new InflictDamageParams();
         idp.damage = ARROW_DAMAGE;

@@ -15,7 +15,6 @@ import capstone2015.messaging.SpawnActorParams;
 import capstone2015.pathfinding.AStar;
 import capstone2015.pathfinding.Traversable;
 import capstone2015.util.Util;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class FireImpOnTickBehavior implements OnTickBehavior{
                 continue;
             }
 
-            if(target.getPos().deltaOrthoMagnitude(entity.getPos()) > closest_target_pos.deltaOrthoMagnitude(entity.getPos())){
+            if(target.getPos().deltaOrthoMagnitude(entity.getPos()) < closest_target_pos.deltaOrthoMagnitude(entity.getPos())){
                 closest_target_pos = new Vec2i(target.getPos());
             }
         }
@@ -73,6 +72,7 @@ public class FireImpOnTickBehavior implements OnTickBehavior{
                 
                 Map<String, Object> instantiation_params = new TreeMap();
                 instantiation_params.put("ShootDirection", Util.toDirection(closest_target_pos.subtract(entity.getPos())));
+                instantiation_params.put("TeamIdOverride", entity.getTeamId());
                 
                 msg_obj.instantiationParams = instantiation_params;
 

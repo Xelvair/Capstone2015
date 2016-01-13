@@ -8,6 +8,7 @@ import capstone2015.game.behavior.OnDroppedItemBehavior;
 import capstone2015.game.behavior.OnHealBehavior;
 import capstone2015.game.behavior.OnMovedBehavior;
 import capstone2015.game.behavior.OnPickedUpItemBehavior;
+import capstone2015.game.behavior.OnTamedBehavior;
 import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.game.behavior.OnWalkedOverBehavior;
 import capstone2015.geom.Vec2i;
@@ -27,6 +28,7 @@ public class Actor extends MapEntity {
     protected OnPickedUpItemBehavior onPickedUpItemBehavior;
     protected OnDroppedItemBehavior onDroppedItemBehavior;
     protected OnHealBehavior onHealBehavior;
+    protected OnTamedBehavior onTamedBehavior;
     protected EntityMapView view;
     protected int health;
     protected Vec2i pos;
@@ -35,6 +37,7 @@ public class Actor extends MapEntity {
     protected HashMap<EntityBase, Double> damageIgnoreTimers = new HashMap<>();
     protected Inventory inventory;
     protected TerminalChar representOverride = null;
+    protected int teamIdOverride = -1;
     protected double duration = -1.f;
     protected double moveTimeout = 0.f;
     protected double useTimeout = 0.f;
@@ -48,6 +51,26 @@ public class Actor extends MapEntity {
         }
     }
     
+    public double getTameMinChance(){
+        return proto.actorProto.tameMinChance;
+    }
+    
+    public double getTameMaxChance(){
+        return proto.actorProto.tameMaxChance;
+    }
+    
+    public boolean isTameable(){
+        return getTameMaxChance() > 0.f;
+    }
+    
+    public void setTeamIdOverride(int teamId){
+        teamIdOverride = teamId;
+    }
+
+    public void resetTeamIdOverride(){
+        teamIdOverride = -1;
+    }
+    
     public boolean hasVisionRevealedByDefault(){
         return proto.actorProto.visionRevealedByDefault;
     }
@@ -58,10 +81,6 @@ public class Actor extends MapEntity {
     
     public void unsetMap(){
         view = null;
-    }
-
-    public boolean hasRealtimeVisionUpdate(){
-        return proto.actorProto.hasRealtimeVisionUpdate;
     }
 
     public void setUseTimeout(double time){
@@ -136,7 +155,12 @@ public class Actor extends MapEntity {
         return damageIgnoreTimers;
     }
 
-    public int getTeamId(){return proto.actorProto.teamId;}
+    public int getTeamId(){
+        if(teamIdOverride >= 0)
+            return teamIdOverride;
+        else
+            return proto.actorProto.teamId;
+    }
 
     public int freeInventorySlotCount() {
         if (inventory != null) {
@@ -238,6 +262,12 @@ public class Actor extends MapEntity {
         health = Math.min(health + heal, getMaxHealth());
     }
 
+    public void onTamed(boolean success, Actor tamer){
+        if(onTamedBehavior != null){
+            onTamedBehavior.invoke(this, tamer, success);
+        }
+    }
+    
     @Override
     public void onWalkedOver() {
         if (onWalkedOverBehavior != null) {

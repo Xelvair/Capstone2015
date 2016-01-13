@@ -45,6 +45,8 @@ public class EntityFactory {
     public static final int ID_SOIL = 18;
     public static final int ID_FIRE_IMP = 19;
     public static final int ID_FIRE_BOLT = 20;
+    public static final int ID_TAMING_SCROLL = 21;
+    public static final int ID_TAMING_SPELL = 22;
     public static final int ID_EFFECT = 99;
     
     /*******************************
@@ -196,6 +198,8 @@ public class EntityFactory {
                 actor.health = (Integer) instantiationParams.get("Health");
             if(instantiationParams.containsKey("Inventory"))
                 actor.inventory = (Inventory) instantiationParams.get("Inventory");
+            if(instantiationParams.containsKey("TeamIdOverride"))
+                actor.setTeamIdOverride((int)instantiationParams.get("TeamIdOverride"));
 
             /***********************************
              * Load behaviors
@@ -207,6 +211,7 @@ public class EntityFactory {
             actor.onPickedUpItemBehavior = adaptiveInstantiate(e_proto.actorProto.onPickedUpItemBehaviorClass, instantiationParams);
             actor.onDroppedItemBehavior = adaptiveInstantiate(e_proto.actorProto.onDroppedItemBehaviorClass, instantiationParams);
             actor.onHealBehavior = adaptiveInstantiate(e_proto.actorProto.onHealBehaviorClass, instantiationParams);
+            actor.onTamedBehavior = adaptiveInstantiate(e_proto.actorProto.onTamedBehaviorClass, instantiationParams);
 
             /***********************************
              * If the actor has inventory space, instantiate an inventory
@@ -379,12 +384,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
 
         entityProtos.put(ep.id, ep);
         
@@ -415,12 +422,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = DefaultOnTamedBehavior.class;
         ep.actorProto.visionRadius = 7;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = true;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+        ep.actorProto.tameMinChance = 0.5f;
+        ep.actorProto.tameMaxChance = 1.f;
 
         entityProtos.put(ep.id, ep);
         
@@ -452,15 +461,18 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = KeyOnUseBehavior.class;
+        
 
         entityProtos.put(ep.id, ep);
         
@@ -504,19 +516,21 @@ public class EntityFactory {
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('@', Color.CYAN, COLOR_FLOOR_HIDDEN);
         ep.mapEntityProto.shaderType = SHADER_NONE;
-        ep.actorProto.maxHealth = 5;
+        ep.actorProto.maxHealth = 10;
         ep.actorProto.onMovedBehaviorClass = PlayerOnMovedBehavior.class;
         ep.actorProto.onTickBehaviorClass = PlayerOnTickBehavior.class;
         ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = PlayerOnPickedUpItemBehavior.class;
         ep.actorProto.onDroppedItemBehaviorClass = PlayerOnDroppedItemBehavior.class;
         ep.actorProto.onHealBehaviorClass = PlayerOnHealBehavior.class;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 10;
-        ep.actorProto.hasRealtimeVisionUpdate = true;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 5;
         ep.actorProto.teamId = ActorProto.TEAM_PLAYER;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
 
         entityProtos.put(ep.id, ep);
     
@@ -546,12 +560,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = HealthPotionOnUseBehavior.class;
@@ -584,12 +600,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = SwordOnUseBehavior.class;
@@ -623,12 +641,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = BowOnUseBehavior.class;
@@ -645,7 +665,7 @@ public class EntityFactory {
         ep.actorProto = new ActorProto();
         ep.itemProto = new ItemProto();
 
-        ep.entityBaseProto.represent = new TerminalChar('I', new Color(160, 160, 160), COLOR_FLOOR);
+        ep.entityBaseProto.represent = new TerminalChar('\u2192', new Color(160, 160, 160), COLOR_FLOOR);
         ep.entityBaseProto.name = "Arrow";
         ep.entityBaseProto.description =
                 "Used as ammunition for the bow. After the arrow strikes its target,\n"
@@ -654,7 +674,7 @@ public class EntityFactory {
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
-        ep.mapEntityProto.representInvisible = new TerminalChar('I', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.representInvisible = new TerminalChar('\u2192', new Color(160, 160, 160), COLOR_FLOOR_HIDDEN);
         ep.mapEntityProto.shaderType = SHADER_NONE;
         ep.actorProto.maxHealth = -1;
         ep.actorProto.onMovedBehaviorClass = null;
@@ -662,12 +682,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = null;
@@ -765,12 +787,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = true;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
         ep.itemProto.onItemPickedUpBehaviorClass = null;
         ep.itemProto.onItemDroppedBehaviorClass = null;
         ep.itemProto.onUseBehaviorClass = MagicWandOnUseBehavior.class;
@@ -802,12 +826,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 10;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
 
         entityProtos.put(ep.id, ep);
         
@@ -882,12 +908,14 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = DefaultOnTamedBehavior.class;
         ep.actorProto.visionRadius = 10;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = true;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+        ep.actorProto.tameMinChance = 0.1f;
+        ep.actorProto.tameMaxChance = 0.5f;
 
         entityProtos.put(ep.id, ep);
         
@@ -916,12 +944,94 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
+
+        entityProtos.put(ep.id, ep);
+        
+        /*********************************************
+         * #21 - TAMING_SCROLL - ACTOR, ITEM
+         */
+
+        ep = new EntityProto(ID_TAMING_SCROLL);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+        ep.itemProto = new ItemProto();
+
+        ep.entityBaseProto.represent = new TerminalChar('I', new Color(0, 162, 232), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Taming Scroll";
+        ep.entityBaseProto.description =
+                "Attempts to tame a creature and make it fight for you.\n"
+              + "The taming process can fail, the lower the tamed \n"
+              + "creatures HP, the more likely it is that its taming will\n"
+              + "be successfull. Upon taming a creature,\n"
+              + "it regains its max HP.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('I', new Color(0, 162, 232), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = null;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = true;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_NONE;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
+        ep.itemProto.onItemPickedUpBehaviorClass = null;
+        ep.itemProto.onItemDroppedBehaviorClass = null;
+        ep.itemProto.onUseBehaviorClass = TamingScrollOnUseBehavior.class;
+        
+        entityProtos.put(ep.id, ep);
+        
+        /*********************************************
+         * #22 - TAMING_SPELL - ACTOR
+         */
+
+        ep = new EntityProto(ID_TAMING_SPELL);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+
+        ep.entityBaseProto.represent = new TerminalChar('>', new Color(0, 162, 232), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Taming Spell";
+        ep.entityBaseProto.description =
+                "Attempts to tame a creature.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('>', new Color(0, 162, 232), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = TamingSpellOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
+        ep.actorProto.visionRadius = 1;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
 
         entityProtos.put(ep.id, ep);
         
@@ -954,8 +1064,8 @@ public class EntityFactory {
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 0;
-        ep.actorProto.hasRealtimeVisionUpdate = false;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;

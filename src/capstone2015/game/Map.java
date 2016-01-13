@@ -16,15 +16,12 @@ import java.io.*;
 import java.util.*;
 
 public class Map implements MapInterface{
-    public static final double NON_REALTIME_VIEW_UPDATE_TIME = 0.5f;
 
     private Array2D<Tile> tilemap;
     private LinkedList<Actor> actors;
     private Actor player; // for fast lookup;
     private MessageBus messageBus;
-
     private String mapName;
-    private double nonRealtimeViewUpdateAccum = 0.f;
 
     public Map(MessageBus messageBus){
         this.messageBus = messageBus;
@@ -194,6 +191,7 @@ public class Map implements MapInterface{
             case EntityFactory.ID_ARROW:
             case EntityFactory.ID_MAGIC_WAND:
             case EntityFactory.ID_FIRE_IMP:
+            case EntityFactory.ID_TAMING_SCROLL:
                 add(EntityFactory.createActor(tile_id, xcoord, ycoord));
                 tilemap.set(xcoord, ycoord, EntityFactory.createTile(EntityFactory.ID_FLOOR));
                 break;
@@ -381,6 +379,7 @@ public class Map implements MapInterface{
         TreeMap<String, Object> instantiation_params = new TreeMap<>();
         instantiation_params.put("RepresentOverride", sep.represent);
         instantiation_params.put("Duration", sep.duration);
+        
         Actor effect = EntityFactory.createActor(EntityFactory.ID_EFFECT, sep.pos, instantiation_params);
         this.add(effect);
     }
@@ -388,6 +387,38 @@ public class Map implements MapInterface{
     private void onSpawnActor(SpawnActorParams sep){
         add(EntityFactory.createActor(sep.entityId, sep.position, sep.instantiationParams, sep.parent));
     }
+    
+    private void onAttemptTame(AttemptTameParams atp){
+        int tamed_hp = atp.tamedActor.getHealth();
+        int tamed_hp_max = atp.tamedActor.getMaxHealth();
+        double chance_min = atp.tamedActor.getTameMinChance();
+        double chance_max = atp.tamedActor.getTameMaxChance();
+        
+        double tame_chance;
+        
+        if(tamed_hp_max <= 1){
+            tame_chance = chance_min;
+        } else {
+            double chance_per_taken_hp = (chance_max - chance_min) / (tamed_hp_max - 1);
+            tame_chance = chance_min + chance_per_taken_hp * (tamed_hp_max - tamed_hp);
+        }
+        
+        Random rand = new Random();
+        
+        boolean tame_success = rand.nextDouble() <= tame_chance;
+        if(tame_success){
+            atp.tamedActor.setTeamIdOverride(atp.tamerActor.getTeamId());
+            atp.tamedActor.setHealthPoints(atp.tamedActor.getMaxHealth());
+        }
+        atp.tameCallback.accept(tame_success);
+        atp.tamedActor.onTamed(tame_success, atp.tamerActor);
+        
+        TamedParams tp = new TamedParams();
+        tp.success = tame_success;
+        tp.tamerActor = atp.tamerActor;
+        tp.tamedActor = atp.tamedActor;
+        messageBus.enqueue(new Message(Message.Type.Tamed, tp));
+     }
     
     public void tick(double timeDelta){
         Iterator<Actor> it = actors.iterator();
@@ -439,6 +470,11 @@ public class Map implements MapInterface{
                 case SpawnActor:
                 {
                     onSpawnActor((SpawnActorParams)m.getMsgObject());
+                    break;
+                }
+                case AttemptTame:
+                {
+                    onAttemptTame((AttemptTameParams)m.getMsgObject());
                     break;
                 }
             }

@@ -17,6 +17,8 @@ public class Message {
         Drop,                   //Entity wants to drop an item
         SpawnEffect,            //An effect entity should be spawned on the map
         SpawnActor,             //An entity should be spawned on the map
+        AttemptTame,            //A taming attempt is being made
+        Tamed,                  //Creature tame was attempted
         Terminate,              //Entity has terminated
         GameWon,                //Game has been won
         SaveGame,               //Game should be saved to file
