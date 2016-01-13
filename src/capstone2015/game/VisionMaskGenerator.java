@@ -18,7 +18,7 @@ public class VisionMaskGenerator {
         return generate(map, area, null);
     }
     public static Array2D<Boolean> generate(Map map, Recti area, Actor viewer){
-        TimeStat.enterState("EntityVision");
+        TimeStat.enterState("AI.Vision");
         Recti map_rect = new Recti(0, 0, map.width(), map.height());
         Recti dest_rect = new Recti(0, 0, area.getWidth(), area.getHeight());
         
@@ -134,7 +134,7 @@ public class VisionMaskGenerator {
             }
         }
         
-        TimeStat.leaveState("EntityVision");
+        TimeStat.leaveState("AI.Vision");
         return vision_mask;
     }
 }

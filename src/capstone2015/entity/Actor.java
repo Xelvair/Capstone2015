@@ -2,7 +2,7 @@ package capstone2015.entity;
 
 import capstone2015.game.Inventory;
 import capstone2015.game.Map;
-import capstone2015.game.MaskedMapView;
+import capstone2015.game.EntityMapView;
 import capstone2015.game.behavior.OnDamageBehavior;
 import capstone2015.game.behavior.OnDroppedItemBehavior;
 import capstone2015.game.behavior.OnHealBehavior;
@@ -27,7 +27,7 @@ public class Actor extends MapEntity {
     protected OnPickedUpItemBehavior onPickedUpItemBehavior;
     protected OnDroppedItemBehavior onDroppedItemBehavior;
     protected OnHealBehavior onHealBehavior;
-    protected MaskedMapView view;
+    protected EntityMapView view;
     protected int health;
     protected Vec2i pos;
     protected boolean terminated;
@@ -41,7 +41,8 @@ public class Actor extends MapEntity {
 
     public void setMap(Map map){
         if(hasVision()){
-            view = new MaskedMapView(map);
+            view = new EntityMapView(map, proto.actorProto.visionRadius);
+            view.setViewerPos(pos);
             if(hasVisionRevealedByDefault())
                 view.revealAll();
         }
@@ -57,12 +58,6 @@ public class Actor extends MapEntity {
     
     public void unsetMap(){
         view = null;
-    }
-    
-    public void onVisionUpdate(int x, int y, Array2D<Boolean> visibilityMap){
-        if(view != null){
-            view.updateVisibilityMask(x, y, visibilityMap);
-        }
     }
 
     public boolean hasRealtimeVisionUpdate(){
@@ -97,7 +92,7 @@ public class Actor extends MapEntity {
 
     public void setDuration(double duration){this.duration = duration;}
 
-    public MaskedMapView getView(){
+    public EntityMapView getView(){
         return view;
     }
     
@@ -269,6 +264,9 @@ public class Actor extends MapEntity {
     }
 
     public void onMoved(ArrayList<MapEntity> entitiesOnPosition) {
+        if(view != null){
+            view.setViewerPos(pos);
+        }
         if (onMovedBehavior != null) {
             onMovedBehavior.invoke(this, entitiesOnPosition);
         }

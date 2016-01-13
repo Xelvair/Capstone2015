@@ -17,9 +17,11 @@ import capstone2015.pathfinding.Traversable;
 import capstone2015.util.Util;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class FireImpOnTickBehavior implements OnTickBehavior{
     public static final double MOVE_TIMEOUT = 0.75f;
@@ -33,7 +35,10 @@ public class FireImpOnTickBehavior implements OnTickBehavior{
         /***************************
          * Determine closest target
          */
-        ArrayList<Actor> targets = entity.getView().getActorsById(EntityFactory.ID_PLAYER);
+        
+        List<Actor> targets = entity.getView().getActors().stream().filter(
+                a -> (!a.isInvulnerable() && a.getTeamId() != entity.getTeamId())
+        ).collect(Collectors.toList());
 
         Vec2i closest_target_pos = null;
         for(Actor target : targets){
@@ -81,7 +86,7 @@ public class FireImpOnTickBehavior implements OnTickBehavior{
                 if(!entity.canMove())
                     return;
                 
-                if(path.size() == 0 || targetPosition == null || !targetPosition.equals(closest_target_pos)) {
+                if(path == null ||path.size() == 0 || targetPosition == null || !targetPosition.equals(closest_target_pos)) {
                     //Only recalculate path if path is empty or we're not already aiming for that entity
                     Traversable traversable = new RangerMapTraversableAdapter(entity.getView(), entity.getSolidType(), 7);
                     path = AStar.find(traversable, entity.getPos(), closest_target_pos, 0.f);

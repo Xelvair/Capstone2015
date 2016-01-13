@@ -830,7 +830,7 @@ public class EntityFactory {
         ep.mapEntityProto.isEncounterNotified = false;
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('\u03D2', new Color(0, 75, 40), COLOR_SOIL_HIDDEN);
-        ep.mapEntityProto.shaderType = SHADER_COLOR_VARIATION;
+        ep.mapEntityProto.shaderType = SHADER_NONE;
         
         entityProtos.put(ep.id, ep);
         /******************************************

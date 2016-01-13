@@ -5,7 +5,7 @@ import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
-import capstone2015.game.MaskedMapView;
+import capstone2015.game.EntityMapView;
 import capstone2015.game.NotificationList;
 import capstone2015.game.panel.HudPanel;
 import capstone2015.game.panel.EntityListPanel;
@@ -29,7 +29,6 @@ public class Game extends AppState{
     private final MessageBus messageBus;
     private final Map map;
     private final NotificationList notifications = new NotificationList(NOTIFICATION_LIST_SIZE);
-    private final MaskedMapView maskedMapView;
 
     
     public Game(Screen screen, MessageBus messageBus, String mapFile){
@@ -37,7 +36,6 @@ public class Game extends AppState{
         this.messageBus = messageBus;
         map = new Map(messageBus);
         map.loadFromProperties(mapFile);
-        maskedMapView = new MaskedMapView(map);
         notifications.push("You enter the dungeon...", Color.YELLOW);
     }
     
@@ -153,9 +151,9 @@ public class Game extends AppState{
         Recti map_render_rect = getPlayerRenderRect();
         
         screen.insert(MapRenderer.render(player.getView(), map_render_rect), 0, NOTIFICATION_LIST_SIZE);
-        
+
         drawPickupableList();
-        
+
         Panel p_hud;
         Actor plr = map.getPlayer();
         p_hud = HudPanel.render(plr.getHealth(), plr.getMaxHealth(), plr.getInventory(), screen.width());

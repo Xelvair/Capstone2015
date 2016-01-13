@@ -33,8 +33,14 @@ public class MapRenderer {
     bonfireShader =
     (TerminalChar in, java.util.Map<String, Object> data) -> {
         if(   !data.containsKey("abs_pos_x")
-           || !data.containsKey("abs_pos_y")){
+           || !data.containsKey("abs_pos_y")
+           || !data.containsKey("in_direct_vision")){
             throw new RuntimeException("Failed to run shader: insufficient parameters.");
+        }
+        
+        boolean in_direct_vision = (boolean)data.get("in_direct_vision");
+        if(!in_direct_vision){
+            return in;
         }
         
         Color[] color_list = new Color[]{
@@ -60,10 +66,16 @@ public class MapRenderer {
     (TerminalChar in, java.util.Map<String, Object> data) -> {
         if(   !data.containsKey("abs_pos_x")
            || !data.containsKey("abs_pos_y")
-           || !data.containsKey("max_offset")){
+           || !data.containsKey("max_offset")
+           || !data.containsKey("in_direct_vision")){
             throw new RuntimeException("Failed to run shader: insufficient parameters.");
         }
 
+        boolean in_direct_vision = (boolean)data.get("in_direct_vision");
+        if(!in_direct_vision){
+            return in;
+        }
+        
         Vec2i pos = new Vec2i((int)data.get("abs_pos_x"), (int)data.get("abs_pos_y"));
         
         Random rand = new Random(Util.hash(pos.hashCode()));
@@ -100,6 +112,7 @@ public class MapRenderer {
            || !data.containsKey("max_offset")){
             throw new RuntimeException("Failed to run shader: insufficient parameters.");
         }
+        
         final int SAMPLE_COUNT = 10;
         final int SEQUENCE_COUNT = 10000;
         final int SEQUENCE_DURATION_MSEC = 350;
@@ -144,7 +157,7 @@ public class MapRenderer {
         return new TerminalChar(in.getCharacter(), new_fg_col, new_bg_col);
     };
   
-    public static Panel render(MaskedMapView map, Recti renderRect){
+    public static Panel render(EntityMapView map, Recti renderRect){
         TimeStat.enterState("Rendering");
         /****************************
          * Create shader programs
@@ -180,7 +193,8 @@ public class MapRenderer {
             character_shader_data.put("abs_pos_x", map_x);
             character_shader_data.put("abs_pos_y", map_y);
             
-            if(map.inBounds(map_x, map_y) && map.getVisionAt(map_x, map_y).entitiesVisible()){
+            if(map.inBounds(map_x, map_y) && map.hasLineOfSight(map_x, map_y)){
+              character_shader_data.put("in_direct_vision", true);
               ArrayList<MapEntity> entities = map.getMapEntitiesAt(map_x, map_y);
               if(entities.size() > 1){ //If we need to display something else than the tilemap
                   int current_time_msec = (int)(System.currentTimeMillis() % Integer.MAX_VALUE);
@@ -202,7 +216,8 @@ public class MapRenderer {
                 p.set(j, i, entities.get(0).getRepresent());
                 p.setShaderProgram(j, i, shader_programs[entities.get(0).getShaderType()]);
               }
-            } else if(map.inBounds(map_x, map_y) && map.getVisionAt(map_x, map_y).tileVisible()){
+            } else if(map.inBounds(map_x, map_y) && map.hasRevealed(map_x, map_y)){
+                character_shader_data.put("in_direct_vision", false);
                 MapEntity e = map.getMapEntitiesAt(map_x, map_y).get(0);
                 p.set(j, i, e.getRepresentInvisible());
                 p.setShaderProgram(j, i, shader_programs[e.getShaderType()]);
@@ -213,8 +228,10 @@ public class MapRenderer {
             p.setCharacterData(j, i, character_shader_data);
           }
         }
-
+        Panel p_rendered = p.render();
+        
         TimeStat.leaveState("Rendering");
-        return p.render();
+        
+        return p_rendered;
     }
 }

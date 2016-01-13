@@ -3,14 +3,11 @@ package capstone2015;
 import capstone2015.appstate.*;
 import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.EntityFactory;
-import capstone2015.game.RangerMapTraversableAdapter;
 import capstone2015.game.panel.DiagnosticsPanel;
-import capstone2015.geom.Vec2i;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
-import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.swing.SwingTerminal;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -159,7 +156,7 @@ public class Capstone2015 {
             /****************************
              * Wait until next cycle
              */
-            Thread.sleep(1);
+            Thread.sleep(10);
         }
         
         screen.close();

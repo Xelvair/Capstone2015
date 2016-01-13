@@ -15,6 +15,7 @@ import static capstone2015.messaging.Message.Type.InflictDamage;
 import capstone2015.pathfinding.AStar;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
 
@@ -31,7 +32,9 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
         /***************************
          * Determine closest target
          */
-        ArrayList<Actor> targets = entity.getView().getActorsById(EntityFactory.ID_PLAYER);
+        List<Actor> targets = entity.getView().getActors().stream().filter(
+                a -> (!a.isInvulnerable() && a.getTeamId() != entity.getTeamId())
+        ).collect(Collectors.toList());
 
         if(!entity.canMove() && !entity.canUse()){
             return;

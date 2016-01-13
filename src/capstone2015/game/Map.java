@@ -16,7 +16,7 @@ import java.io.*;
 import java.util.*;
 
 public class Map implements MapInterface{
-    public static final double NON_REALTIME_VIEW_UPDATE_TIME = 0.20f;
+    public static final double NON_REALTIME_VIEW_UPDATE_TIME = 0.5f;
 
     private Array2D<Tile> tilemap;
     private LinkedList<Actor> actors;
@@ -393,25 +393,6 @@ public class Map implements MapInterface{
         Iterator<Actor> it = actors.iterator();
         while(it.hasNext()){
             Actor e = it.next();
-            boolean do_non_realtime_vision_update = false;
-            nonRealtimeViewUpdateAccum += timeDelta;
-            if(nonRealtimeViewUpdateAccum >= NON_REALTIME_VIEW_UPDATE_TIME){
-                do_non_realtime_vision_update = true;
-                nonRealtimeViewUpdateAccum -= NON_REALTIME_VIEW_UPDATE_TIME;
-            }
-
-            if(e.hasVision() && (e.hasRealtimeVisionUpdate() || do_non_realtime_vision_update)){
-                int vis_radius = e.getVisionRadius();
-                Vec2i pos = e.getPos();
-                Recti vision_rect = new Recti(
-                        pos.getX() - vis_radius,
-                        pos.getY() - vis_radius,
-                        vis_radius * 2,
-                        vis_radius * 2
-                );
-                Array2D<Boolean> vision_mask = VisionMaskGenerator.generate(this, vision_rect, e);
-                e.onVisionUpdate(vision_rect.getLeft(), vision_rect.getTop(), vision_mask);
-            }
             
             e.onTick(timeDelta);
             
