@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.state.State;
 import capstone2015.game.InputRecorder;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
@@ -11,7 +12,7 @@ import com.googlecode.lanterna.input.Key;
 import java.awt.*;
 import java.util.function.Consumer;
 
-public class UserTextInputState extends AppState{
+public class UserTextInputState extends State{
 
     public static int MAX_INPUT_LENGTH = 48;
 
@@ -67,14 +68,5 @@ public class UserTextInputState extends AppState{
     private void onCancelInput() {
         callbackFunc.accept(null);
         terminate();
-    }
-
-    @Override
-    protected void onEvent(AppStateEvent event) {
-        switch(event){
-            case TERMINATE:
-                terminate();
-                break;
-        }
     }
 }

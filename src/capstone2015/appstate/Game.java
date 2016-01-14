@@ -1,11 +1,11 @@
 package capstone2015.appstate;
 
+import capstone2015.state.State;
 import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
-import capstone2015.game.EntityMapView;
 import capstone2015.game.NotificationList;
 import capstone2015.game.panel.HudPanel;
 import capstone2015.game.panel.EntityListPanel;
@@ -22,7 +22,7 @@ import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
 import java.util.ArrayList;
 
-public class Game extends AppState{
+public class Game extends State{
     public static final int NOTIFICATION_LIST_SIZE = 2;
     public static final int HUD_HEIGHT = 1;
     
@@ -226,15 +226,6 @@ public class Game extends AppState{
                 Panel p_pickupable = EntityListPanel.render(pickupable_items, elist_p_cfg);
                 screen.insert(p_pickupable, 0, screen.height() - p_pickupable.height());
             }
-        }
-    }
-    
-    @Override
-    protected void onEvent(AppStateEvent event) {
-        switch(event){
-            case TERMINATE:
-                terminate();
-                break;
         }
     }
 }

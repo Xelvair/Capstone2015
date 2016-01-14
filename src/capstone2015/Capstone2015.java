@@ -1,5 +1,6 @@
 package capstone2015;
 
+import capstone2015.state.StateMachine;
 import capstone2015.appstate.*;
 import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.EntityFactory;
@@ -21,10 +22,14 @@ public class Capstone2015 {
     private static boolean isAltPressed = false;
     private static boolean showDiagnostics = false;
 
+    private static StateMachine appStates ;
+    private static Screen screen;
+    private static MessageBus messageBus;
+    
     public static void main(String[] args) throws Exception {        
-        AppStateManager asm = new AppStateManager();
-        Screen screen = new Screen();
-        MessageBus messageBus = new MessageBus();
+        appStates = new StateMachine();
+        screen = new Screen();
+        messageBus = new MessageBus();
         
         /****************************
          * Fixing lanterna's not working CTRL and ALT detection
@@ -67,18 +72,17 @@ public class Capstone2015 {
         /****************************
          * Start with the main menu
          */
-        asm.pushState(new MainMenu(screen, messageBus));
+        appStates.pushState(new MainMenu(screen, messageBus));
        
         long lastClock = System.currentTimeMillis();
 
         TimeStat.reset();
-        while(!asm.isEmpty()){
+        while(!appStates.isEmpty()){
             /****************************
              * Calculate exact time since last cycle
              */
             long deltatime_msec = System.currentTimeMillis() - lastClock;
             lastClock = System.currentTimeMillis();
-            Map<String, Long> time_stat_summary = TimeStat.getStateSummary();
             TimeStat.reset();
             
             /****************************
@@ -87,28 +91,28 @@ public class Capstone2015 {
             for(Message m : messageBus){
                 switch(m.getType()){
                     case PushIngameMenuState:
-                        asm.pushState(new IngameMenu(screen, messageBus));
+                        appStates.pushState(new IngameMenu(screen, messageBus));
                         break;
                     case PushHelpPageState:
-                        asm.pushState(new HelpPageState(screen, messageBus));
+                        appStates.pushState(new HelpPageState(screen, messageBus));
                         break;
                     case PushLaunchGameState:
-                        asm.pushState(new LaunchGameState(screen, messageBus));
+                        appStates.pushState(new LaunchGameState(screen, messageBus));
                         break;
                     case GameWon:
-                        asm.pushState(new GameWonState(screen, messageBus));
+                        appStates.pushState(new GameWonState(screen, messageBus));
                         break;
                     case LoadGame:
-                        asm.pushState(new Game(screen, messageBus, (String)m.getMsgObject()));
+                        appStates.pushState(new Game(screen, messageBus, (String)m.getMsgObject()));
                         break;
                     case PushSelectGamesaveState:
-                        asm.pushState(new SelectSavegameState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
+                        appStates.pushState(new SelectSavegameState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
                         break;
                     case PushUserTextInputState:
-                        asm.pushState(new UserTextInputState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
+                        appStates.pushState(new UserTextInputState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
                         break;
                     case QuitToDesktop:
-                        asm.terminateStates();
+                        appStates.terminateStates();
                         break;
                     default:
                         break;
@@ -140,7 +144,7 @@ public class Capstone2015 {
             /****************************
              * Tick the state machine
              */
-            asm.tick((double)deltatime_msec / 1000.d);
+            appStates.tick((double)deltatime_msec / 1000.d);
 
             /****************************
              * Draw diagnostics window if toggled
@@ -148,11 +152,17 @@ public class Capstone2015 {
             if(showDiagnostics)
                 screen.insert(DiagnosticsPanel.render(), -1, -1);
             
+            Map<String, Long> time_stat_summary = TimeStat.getStateSummary();
+            if(TimeStat.getElapsedTime() > 20000000){
+                System.out.println("WARN: Stall occurred: " + TimeStat.getElapsedTime() / 1000000 + "msec.");
+                System.out.println(time_stat_summary);
+            }
+            
             /****************************
              * Draw the screen
              */
             screen.flip();
-
+            
             /****************************
              * Wait until next cycle
              */

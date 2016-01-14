@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.state.State;
 import capstone2015.game.panel.OptionPanel;
 import capstone2015.game.panel.TitleScreenPanel;
 import capstone2015.graphics.Panel;
@@ -12,7 +13,7 @@ import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
 import java.util.function.Consumer;
 
-public class MainMenu extends AppState{
+public class MainMenu extends State{
 
     private Screen screen;
     private MessageBus messageBus;
@@ -104,15 +105,6 @@ public class MainMenu extends AppState{
         
         draw();
         
-    }
-
-    @Override
-    protected void onEvent(AppStateEvent event) {
-        switch(event){
-            case TERMINATE:
-                terminate();
-                break;
-        }
     }
     
 }

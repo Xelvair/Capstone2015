@@ -183,6 +183,7 @@ public class MapRenderer {
 
         ShaderPanel p = new ShaderPanel(Math.max(0, renderRect.getWidth()), Math.max(0, renderRect.getHeight()));
 
+        TimeStat.enterState("RenderingInner");
         for(int i = 0; i < renderRect.getHeight(); i++){
           for(int j = 0; j < renderRect.getWidth(); j++){
             java.util.Map<String, Object> character_shader_data = new TreeMap();
@@ -228,7 +229,10 @@ public class MapRenderer {
             p.setCharacterData(j, i, character_shader_data);
           }
         }
+        TimeStat.leaveState("RenderingInner");
+        TimeStat.enterState("Shaders");
         Panel p_rendered = p.render();
+        TimeStat.leaveState("Shaders");
         
         TimeStat.leaveState("Rendering");
         

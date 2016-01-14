@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.state.State;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
@@ -8,7 +9,7 @@ import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
 
-public class GameWonState extends AppState{
+public class GameWonState extends State{
 
     private Screen screen;
     private MessageBus messageBus;
@@ -42,15 +43,5 @@ public class GameWonState extends AppState{
         p.insertCenterHorizontally(Panel.textPanel("YOU WON!", Color.YELLOW, Color.DARK_GRAY), 2);
         p.insertCenterHorizontally(Panel.textPanel("Press ENTER to Quit", Color.WHITE, Color.DARK_GRAY), 3);
         screen.insertCenter(p);
-    }
-
-    @Override
-    protected void onEvent(AppStateEvent event) {
-        switch(event){
-            case TERMINATE:
-                terminate();
-                break;
-        }
-    }
-    
+    }    
 }

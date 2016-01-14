@@ -1,26 +1,44 @@
-package capstone2015.appstate;
+package capstone2015.state;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-public class AppStateManager {
-    private final ArrayList<AppState> states = new ArrayList<>();
-    
+public class StateMachine {
+    private final List<State> states = new ArrayList<>();
+    private boolean lockStatesList = false;
+    private final List<State> scheduledAddStates = new ArrayList<>();
     /***********
      * Pushes a new state atop the others
      * @param state
      */
-    public void pushState(AppState state){
+    public void pushState(State state){
+        if(lockStatesList){
+            scheduledAddStates.add(state);
+            return;
+        }
+        
         /**
          * Set the current top state to blur
          */
         if(!states.isEmpty()){
-            AppState topState = states.get(states.size() - 1);
+            State topState = states.get(states.size() - 1);
             topState.setBlur();
         }
         
         states.add(state);
         state.setFocus();
+    }
+    
+    private void flushScheduledAddStates(){
+        if(lockStatesList)
+            return;
+        
+        Iterator<State> it = scheduledAddStates.iterator();
+        while(it.hasNext()){
+            pushState(it.next());
+            it.remove();
+        }
     }
     
     /*******
@@ -30,30 +48,17 @@ public class AppStateManager {
      * the terminate() call
      */
     public void terminateStates(){
-        for(AppState state : states){
-            state.onEvent(AppStateEvent.TERMINATE);
-        }
-        cleanStates();
-    }
-    
-    /******
-     * Sends kill event to states and kills states
-     * instantly after. States may not be able to finish 
-     * asynchronous processes
-     */
-    public void killStates(){
-        for(AppState state : states){
-            state.onEvent(AppStateEvent.KILL);
+        for(State state : states){
             state.terminate();
         }
         cleanStates();
     }
     
     private void cleanStates(){
-        Iterator<AppState> it = states.iterator();
+        Iterator<State> it = states.iterator();
         
         while(it.hasNext()){
-            AppState state = it.next();
+            State state = it.next();
             if(!state.isAlive()){
                 it.remove();
             }
@@ -64,12 +69,12 @@ public class AppStateManager {
      * Replace all states currently in the state stack with this one
      * @param state
      */
-    public void emplaceState(AppState state){
+    public void emplaceState(State state){
         /**
          * Send terminate event to all current states
          */
-        for(AppState it : states){
-            it.onEvent(AppStateEvent.TERMINATE);
+        for(State it : states){
+            it.terminate();
         }
         states.clear();
         
@@ -92,17 +97,20 @@ public class AppStateManager {
         /**
          * Tick alive states, remove others
          */
-        for (AppState state : states) {
+        lockStatesList = true;
+        for (State state : states) {
             if (state.isAlive()) {
                 state.onTick(timeDelta);
             }
         }
+        lockStatesList = false;
+        flushScheduledAddStates();
         
         /****
          * If a state was removed, another one might have taken the
          * top (in-focus) spot. Set that one's focus to true
          */
-        AppState topState = states.get(states.size() - 1);
+        State topState = states.get(states.size() - 1);
         if(topState.isBlur()){
             topState.setFocus();
         }

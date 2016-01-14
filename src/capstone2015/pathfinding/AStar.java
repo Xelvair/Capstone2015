@@ -1,8 +1,6 @@
 package capstone2015.pathfinding;
 
 import capstone2015.diagnostics.TimeStat;
-import capstone2015.geom.Vec2i;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,7 +10,7 @@ public class AStar {
     public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target){
         return find(traversable, start, target, Float.NEGATIVE_INFINITY);
     }
-    public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target, float minHeuristic){
+    public static <T extends Comparable<T>> LinkedList<T> find(Traversable<T> traversable, T start, T target, double minHeuristic){
         TimeStat.enterState("AI.Pathfinding");
         long start_time = System.currentTimeMillis();
         boolean target_found = false;

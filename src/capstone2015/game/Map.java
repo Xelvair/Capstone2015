@@ -407,6 +407,7 @@ public class Map implements MapInterface{
         
         boolean tame_success = rand.nextDouble() <= tame_chance;
         if(tame_success){
+            atp.tamedActor.setLeader(atp.tamerActor);
             atp.tamedActor.setTeamIdOverride(atp.tamerActor.getTeamId());
             atp.tamedActor.setHealthPoints(atp.tamedActor.getMaxHealth());
         }

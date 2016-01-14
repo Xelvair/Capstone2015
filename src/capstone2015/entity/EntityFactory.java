@@ -420,7 +420,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.onTamedBehaviorClass = DefaultOnTamedBehavior.class;
-        ep.actorProto.visionRadius = 7;
+        ep.actorProto.visionRadius = 10;
         ep.actorProto.visionRevealedByDefault = true;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
@@ -521,7 +521,7 @@ public class EntityFactory {
         ep.actorProto.onDroppedItemBehaviorClass = PlayerOnDroppedItemBehavior.class;
         ep.actorProto.onHealBehaviorClass = PlayerOnHealBehavior.class;
         ep.actorProto.onTamedBehaviorClass = null;
-        ep.actorProto.visionRadius = 10;
+        ep.actorProto.visionRadius = 12;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 5;

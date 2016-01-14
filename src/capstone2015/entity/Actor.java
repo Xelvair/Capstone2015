@@ -31,6 +31,7 @@ public class Actor extends MapEntity {
     protected OnTamedBehavior onTamedBehavior;
     protected EntityMapView view;
     protected int health;
+    protected Actor leader;
     protected Vec2i pos;
     protected boolean terminated;
     protected int visionRadius;
@@ -49,6 +50,14 @@ public class Actor extends MapEntity {
             if(hasVisionRevealedByDefault())
                 view.revealAll();
         }
+    }
+    
+    public void setLeader(Actor leader){
+        this.leader = leader;
+    }
+    
+    public Actor getLeader(){
+        return leader;
     }
     
     public double getTameMinChance(){
@@ -86,9 +95,17 @@ public class Actor extends MapEntity {
     public void setUseTimeout(double time){
         useTimeout = time;
     }
+    
+    public void resetUseTimeout(){
+        useTimeout = 0.d;
+    }
 
     public void setMoveTimeout(double time){
         moveTimeout = time;
+    }
+    
+    public void resetMoveTimeout(){
+        moveTimeout = 0.d;
     }
 
     public void decreaseUseTimeout(double time){

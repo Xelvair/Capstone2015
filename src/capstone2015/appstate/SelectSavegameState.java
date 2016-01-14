@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.state.State;
 import capstone2015.game.panel.OptionPanel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class SelectSavegameState extends AppState{
+public class SelectSavegameState extends State{
 
     private Screen screen;
     private MessageBus messageBus;
@@ -102,14 +103,5 @@ public class SelectSavegameState extends AppState{
         }
 
         screen.insertCenter(optionPanel.render());
-    }
-
-    @Override
-    protected void onEvent(AppStateEvent event) {
-        switch(event){
-            case TERMINATE:
-                terminate();
-                break;
-        }
     }
 }

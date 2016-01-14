@@ -1,36 +1,39 @@
-package capstone2015.appstate;
+package capstone2015.state;
 
-public abstract class AppState {    
+public abstract class State {    
     private boolean isAlive = true;
     private boolean isFocus = false;
     
     protected abstract void onTick(double timeDelta);
-    protected abstract void onEvent(AppStateEvent event);
     
-    public boolean isFocus(){return isFocus;}
-    public boolean isBlur(){return !isFocus;}
-    protected final void terminate(){this.isAlive = false;}
+    protected void onBlur(){}
+    protected void onFocus(){}
+    protected void onTerminate(){}
+    
+    public final boolean isFocus(){return isFocus;}
+    public final boolean isBlur(){return !isFocus;}
+    protected final void terminate(){this.isAlive = false; this.onTerminate();}
     public final boolean isAlive(){return this.isAlive;}
     
     /*********
-     * Sets the AppState blurred
-     * meaning it is not at the top of the state stack anymore
+     * Sets the State blurred
+ meaning it is not at the top of the state stack anymore
      */
     public final void setBlur(){
         if(this.isFocus){
             this.isFocus = false;
-            this.onEvent(AppStateEvent.BLUR);
+            this.onBlur();
         }
     }
     
     /*********
-     * Sets the AppState focussed
-     * meaning it is at the top of the state stack
+     * Sets the State focussed
+ meaning it is at the top of the state stack
      */
     public final void setFocus(){
         if(!this.isFocus){
             this.isFocus = true;
-            this.onEvent(AppStateEvent.FOCUS);
+            this.onFocus();
         }
     }
 }

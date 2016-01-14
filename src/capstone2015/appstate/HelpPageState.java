@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.state.State;
 import capstone2015.entity.EntityFactory;
 import capstone2015.game.panel.HelpPanel;
 import capstone2015.game.panel.HowToPlayPanel;
@@ -14,7 +15,7 @@ import com.googlecode.lanterna.input.Key;
 import java.awt.*;
 import java.util.LinkedList;
 
-public class HelpPageState extends AppState {
+public class HelpPageState extends State {
     private Screen screen;
     private MessageBus messageBus;
     private HelpPanel helpPanel = new HelpPanel();
@@ -83,14 +84,5 @@ public class HelpPageState extends AppState {
         }
 
         screen.insertCenter(helpPanel.render());
-    }
-
-    @Override
-    protected void onEvent(AppStateEvent event) {
-        switch(event){
-            case TERMINATE:
-                terminate();
-                break;
-        }
     }
 }

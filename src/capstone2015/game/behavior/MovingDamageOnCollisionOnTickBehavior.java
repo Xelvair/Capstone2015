@@ -23,6 +23,8 @@ public class MovingDamageOnCollisionOnTickBehavior implements OnTickBehavior{
     public static final float MOVE_TIMEOUT = 0.225f;
     public static final float ATTACK_TIMEOUT = 0.5f;
     public static final int RANDOM_MOVE_RADIUS = 10;
+    public static final int INNER_STRAY = 5;
+    public static final int OUTER_STRAY = 15;
             
     private LinkedList<Vec2i> path = new LinkedList<>();
     

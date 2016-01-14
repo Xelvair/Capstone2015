@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.state.State;
 import capstone2015.game.panel.OptionPanel;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
@@ -10,7 +11,7 @@ import com.googlecode.lanterna.input.Key;
 import java.io.File;
 import java.util.ArrayList;
 
-public class LaunchGameState extends AppState{
+public class LaunchGameState extends State{
 
     private Screen screen;
     private MessageBus messageBus;
@@ -81,15 +82,6 @@ public class LaunchGameState extends AppState{
         Panel p_options = optionPanel.render();
         
         screen.insertCenter(p_options);
-    }
-
-    @Override
-    protected void onEvent(AppStateEvent event) {
-        switch(event){
-            case TERMINATE:
-                terminate();
-                break;
-        }
     }
     
 }
