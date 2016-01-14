@@ -5,13 +5,10 @@ import capstone2015.game.behavior.*;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.MessageBus;
-import capstone2015.util.Util;
 import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.util.Map;
-import java.util.Random;
 import java.util.TreeMap;
-import java.util.function.BiFunction;
 
 /***********************************
  * Creates Tiles, Items and Actors from a shared pool of entity

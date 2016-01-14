@@ -156,9 +156,11 @@ public class Capstone2015 {
             /****************************
              * Wait until next cycle
              */
-            Thread.sleep(10);
+            Thread.yield();
         }
         
         screen.close();
+        
+        System.exit(0);
     }
 }
