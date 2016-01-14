@@ -88,7 +88,6 @@ public class TamingSpellOnTickBehavior implements OnTickBehavior{
             atp.tamerActor = tamer;
             atp.tamedActor = tameable_actors.get(0);
             atp.tameCallback = (Boolean wasTamed) -> {
-                System.out.println("Taming attempt was " + wasTamed);
                 tameCallback.run();
             };        
             entity.sendBusMessage(new Message(AttemptTame, atp));

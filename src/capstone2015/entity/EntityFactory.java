@@ -415,7 +415,7 @@ public class EntityFactory {
         ep.actorProto.maxHealth = 5;
         ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onMovedBehaviorClass = null;
-        ep.actorProto.onTickBehaviorClass = MovingDamageOnCollisionOnTickBehavior.class;
+        ep.actorProto.onTickBehaviorClass = RattlesnakeOnTickBehavior.class;
         ep.actorProto.onPickedUpItemBehaviorClass = null;
         ep.actorProto.onDroppedItemBehaviorClass = null;
         ep.actorProto.onHealBehaviorClass = null;

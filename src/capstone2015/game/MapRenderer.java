@@ -68,7 +68,7 @@ public class MapRenderer {
            || !data.containsKey("abs_pos_y")
            || !data.containsKey("max_offset")
            || !data.containsKey("in_direct_vision")){
-            throw new RuntimeException("Failed to run shader: insufficient parameters.");
+            throw new RuntimeException("Failed to run shader: insufficient parameters." + data.toString());
         }
 
         boolean in_direct_vision = (boolean)data.get("in_direct_vision");
@@ -157,6 +157,8 @@ public class MapRenderer {
         return new TerminalChar(in.getCharacter(), new_fg_col, new_bg_col);
     };
   
+    static ShaderPanel p;
+    
     public static Panel render(EntityMapView map, Recti renderRect){
         TimeStat.enterState("Rendering");
         /****************************
@@ -181,13 +183,14 @@ public class MapRenderer {
          * Render map
          */
 
-        ShaderPanel p = new ShaderPanel(Math.max(0, renderRect.getWidth()), Math.max(0, renderRect.getHeight()));
-
-        TimeStat.enterState("RenderingInner");
+        if(p == null || p.width() != Math.max(0, renderRect.getWidth()) || p.height() != Math.max(0, renderRect.getHeight())){
+            p = new ShaderPanel(Math.max(0, renderRect.getWidth()), Math.max(0, renderRect.getHeight()));
+            System.out.println("Creating new ShaderPanel");
+        }
+        
         for(int i = 0; i < renderRect.getHeight(); i++){
           for(int j = 0; j < renderRect.getWidth(); j++){
             java.util.Map<String, Object> character_shader_data = new TreeMap();
-              
             int map_x = j + renderRect.getLeft();
             int map_y = i + renderRect.getTop();
             
@@ -197,6 +200,7 @@ public class MapRenderer {
             if(map.inBounds(map_x, map_y) && map.hasLineOfSight(map_x, map_y)){
               character_shader_data.put("in_direct_vision", true);
               ArrayList<MapEntity> entities = map.getMapEntitiesAt(map_x, map_y);
+                          
               if(entities.size() > 1){ //If we need to display something else than the tilemap
                   int current_time_msec = (int)(System.currentTimeMillis() % Integer.MAX_VALUE);
                   int shownEntityIndex = 1 + (current_time_msec / ITEM_DISPLAY_SWITCHTIME) % (entities.size() - 1);
@@ -223,13 +227,12 @@ public class MapRenderer {
                 p.set(j, i, e.getRepresentInvisible());
                 p.setShaderProgram(j, i, shader_programs[e.getShaderType()]);
             } else {
-              p.set(j, i, new TerminalChar());
+                p.setShaderProgram(j, i, shader_programs[EntityFactory.SHADER_NONE]);
+                p.set(j, i, new TerminalChar());
             }
-            
             p.setCharacterData(j, i, character_shader_data);
           }
         }
-        TimeStat.leaveState("RenderingInner");
         TimeStat.enterState("Shaders");
         Panel p_rendered = p.render();
         TimeStat.leaveState("Shaders");

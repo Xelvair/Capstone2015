@@ -76,14 +76,12 @@ public class Capstone2015 {
        
         long lastClock = System.currentTimeMillis();
 
-        TimeStat.reset();
         while(!appStates.isEmpty()){
             /****************************
              * Calculate exact time since last cycle
              */
             long deltatime_msec = System.currentTimeMillis() - lastClock;
             lastClock = System.currentTimeMillis();
-            TimeStat.reset();
             
             /****************************
              * Handle messages on the buffer
@@ -158,15 +156,19 @@ public class Capstone2015 {
                 System.out.println(time_stat_summary);
             }
             
+            TimeStat.reset();
+            
             /****************************
              * Draw the screen
              */
             screen.flip();
-            
+
             /****************************
              * Wait until next cycle
              */
-            Thread.yield();
+            TimeStat.enterState("OS");
+            Thread.sleep(10);
+            TimeStat.leaveState("OS");
         }
         
         screen.close();
