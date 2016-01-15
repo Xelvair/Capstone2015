@@ -78,7 +78,13 @@ public class TamingSpellOnTickBehavior implements OnTickBehavior{
          * See if a tameable actor is around
          */
         List<Actor> tameable_actors = new LinkedList<Actor>();
-        tameable_actors.addAll(entity.getView().getActorsAt(entity.getPos()).stream().filter(a -> a.isTameable()).collect(Collectors.toList()));
+        tameable_actors.addAll(
+                entity  .getView()
+                        .getActorsAt(entity.getPos())
+                        .stream()
+                        .filter(a -> a.isTameable() && a.getTeamId() != tamer.getTeamId())
+                        .collect(Collectors.toList())
+        );
         
         /**********************
          * Tame the first tameable if it exists

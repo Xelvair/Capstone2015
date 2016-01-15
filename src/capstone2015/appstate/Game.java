@@ -9,6 +9,7 @@ import capstone2015.game.MapRenderer;
 import capstone2015.game.NotificationList;
 import capstone2015.game.panel.HudPanel;
 import capstone2015.game.panel.EntityListPanel;
+import capstone2015.game.panel.FollowerPanel;
 import capstone2015.game.panel.NotificationPanel;
 import capstone2015.geom.Recti;
 import capstone2015.graphics.Panel;
@@ -21,6 +22,7 @@ import capstone2015.messaging.TamedParams;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Game extends State{
     public static final int NOTIFICATION_LIST_SIZE = 2;
@@ -95,16 +97,16 @@ public class Game extends State{
             if(msg_obj.damagedActor.getHealth() <= 0){
                 notif_text = String.format(
                         "The %s kills you.",
-                        msg_obj.damagingEntity.getName()
+                        msg_obj.damagingActor.getName()
                 );
             } else {
                  notif_text = String.format(
                         "You take %d damage from %s!",
                         msg_obj.damage,
-                        msg_obj.damagingEntity.getName()
+                        msg_obj.damagingActor.getName()
                 );
             }
-            Color notif_color = msg_obj.damagingEntity.getRepresent().getFGColor();
+            Color notif_color = msg_obj.damagingActor.getRepresent().getFGColor();
             notifications.push(notif_text, notif_color);
             return;
         }
@@ -112,7 +114,7 @@ public class Game extends State{
         /********************************************
          * Check if an entity was damaged by the player directly
          */
-        if(msg_obj.damagingEntity == map.getPlayer()){
+        if(msg_obj.damagingActor == map.getPlayer()){
             String notif_text;
             if(msg_obj.damagedActor.getHealth() <= 0){
                 notif_text = String.format(
@@ -128,7 +130,7 @@ public class Game extends State{
                         msg_obj.damagedActor.getMaxHealth()
                 );
             }
-            Color notif_color = msg_obj.damagingEntity.getRepresent().getFGColor();
+            Color notif_color = msg_obj.damagingActor.getRepresent().getFGColor();
             notifications.push(notif_text, notif_color);
             return;
         }
@@ -136,7 +138,7 @@ public class Game extends State{
         /********************************************
          * Check if an entity was damaged by the player indirectly
          */
-        EntityBase parent = msg_obj.damagingEntity.getParent();
+        EntityBase parent = msg_obj.damagingActor.getParent();
         while(parent != null){
             if(parent == map.getPlayer()){
                 String notif_text;
@@ -159,6 +161,34 @@ public class Game extends State{
                 return;
             }
             parent = parent.getParent();
+        }
+        
+        /********************************************
+         * Check if an entity the player is leader of damaged something
+         */
+        Actor leader = msg_obj.damagingActor.getLeader();
+        if(leader != null && leader == map.getPlayer()){
+           
+            String notif_text;
+            if(msg_obj.damagedActor.getHealth() <= 0){
+                notif_text = String.format(
+                        "Your %s kills the %s.", 
+                        msg_obj.damagingActor.getName(),
+                        msg_obj.damagedActor.getName()
+                );
+            } else {
+                notif_text = String.format(
+                        "Your %s inflicts %d damage on %s! (%d/%d)",
+                        msg_obj.damagingActor.getName(),
+                        msg_obj.damage,
+                        msg_obj.damagedActor.getName(),
+                        msg_obj.damagedActor.getHealth(),
+                        msg_obj.damagedActor.getMaxHealth()
+                );
+            }
+            Color notif_color = msg_obj.damagingActor.getRepresent().getFGColor();
+            notifications.push(notif_text, notif_color);
+            return;
         }
     }
 
@@ -188,11 +218,24 @@ public class Game extends State{
         screen.insert(MapRenderer.render(player.getView(), map_render_rect), 0, NOTIFICATION_LIST_SIZE);
 
         drawPickupableList();
+        
+        drawFollowerList();
 
         Panel p_hud;
         Actor plr = map.getPlayer();
         p_hud = HudPanel.render(plr.getHealth(), plr.getMaxHealth(), plr.getInventory(), screen.width());
         screen.insert(p_hud, 0, screen.height() - 1);
+    }
+    
+    private void drawFollowerList(){
+        Actor player = map.getPlayer();
+        
+        List<Actor> follower_list = player.getFollowers();
+        
+        if(follower_list.size() > 0){
+            Panel p_followers = FollowerPanel.render(follower_list);
+            screen.insert(p_followers, screen.width() - p_followers.width(), NOTIFICATION_LIST_SIZE);
+        }
     }
     
     private Recti getPlayerRenderRect(){

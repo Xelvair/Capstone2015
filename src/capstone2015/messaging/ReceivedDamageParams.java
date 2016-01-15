@@ -1,10 +1,9 @@
 package capstone2015.messaging;
 
 import capstone2015.entity.Actor;
-import capstone2015.entity.EntityBase;
 
 public class ReceivedDamageParams {
     public Actor damagedActor;
-    public EntityBase damagingEntity;
+    public Actor damagingActor;
     public int damage;
 }

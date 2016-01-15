@@ -152,7 +152,7 @@ public class Capstone2015 {
             
             Map<String, Long> time_stat_summary = TimeStat.getStateSummary();
             if(TimeStat.getElapsedTime() > 20000000){
-                System.out.println("WARN: Stall occurred: " + TimeStat.getElapsedTime() / 1000000 + "msec.");
+                System.out.println("WARN: Stall detected: " + TimeStat.getElapsedTime() / 1000000 + "msec.");
                 System.out.println(time_stat_summary);
             }
             

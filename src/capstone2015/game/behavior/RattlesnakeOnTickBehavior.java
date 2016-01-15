@@ -67,6 +67,16 @@ public class RattlesnakeOnTickBehavior implements OnTickBehavior{
             }
             
             /***************
+             * Check if we're in range of our leader
+             */
+            if(entity.getLeader() != null){
+                if(entity.getLeader().getPos().deltaMagnitude(entity.getPos()) > STRAY_OUTER){
+                    stateMachine.pushState(new GetInRangeOf(entity, stateMachine, entity.getLeader(), STRAY_OUTER));
+                    return;
+                }
+            }
+            
+            /***************
              * Check if our target is still the closest target,
              * else go attack the closest one
              */
@@ -149,7 +159,7 @@ public class RattlesnakeOnTickBehavior implements OnTickBehavior{
     }
     
     class GetInRangeOf extends State{
-        public static final double GETINRANGE_MOVE_TIMEOUT = 0.1d;
+        public static final double GETINRANGE_MOVE_TIMEOUT = 0.225d;
         
         private Actor entity;
         private StateMachine stateMachine;
@@ -237,6 +247,7 @@ public class RattlesnakeOnTickBehavior implements OnTickBehavior{
             
             if(entity.getLeader() != null && entity.getPos().deltaMagnitude(entity.getLeader().getPos()) > STRAY_INNER){
                 stateMachine.pushState(new GetInRangeOf(entity, stateMachine, entity.getLeader(), STRAY_INNER));
+                return;
             }
             
             List<Actor> targets = entity.getView().getActors().stream().filter(
@@ -254,7 +265,9 @@ public class RattlesnakeOnTickBehavior implements OnTickBehavior{
                     }
                 });
                 
-                stateMachine.pushState(new AttackState(entity, stateMachine, targets.get(0)));
+                if(entity.getPos().deltaMagnitude(targets.get(0).getPos()) <= STRAY_OUTER){
+                    stateMachine.pushState(new AttackState(entity, stateMachine, targets.get(0)));
+                }
                 return;
             }
             

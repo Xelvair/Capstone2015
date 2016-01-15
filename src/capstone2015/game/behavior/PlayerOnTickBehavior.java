@@ -129,7 +129,6 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                                 case '9':
                                     int select_idx = (Character.getNumericValue(key.getCharacter()) - 1) % 9;
                                     entity.getInventory().setSelectIndex(select_idx);
-                                    System.out.println(entity.getInventory().getSelectIndex());
                                     break;
                             }
                         default:

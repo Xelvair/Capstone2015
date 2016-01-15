@@ -63,7 +63,7 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
                 case ReceivedDamage:
                 {
                     ReceivedDamageParams rdp = (ReceivedDamageParams)m.getMsgObject();
-                    if(rdp.damagingEntity == entity){
+                    if(rdp.damagingActor == entity){
                         exit_airborne.run();
                         return;
                     }

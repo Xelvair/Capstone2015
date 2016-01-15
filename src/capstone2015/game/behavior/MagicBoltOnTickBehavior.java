@@ -44,7 +44,7 @@ public class MagicBoltOnTickBehavior implements OnTickBehavior{
                 case ReceivedDamage:
                 {
                     ReceivedDamageParams rdp = (ReceivedDamageParams)m.getMsgObject();
-                    if(rdp.damagingEntity == entity){
+                    if(rdp.damagingActor == entity){
                         entity.terminate();
                         return;
                     }

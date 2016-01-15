@@ -185,7 +185,6 @@ public class MapRenderer {
 
         if(p == null || p.width() != Math.max(0, renderRect.getWidth()) || p.height() != Math.max(0, renderRect.getHeight())){
             p = new ShaderPanel(Math.max(0, renderRect.getWidth()), Math.max(0, renderRect.getHeight()));
-            System.out.println("Creating new ShaderPanel");
         }
         
         for(int i = 0; i < renderRect.getHeight(); i++){

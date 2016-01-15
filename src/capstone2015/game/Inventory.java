@@ -68,7 +68,6 @@ public class Inventory {
                 return true;
             }
         }
-        System.out.println("Failed to add item to full inventory!");
         return false;
     }
     

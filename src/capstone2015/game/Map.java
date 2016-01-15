@@ -257,10 +257,12 @@ public class Map implements MapInterface{
         }
     }
   
+    @Override
     public int width(){
       return tilemap.width();
     }
 
+    @Override
     public int height(){
       return tilemap.height();
     }
@@ -311,7 +313,7 @@ public class Map implements MapInterface{
                 if(e.onDamage(damagingEntity, damage)) {
                     ReceivedDamageParams rdp = new ReceivedDamageParams();
                     rdp.damage = damage;
-                    rdp.damagingEntity = damagingEntity;
+                    rdp.damagingActor = damagingEntity;
                     rdp.damagedActor = e;
                     messageBus.enqueue(new Message(Message.Type.ReceivedDamage, rdp));
                 }
@@ -407,9 +409,15 @@ public class Map implements MapInterface{
         
         boolean tame_success = rand.nextDouble() <= tame_chance;
         if(tame_success){
+            
+            if(atp.tamedActor.getLeader() != null)
+                atp.tamedActor.getLeader().removeFollower(atp.tamedActor);
+            
             atp.tamedActor.setLeader(atp.tamerActor);
             atp.tamedActor.setTeamIdOverride(atp.tamerActor.getTeamId());
-            atp.tamedActor.setHealthPoints(atp.tamedActor.getMaxHealth());
+            atp.tamedActor.setHealthPoints(atp.tamedActor.getMaxHealth() * 5);
+            atp.tamerActor.addFollower(atp.tamedActor);
+            
         }
         atp.tameCallback.accept(tame_success);
         atp.tamedActor.onTamed(tame_success, atp.tamerActor);
@@ -432,7 +440,6 @@ public class Map implements MapInterface{
                 it.remove();
             }
         }
-        
         
         for(Message m : messageBus){
             switch(m.getType()){

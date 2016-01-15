@@ -18,6 +18,8 @@ import capstone2015.util.Array2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiFunction;
 
 public class Actor extends MapEntity {
@@ -42,13 +44,35 @@ public class Actor extends MapEntity {
     protected double duration = -1.f;
     protected double moveTimeout = 0.f;
     protected double useTimeout = 0.f;
-
+    protected List<Actor> followers = new LinkedList();
+    
     public void setMap(Map map){
         if(hasVision()){
             view = new EntityMapView(map, proto.actorProto.visionRadius);
             view.setViewerPos(pos);
             if(hasVisionRevealedByDefault())
                 view.revealAll();
+        }
+    }
+    
+    public List<Actor> getFollowers(){
+        return followers;
+    }
+    
+    public void addFollower(Actor follower){
+        followers.add(follower);
+    }
+    
+    public void removeFollower(Actor follower){
+        followers.remove(follower);
+    }
+    
+    public void refreshFollowers(){
+        Iterator<Actor> it = followers.iterator();
+        while(it.hasNext()){
+            Actor follower = it.next();
+            if(follower.isTerminated())
+                it.remove();
         }
     }
     
@@ -342,6 +366,11 @@ public class Actor extends MapEntity {
          */
         decreaseMoveTimeout(timeDelta);
         decreaseUseTimeout(timeDelta);
+        
+        /***************************
+         * Check for terminated followers
+         */
+        refreshFollowers();
         
         /***************************
          * Tick inventory
