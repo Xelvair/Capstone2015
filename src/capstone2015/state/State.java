@@ -8,7 +8,7 @@ public abstract class State {
     
     protected void  onBlur(){}
     protected void  onFocus(){}
-    private void    onTerminate(){}
+    protected void  onTerminate(){}
     
     public final boolean isFocus(){return isFocus;}
     public final boolean isBlur(){return !isFocus;}

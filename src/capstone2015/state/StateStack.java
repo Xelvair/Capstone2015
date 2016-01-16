@@ -49,7 +49,8 @@ public class StateStack {
      */
     public void terminateStates(){
         for(State state : states){
-            state.terminate();
+            if(state.isAlive())
+                state.terminate();
         }
         cleanStates();
     }

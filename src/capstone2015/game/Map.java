@@ -7,6 +7,7 @@ import static capstone2015.entity.EntityFactory.ID_EXIT;
 import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.*;
+import capstone2015.messaging.PickedUpParams;
 
 import capstone2015.util.Array2D;
 
@@ -336,6 +337,12 @@ public class Map implements MapInterface{
 
                     picked_up_item.onItemPickedUp(pickupper);
                     pickupper.onPickedUpItem(picked_up_item);
+                    
+                    PickedUpParams pup = new PickedUpParams();
+                    pup.pickupper = pickupper;
+                    pup.pickedUpItem = picked_up_item;
+                    
+                    messageBus.enqueue(new Message(GameMessage.PICKED_UP, pup));
                 }
             } else {
                 pickupper.onPickedUpItemFailedNoSpace(picked_up_item);

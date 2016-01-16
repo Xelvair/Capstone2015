@@ -104,6 +104,9 @@ public class Capstone2015 {
                     case GameMessage.LOAD_GAME:
                         appStates.pushState(new GameState(screen, messageBus, (String)m.getMsgObject()));
                         break;
+                    case GameMessage.PUSH_ALERT_STATE:
+                        appStates.pushState(new AlertState(screen, messageBus, (String)m.getMsgObject()));
+                        break;
                     case GameMessage.PUSH_SELECT_GAMESAVE_STATE:
                         appStates.pushState(new SelectSavegameState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
                         break;
@@ -152,7 +155,7 @@ public class Capstone2015 {
                 screen.insert(DiagnosticsPanel.render(), -1, -1);
             
             Map<String, Long> time_stat_summary = TimeStat.getStateSummary();
-            if(TimeStat.getElapsedTime() > 20000000){
+            if(TimeStat.getElapsedTime() > 50000000){
                 System.out.println("WARN: Stall detected: " + TimeStat.getElapsedTime() / 1000000 + "msec.");
                 System.out.println(time_stat_summary);
             }

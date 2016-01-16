@@ -4,10 +4,12 @@ import capstone2015.state.State;
 import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
+import capstone2015.entity.EntityFactory;
 import capstone2015.game.GameMessage;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
 import capstone2015.game.NotificationList;
+import capstone2015.game.TutorialTracker;
 import capstone2015.game.panel.HudPanel;
 import capstone2015.game.panel.EntityListPanel;
 import capstone2015.game.panel.FollowerPanel;
@@ -17,6 +19,7 @@ import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
+import capstone2015.messaging.PickedUpParams;
 import capstone2015.messaging.PushNotificationParams;
 import capstone2015.messaging.ReceivedDamageParams;
 import capstone2015.messaging.TamedParams;
@@ -33,7 +36,7 @@ public class GameState extends State{
     private final MessageBus messageBus;
     private final Map map;
     private final NotificationList notifications = new NotificationList(NOTIFICATION_LIST_SIZE);
-
+    private final TutorialTracker tutorialTracker = new TutorialTracker();
     
     public GameState(Screen screen, MessageBus messageBus, String mapFile){
         this.screen = screen;
@@ -70,12 +73,90 @@ public class GameState extends State{
             case GameMessage.PUSH_NOTIFICATION:
                 onPushNotification((PushNotificationParams)m.getMsgObject());
                 break;
+            case GameMessage.PICKED_UP:
+                onPickedUp((PickedUpParams)m.getMsgObject());
+                break;
             case GameMessage.GAME_WON:
                 notifications.push("You unlock the door and exit the dungeon!", Color.YELLOW);
                 break;
             case GameMessage.SAVE_GAME:
                 map.storeToProperties((String)m.getMsgObject());
                 break;                
+        }
+    }
+    
+    private void onPickedUp(PickedUpParams pup){
+        if(pup.pickupper == map.getPlayer()){
+            int item_id = pup.pickedUpItem.getProto().id;
+            if(
+                       item_id == EntityFactory.ID_HEALTH_POTION
+                    && !tutorialTracker.hasDone("PickedUpConsumable")
+            ){
+                tutorialTracker.setDone("PickedUpConsumable");
+                messageBus.enqueue(new Message(GameMessage.PUSH_ALERT_STATE, 
+                        "You picked up a consumable item!\n\n" +
+                        "It has been added to your inventory in the lower right.\n" +
+                        "Use the number keys to select the item, and then press F\n" + 
+                        "to use it."
+                ));
+            } else if (
+                      (item_id == EntityFactory.ID_SWORD
+                    || item_id == EntityFactory.ID_MAGIC_WAND)
+                    && !tutorialTracker.hasDone("PickedUpWeapon")
+            ){
+                tutorialTracker.setDone("PickedUpWeapon");
+                messageBus.enqueue(new Message(GameMessage.PUSH_ALERT_STATE, 
+                        "You picked up a weapon!\n\n" + 
+                        "It has been added to your inventory in the lower right.\n" + 
+                        "Use the number keys to select the weapon, and then press\n" +
+                        "any one of the WASD keys to use the weapon in the respective\n" +
+                        "direction."
+                ));
+            }else if (
+                    item_id == EntityFactory.ID_BOW
+                    && !tutorialTracker.hasDone("PickedUpBow")
+            ){
+                tutorialTracker.setDone("PickedUpBow");
+                messageBus.enqueue(new Message(GameMessage.PUSH_ALERT_STATE, 
+                        "You picked up a bow!\n\n" + 
+                        "It has been added to your inventory in the lower right.\n" + 
+                        "Use the number keys to select the bow, and then press\n" +
+                        "any one of the WASD keys to use the bow in the respective\n" +
+                        "direction.\n\n" + 
+                        "Before being able to shoot a bow, you will need some arrows.\n" +
+                        "You should be able to find some around!"
+                ));
+            } else if (
+                       item_id == EntityFactory.ID_TAMING_SCROLL
+                    && !tutorialTracker.hasDone("PickedUpTamingScroll")
+            ){
+                tutorialTracker.setDone("PickedUpTamingScroll");
+                messageBus.enqueue(new Message(GameMessage.PUSH_ALERT_STATE, 
+                        "You picked up a taming scroll!\n\n" +
+                        "It has been added to your inventory in the lower right.\n" + 
+                        "Use the number keys to select the scroll, and then press\n" +
+                        "any one of the WASD keys to use it in the respective\n" +
+                        "direction.\n\n" +
+                        "Upon using a taming scroll on a creature, you will attempt\n" + 
+                        "to tame the creature. This process has a chance of failing.\n" +
+                        "You can increase your taming chance by lowering the creatures\n" +
+                        "HP until it is almost defeated.\n\n" + 
+                        "If your taming attempt is successful, the creature will be added\n" +
+                        "to your followers, its HP will be restored, and it will fight\n" + 
+                        "for you in the future."
+                ));
+            } else if (
+                       item_id == EntityFactory.ID_ARROW
+                    && !tutorialTracker.hasDone("PickedUpArrow")
+            ){
+                tutorialTracker.setDone("PickedUpArrow");
+                messageBus.enqueue(new Message(GameMessage.PUSH_ALERT_STATE, 
+                        "You picked up an arrow!\n\n" + 
+                        "You can now use a bow to shoot arrows at your foes.\n" +
+                        "If you haven't found a bow yet, you should be able to\n" + 
+                        "find one around."
+                ));
+            }
         }
     }
     
@@ -226,6 +307,11 @@ public class GameState extends State{
         Actor plr = map.getPlayer();
         p_hud = HudPanel.render(plr.getHealth(), plr.getMaxHealth(), plr.getInventory(), screen.width());
         screen.insert(p_hud, 0, screen.height() - 1);
+    }
+    
+    @Override
+    public void onTerminate(){
+        tutorialTracker.store();
     }
     
     private void drawFollowerList(){
