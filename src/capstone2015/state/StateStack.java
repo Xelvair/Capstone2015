@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class StateMachine {
+public class StateStack {
     private final List<State> states = new ArrayList<>();
     private boolean lockStatesList = false;
     private final List<State> scheduledAddStates = new ArrayList<>();

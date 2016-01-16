@@ -7,6 +7,7 @@ import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.MessageBus;
 import java.awt.Color;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -78,7 +79,7 @@ public class EntityFactory {
         EntityFactory.messageBus = messageBus;
     }
 
-    public static <T> T adaptiveInstantiate(Class<T> clazz, Map<String, Object> instantiationParams){
+    public static <T> T adaptiveInstantiate(Class<T> clazz, Actor actor, Map<String, Object> instantiationParams){
         /*******************************
          * If no class was passed, don't instantiatie anything
          * hence, adaptive ;)
@@ -87,14 +88,18 @@ public class EntityFactory {
             return null;
 
         /*******************************
-         * Check if a ctor exists that takes instantiation parameters
+         * Check if a ctor exists that takes the actor and instantiation parameters
          */
         try{
-            Constructor ctor_ip = clazz.getConstructor(Map.class);
+            Constructor ctor_ip = clazz.getConstructor(Actor.class, Map.class);
             try {
-                return (T)ctor_ip.newInstance(instantiationParams);
-            } catch(Exception e){
-                System.out.println("Instantiation failed for parameterized ctor!");
+                return (T)ctor_ip.newInstance(actor, instantiationParams);
+            } catch(InstantiationException e){
+                System.out.println("Instantiation failed for parameterized ctor! InstantiationException" + e.getMessage());
+            } catch(IllegalAccessException e){
+                System.out.println("Instantiation failed for parameterized ctor! IllegalAccessException" + e.getMessage());
+            } catch(InvocationTargetException e){
+                System.out.println("Instantiation failed for parameterized ctor! InvocationTargetException" + e.getCause());
             }
         } catch(NoSuchMethodException e){
             //Fallthrough
@@ -106,7 +111,7 @@ public class EntityFactory {
         try {
             return clazz.newInstance();
         } catch(Exception e){
-            System.out.println("Instantiation failed for default ctor!");
+            System.out.println("Instantiation failed for default ctor!" + e.getMessage());
         }
 
         return null;
@@ -201,14 +206,14 @@ public class EntityFactory {
             /***********************************
              * Load behaviors
              */
-            actor.onMovedBehavior = adaptiveInstantiate(e_proto.actorProto.onMovedBehaviorClass, instantiationParams);
-            actor.onTickBehavior = adaptiveInstantiate(e_proto.actorProto.onTickBehaviorClass, instantiationParams);
-            actor.onWalkedOverBehavior = adaptiveInstantiate(e_proto.mapEntityProto.onWalkedOverBehaviorClass, instantiationParams);
-            actor.onDamageBehavior = adaptiveInstantiate(e_proto.actorProto.onDamageBehaviorClass, instantiationParams);
-            actor.onPickedUpItemBehavior = adaptiveInstantiate(e_proto.actorProto.onPickedUpItemBehaviorClass, instantiationParams);
-            actor.onDroppedItemBehavior = adaptiveInstantiate(e_proto.actorProto.onDroppedItemBehaviorClass, instantiationParams);
-            actor.onHealBehavior = adaptiveInstantiate(e_proto.actorProto.onHealBehaviorClass, instantiationParams);
-            actor.onTamedBehavior = adaptiveInstantiate(e_proto.actorProto.onTamedBehaviorClass, instantiationParams);
+            actor.onMovedBehavior = adaptiveInstantiate(e_proto.actorProto.onMovedBehaviorClass, actor, instantiationParams);
+            actor.onTickBehavior = adaptiveInstantiate(e_proto.actorProto.onTickBehaviorClass, actor, instantiationParams);
+            actor.onWalkedOverBehavior = adaptiveInstantiate(e_proto.mapEntityProto.onWalkedOverBehaviorClass, actor, instantiationParams);
+            actor.onDamageBehavior = adaptiveInstantiate(e_proto.actorProto.onDamageBehaviorClass, actor, instantiationParams);
+            actor.onPickedUpItemBehavior = adaptiveInstantiate(e_proto.actorProto.onPickedUpItemBehaviorClass, actor, instantiationParams);
+            actor.onDroppedItemBehavior = adaptiveInstantiate(e_proto.actorProto.onDroppedItemBehaviorClass, actor, instantiationParams);
+            actor.onHealBehavior = adaptiveInstantiate(e_proto.actorProto.onHealBehaviorClass, actor, instantiationParams);
+            actor.onTamedBehavior = adaptiveInstantiate(e_proto.actorProto.onTamedBehaviorClass, actor, instantiationParams);
 
             /***********************************
              * If the actor has inventory space, instantiate an inventory

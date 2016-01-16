@@ -1,9 +1,10 @@
 package capstone2015;
 
-import capstone2015.state.StateMachine;
+import capstone2015.state.StateStack;
 import capstone2015.appstate.*;
 import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.EntityFactory;
+import capstone2015.game.GameMessage;
 import capstone2015.game.panel.DiagnosticsPanel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
@@ -22,12 +23,12 @@ public class Capstone2015 {
     private static boolean isAltPressed = false;
     private static boolean showDiagnostics = false;
 
-    private static StateMachine appStates ;
+    private static StateStack appStates ;
     private static Screen screen;
     private static MessageBus messageBus;
     
     public static void main(String[] args) throws Exception {        
-        appStates = new StateMachine();
+        appStates = new StateStack();
         screen = new Screen();
         messageBus = new MessageBus();
         
@@ -88,28 +89,28 @@ public class Capstone2015 {
              */
             for(Message m : messageBus){
                 switch(m.getType()){
-                    case PushIngameMenuState:
+                    case GameMessage.PUSH_INGAME_MENU_STATE:
                         appStates.pushState(new IngameMenu(screen, messageBus));
                         break;
-                    case PushHelpPageState:
+                    case GameMessage.PUSH_HELP_PAGE_STATE:
                         appStates.pushState(new HelpPageState(screen, messageBus));
                         break;
-                    case PushLaunchGameState:
+                    case GameMessage.PUSH_LAUNCH_GAME_STATE:
                         appStates.pushState(new LaunchGameState(screen, messageBus));
                         break;
-                    case GameWon:
+                    case GameMessage.GAME_WON:
                         appStates.pushState(new GameWonState(screen, messageBus));
                         break;
-                    case LoadGame:
-                        appStates.pushState(new Game(screen, messageBus, (String)m.getMsgObject()));
+                    case GameMessage.LOAD_GAME:
+                        appStates.pushState(new GameState(screen, messageBus, (String)m.getMsgObject()));
                         break;
-                    case PushSelectGamesaveState:
+                    case GameMessage.PUSH_SELECT_GAMESAVE_STATE:
                         appStates.pushState(new SelectSavegameState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
                         break;
-                    case PushUserTextInputState:
+                    case GameMessage.PUSH_USER_TEXT_INPUT_STATE:
                         appStates.pushState(new UserTextInputState(screen, messageBus, (Consumer<String>)m.getMsgObject()));
                         break;
-                    case QuitToDesktop:
+                    case GameMessage.QUIT_TO_DESKTOP:
                         appStates.terminateStates();
                         break;
                     default:
@@ -135,7 +136,7 @@ public class Capstone2015 {
                 /************************
                  * Enqueue fixed key event
                  */
-                messageBus.enqueue(new Message(Message.Type.KeyEvent, fixed_key));
+                messageBus.enqueue(new Message(GameMessage.KEY_EVENT, fixed_key));
             }
             messageBus.refresh();
             

@@ -2,13 +2,12 @@ package capstone2015.game.behavior;
 
 import capstone2015.entity.Actor;
 import capstone2015.game.Direction;
+import capstone2015.game.GameMessage;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.*;
 import capstone2015.util.Util;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ArrowOnTickBehavior implements OnTickBehavior{
 
@@ -19,7 +18,7 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
     private Direction flightDirection;
     private int teamId;
 
-    public ArrowOnTickBehavior(Map<String, Object> instantiationParams){
+    public ArrowOnTickBehavior(Actor actor, Map<String, Object> instantiationParams){
         if(
                instantiationParams.containsKey("ShootDirection")
             && instantiationParams.containsKey("TeamId")
@@ -51,7 +50,7 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
 
         for(Message m : entity.getMessageBus()){
             switch(m.getType()){
-                case EntityMoveFailed:
+                case GameMessage.ENTITY_MOVE_FAILED:
                 {
                     Actor a = (Actor)m.getMsgObject();
                     if(a == entity){
@@ -60,7 +59,7 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
                     }
                     break;
                 }
-                case ReceivedDamage:
+                case GameMessage.RECEIVED_DAMAGE:
                 {
                     ReceivedDamageParams rdp = (ReceivedDamageParams)m.getMsgObject();
                     if(rdp.damagingActor == entity){
@@ -97,7 +96,7 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
         idp.damagingEntity = entity;
         idp.teamId = teamId;
 
-        entity.sendBusMessage(new Message(Message.Type.InflictDamage, idp));
+        entity.sendBusMessage(new Message(GameMessage.INFLICT_DAMAGE, idp));
 
         if(!entity.canMove())
             return;
@@ -106,7 +105,7 @@ public class ArrowOnTickBehavior implements OnTickBehavior{
         emp.direction = flightDirection;
         emp.entity = entity;
 
-        entity.sendBusMessage(new Message(Message.Type.EntityMove, emp));
+        entity.sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
 
         entity.setMoveTimeout(ARROW_MOVE_TIMEOUT);
     }

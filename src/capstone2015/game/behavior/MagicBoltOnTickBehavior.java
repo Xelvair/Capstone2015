@@ -2,6 +2,7 @@ package capstone2015.game.behavior;
 
 import capstone2015.entity.Actor;
 import capstone2015.game.Direction;
+import capstone2015.game.GameMessage;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.EntityMoveParams;
 import capstone2015.messaging.InflictDamageParams;
@@ -18,7 +19,7 @@ public class MagicBoltOnTickBehavior implements OnTickBehavior{
     private Direction flightDirection;
     private int teamId;
     
-    public MagicBoltOnTickBehavior(Map<String, Object> instantiationParams){
+    public MagicBoltOnTickBehavior(Actor actor, Map<String, Object> instantiationParams){
         if(
                instantiationParams.containsKey("ShootDirection")
             && instantiationParams.containsKey("TeamId")
@@ -32,7 +33,7 @@ public class MagicBoltOnTickBehavior implements OnTickBehavior{
     public void invoke(Actor entity, double timeDelta) {
         for(Message m : entity.getMessageBus()){
             switch(m.getType()){
-                case EntityMoveFailed:
+                case GameMessage.ENTITY_MOVE_FAILED:
                 {
                     Actor a = (Actor)m.getMsgObject();
                     if(a == entity){
@@ -41,7 +42,7 @@ public class MagicBoltOnTickBehavior implements OnTickBehavior{
                     }
                     break;
                 }
-                case ReceivedDamage:
+                case GameMessage.RECEIVED_DAMAGE:
                 {
                     ReceivedDamageParams rdp = (ReceivedDamageParams)m.getMsgObject();
                     if(rdp.damagingActor == entity){
@@ -66,7 +67,7 @@ public class MagicBoltOnTickBehavior implements OnTickBehavior{
                 idp.damagingEntity = entity;
                 idp.teamId = teamId;
                 
-                entity.sendBusMessage(new Message(Message.Type.InflictDamage, idp));
+                entity.sendBusMessage(new Message(GameMessage.INFLICT_DAMAGE, idp));
             }
         }
 
@@ -145,7 +146,7 @@ public class MagicBoltOnTickBehavior implements OnTickBehavior{
                 emp.direction = trajectory_fix_dir;
                 emp.entity = entity;
 
-                entity.sendBusMessage(new Message(Message.Type.EntityMove, emp));
+                entity.sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
             }
         }
         
@@ -156,7 +157,7 @@ public class MagicBoltOnTickBehavior implements OnTickBehavior{
         emp.direction = flightDirection;
         emp.entity = entity;
 
-        entity.sendBusMessage(new Message(Message.Type.EntityMove, emp));
+        entity.sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
 
         entity.setMoveTimeout(MAGIC_BOLT_MOVE_TIMEOUT);
     }

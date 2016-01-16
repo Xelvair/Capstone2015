@@ -8,8 +8,6 @@ import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.*;
 
-import static capstone2015.messaging.Message.Type.GameWon;
-
 import capstone2015.util.Array2D;
 
 import java.io.*;
@@ -280,7 +278,7 @@ public class Map implements MapInterface{
             entity.setYPos(dest_pos.getY());
             entity.onMoved(this.getMapEntitiesAt(dest_pos));
         } else {
-            messageBus.enqueue(new Message(Message.Type.EntityMoveFailed, entity));
+            messageBus.enqueue(new Message(GameMessage.ENTITY_MOVE_FAILED, entity));
         }
     }
     
@@ -315,7 +313,7 @@ public class Map implements MapInterface{
                     rdp.damage = damage;
                     rdp.damagingActor = damagingEntity;
                     rdp.damagedActor = e;
-                    messageBus.enqueue(new Message(Message.Type.ReceivedDamage, rdp));
+                    messageBus.enqueue(new Message(GameMessage.RECEIVED_DAMAGE, rdp));
                 }
             }
         }
@@ -373,7 +371,7 @@ public class Map implements MapInterface{
         
         if(tile.getProto().id == ID_EXIT){
             key.terminate();
-            messageBus.enqueue(new Message(GameWon));
+            messageBus.enqueue(new Message(GameMessage.GAME_WON));
         }
     }
 
@@ -426,7 +424,7 @@ public class Map implements MapInterface{
         tp.success = tame_success;
         tp.tamerActor = atp.tamerActor;
         tp.tamedActor = atp.tamedActor;
-        messageBus.enqueue(new Message(Message.Type.Tamed, tp));
+        messageBus.enqueue(new Message(GameMessage.TAMED, tp));
      }
     
     public void tick(double timeDelta){
@@ -443,44 +441,44 @@ public class Map implements MapInterface{
         
         for(Message m : messageBus){
             switch(m.getType()){
-                case EntityMove:
+                case GameMessage.ENTITY_MOVE:
                 {
                     EntityMoveParams msg_obj = (EntityMoveParams)m.getMsgObject();
                     onMove(msg_obj.entity, msg_obj.direction);
                     break;
                 }
-                case InflictDamage:
+                case GameMessage.INFLICT_DAMAGE:
                 {
                     InflictDamageParams msg_obj = (InflictDamageParams)m.getMsgObject();
                     onInflictDamage(msg_obj.damagingEntity, msg_obj.position, msg_obj.damage, msg_obj.teamId);
                     break;
                 }
-                case Pickup:
+                case GameMessage.PICKUP:
                 {
                     onPickup((Actor)m.getMsgObject());
                     break;
                 }
-                case Drop:
+                case GameMessage.DROP:
                 {
                     onDrop((Actor)m.getMsgObject());
                     break;
                 }
-                case AttemptKeyUsage:
+                case GameMessage.ATTEMPT_KEY_USAGE:
                 {
                     onAttemptKeyUsage((AttemptKeyUsageParams)m.getMsgObject());
                     break;
                 }
-                case SpawnEffect:
+                case GameMessage.SPAWN_EFFECT:
                 {
                     onSpawnEffect((SpawnEffectParams)m.getMsgObject());
                     break;
                 }
-                case SpawnActor:
+                case GameMessage.SPAWN_ACTOR:
                 {
                     onSpawnActor((SpawnActorParams)m.getMsgObject());
                     break;
                 }
-                case AttemptTame:
+                case GameMessage.ATTEMPT_TAME:
                 {
                     onAttemptTame((AttemptTameParams)m.getMsgObject());
                     break;

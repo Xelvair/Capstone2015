@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.game.GameMessage;
 import capstone2015.state.State;
 import capstone2015.game.panel.OptionPanel;
 import capstone2015.graphics.Screen;
@@ -11,7 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
@@ -80,7 +80,7 @@ public class SelectSavegameState extends State{
     protected void onTick(double timeDelta) {
         for(Message m : messageBus){
             switch(m.getType()){
-                case KeyEvent:
+                case GameMessage.KEY_EVENT:
                     Key key = (Key)m.getMsgObject();
                     switch(key.getKind()){
                         case ArrowUp:

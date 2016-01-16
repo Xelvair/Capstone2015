@@ -4,10 +4,9 @@ import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
 import capstone2015.entity.Item;
 import capstone2015.game.Direction;
-import capstone2015.game.Inventory;
+import capstone2015.game.GameMessage;
 import capstone2015.messaging.EntityMoveParams;
 import capstone2015.messaging.Message;
-import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 import java.util.HashMap;
@@ -53,7 +52,7 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
         
         for(Message m : message_bus){
             switch(m.getType()){
-                case KeyEvent:
+                case GameMessage.KEY_EVENT:
                     Key key = (Key)m.getMsgObject();
                     switch(key.getKind()){
                         case ArrowLeft:
@@ -91,10 +90,10 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
                         case NormalKey:
                             switch(key.getCharacter()){
                                 case 'e': //Pickup item
-                                    entity.sendBusMessage(new Message(Pickup, entity));
+                                    entity.sendBusMessage(new Message(GameMessage.PICKUP, entity));
                                     break;
                                 case 'q': //Drop item
-                                    entity.sendBusMessage(new Message(Drop, entity));
+                                    entity.sendBusMessage(new Message(GameMessage.DROP, entity));
                                     break;
                                 case 'f':
                                     do_use = true;
@@ -181,6 +180,6 @@ public class PlayerOnTickBehavior implements OnTickBehavior{
         EntityMoveParams msg_obj = new EntityMoveParams();
         msg_obj.entity = entity;
         msg_obj.direction = move_dir;
-        entity.sendBusMessage(new Message(EntityMove, msg_obj));
+        entity.sendBusMessage(new Message(GameMessage.ENTITY_MOVE, msg_obj));
     } 
 }

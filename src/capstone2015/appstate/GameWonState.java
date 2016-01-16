@@ -1,10 +1,10 @@
 package capstone2015.appstate;
 
+import capstone2015.game.GameMessage;
 import capstone2015.state.State;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
-import static capstone2015.messaging.Message.Type.TerminateGameState;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
@@ -23,7 +23,7 @@ public class GameWonState extends State{
         switch(key.getKind()){
             case Escape:
             case Enter:
-                messageBus.enqueue(new Message(TerminateGameState));
+                messageBus.enqueue(new Message(GameMessage.TERMINATE_GAME_STATE));
                 terminate();
                 break;
         }
@@ -33,7 +33,7 @@ public class GameWonState extends State{
     protected void onTick(double timeDelta) {
         for(Message m : messageBus){
             switch(m.getType()){
-                case KeyEvent:
+                case GameMessage.KEY_EVENT:
                     onKeyEvent((Key)m.getMsgObject());
                     break;
             }

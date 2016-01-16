@@ -1,149 +1,117 @@
 package capstone2015.game.behavior;
 
 import capstone2015.entity.Actor;
-import capstone2015.entity.EntityFactory;
-import capstone2015.game.Direction;
-import capstone2015.game.MapTraversableAdapter;
-import capstone2015.game.RangerMapTraversableAdapter;
-import static capstone2015.game.behavior.MovingDamageOnCollisionOnTickBehavior.RANDOM_MOVE_RADIUS;
-import capstone2015.geom.Vec2i;
-import capstone2015.messaging.EntityMoveParams;
+import capstone2015.entity.states.ActorStateConfig;
+import capstone2015.entity.states.GetInRangeOfState;
+import capstone2015.entity.states.RangerAttackState;
+import capstone2015.entity.states.WanderingState;
+import capstone2015.game.ActorEventGenerator;
+import capstone2015.game.ActorMessage;
 import capstone2015.messaging.Message;
-import static capstone2015.messaging.Message.Type.EntityMove;
-import static capstone2015.messaging.Message.Type.SpawnActor;
-import capstone2015.messaging.SpawnActorParams;
-import capstone2015.pathfinding.AStar;
-import capstone2015.pathfinding.Traversable;
-import capstone2015.util.Util;
-import java.util.LinkedList;
-import java.util.List;
+import capstone2015.messaging.MessageBus;
+import capstone2015.state.StateSlot;
 import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
-public class FireImpOnTickBehavior implements OnTickBehavior{
-    public static final double MOVE_TIMEOUT = 0.75f;
-    public static final double ATTACK_TIMEOUT = 0.65f;
+public class FireImpOnTickBehavior implements OnTickBehavior, ActorStateConfig{    
     
-    private LinkedList<Vec2i> path = new LinkedList<>();
-    private Vec2i targetPosition = null;
+    private Actor actor;
+    private Actor target;
+    
+    private StateSlot stateSlot;
+    private MessageBus localMessageBus;
+    private ActorEventGenerator eventGenerator;
+    
+    public FireImpOnTickBehavior(Actor actor, Map<String, Object> instantiationParams){
+        stateSlot = new StateSlot(new WanderingState(actor, this));
+        localMessageBus = new MessageBus();
+        eventGenerator = new ActorEventGenerator(actor, localMessageBus, this);
+        this.actor = actor;
+    }
     
     @Override
-    public void invoke(Actor entity, double timeDelta){                
-        /***************************
-         * Determine closest target
-         */
+    public void invoke(Actor entity, double timeDelta){
+        localMessageBus.refresh();
+        eventGenerator.tick();
+        stateSlot.tick(timeDelta);
         
-        List<Actor> targets = entity.getView().getActors().stream().filter(
-                a -> (!a.isInvulnerable() && a.getTeamId() != entity.getTeamId())
-        ).collect(Collectors.toList());
-
-        Vec2i closest_target_pos = null;
-        for(Actor target : targets){
-            if(closest_target_pos == null) {
-                closest_target_pos = new Vec2i(target.getPos());
-                continue;
-            }
-
-            if(target.getPos().deltaOrthoMagnitude(entity.getPos()) < closest_target_pos.deltaOrthoMagnitude(entity.getPos())){
-                closest_target_pos = new Vec2i(target.getPos());
-            }
-        }
-        
-        /***************************
-         * If there's a potential target for us, and we aren't yet aiming for that spot,
-         * either deal damage if it's close to our position, or pathfind to that location
-         */
-        if(closest_target_pos != null){
-            if(closest_target_pos.subtract(entity.getPos()).isOrthogonal()){
-                /*****************************
-                 * Do nothing if we can't attack yet
-                 */
-                if(!entity.canUse())
-                    return;
-                /*****************************
-                 * If we're right next to the closest target, deal damage to it
-                 */               
-                SpawnActorParams msg_obj = new SpawnActorParams();
-                msg_obj.entityId = EntityFactory.ID_FIRE_BOLT;
-                msg_obj.parent = entity;
-                msg_obj.position = new Vec2i(entity.getPos());
-                
-                Map<String, Object> instantiation_params = new TreeMap();
-                instantiation_params.put("ShootDirection", Util.toDirection(closest_target_pos.subtract(entity.getPos())));
-                instantiation_params.put("TeamIdOverride", entity.getTeamId());
-                
-                msg_obj.instantiationParams = instantiation_params;
-
-                entity.sendBusMessage(new Message(SpawnActor, msg_obj));
-                entity.setUseTimeout(ATTACK_TIMEOUT);
-                return;
-            } else {
-                /****************************
-                 * Else, pathfind to it
-                 */
-                if(!entity.canMove())
-                    return;
-                
-                if(path == null ||path.size() == 0 || targetPosition == null || !targetPosition.equals(closest_target_pos)) {
-                    //Only recalculate path if path is empty or we're not already aiming for that entity
-                    Traversable traversable = new RangerMapTraversableAdapter(entity.getView(), entity.getSolidType(), 7);
-                    path = AStar.find(traversable, entity.getPos(), closest_target_pos, 0.f);
-                    targetPosition = new Vec2i(closest_target_pos);
-                }
+        for(Message m : localMessageBus){
+            switch(m.getType()){
+                case ActorMessage.NEW_CLOSEST_ENEMY:
+                    setTarget((Actor)m.getMsgObject());
+                    stateSlot.setState(new RangerAttackState(actor, this));
+                    break;
+                case ActorMessage.ACTOR_LEFT_VISION:
+                    if(m.getMsgObject() == getTarget()){
+                        stateSlot.removeState();
+                        setTarget(null);
+                    }
+                    break;
+                case ActorMessage.SELF_LEFT_OUTER_STRAY:
+                    stateSlot.setState(new GetInRangeOfState(actor, this, getInnerStray()));
+                    setTarget(actor.getLeader());
+                    break;
+                case ActorMessage.ACTOR_ENTERED_INNER_STRAY:
+                    if(stateSlot.getActiveState() instanceof GetInRangeOfState){
+                        setTarget(null);
+                        stateSlot.removeState();
+                    }
+                    break;
             }
         }
         
-        if(!entity.canMove())
-            return;
-        
-        /*********************************
-         * If no target was found, find a random spot to go to
-         */
-        int n_trials = 10;
-        while((path == null || path.isEmpty())){
-            if(n_trials-- <= 0)
-                return;
-            
-            Random rand = new Random();
-            Vec2i random_point = entity.getPos().add(new Vec2i(rand.nextInt(RANDOM_MOVE_RADIUS * 2) - RANDOM_MOVE_RADIUS,
-                    rand.nextInt(RANDOM_MOVE_RADIUS * 2) - RANDOM_MOVE_RADIUS));
-
-            if(entity.getView().inBounds(random_point) && !entity.getView().getSolidTypeAt(random_point).collidesWith(entity.getSolidType())){
-                Traversable traversable = new MapTraversableAdapter(entity.getView(), entity.getSolidType());
-                path = AStar.find(traversable, entity.getPos(), random_point);
-                targetPosition = null;
-            }
+        if(getTarget() == null && actor.hasLeader() && !isInInnerStrayRange()){
+            setTarget(actor.getLeader());
+            stateSlot.setState(new GetInRangeOfState(actor, this, getInnerStray()));
         }
-        
-        /*****************
-         * Go to the previously determined spot
-         */
-        Vec2i pos = new Vec2i(entity.getPos());
-        Vec2i target_pos = new Vec2i(path.pollFirst());
+    }
 
-        Vec2i dirvec = target_pos.subtract(pos);
+    private boolean isInInnerStrayRange(){
+        if(!actor.hasLeader())
+            return true;
         
-        Direction dir;
+        return actor.getLeader().getPos().deltaMagnitude(actor.getPos()) < getInnerStray();
+    }
+    
+    private boolean isInOuterStrayRange(){
+        if(!actor.hasLeader())
+            return true;
         
-        if(dirvec.equals(new Vec2i(1, 0))){
-            dir = Direction.RIGHT;
-        } else if(dirvec.equals(new Vec2i(-1, 0))){
-            dir = Direction.LEFT;
-        } else if(dirvec.equals(new Vec2i(0, -1))){
-            dir = Direction.UP;
-        } else if(dirvec.equals(new Vec2i(0, 1))){
-            dir = Direction.DOWN;
-        } else {
-            path.clear();
-            return;
-        }
+        return actor.getLeader().getPos().deltaMagnitude(actor.getPos()) < getOuterStray();
+    }
+    
+    @Override
+    public double getOuterStray() {return 15.d;}
 
-        EntityMoveParams emp = new EntityMoveParams();
-        emp.entity = entity;
-        emp.direction = dir;
-        entity.sendBusMessage(new Message(EntityMove, emp));
-        entity.setMoveTimeout(MOVE_TIMEOUT);
+    @Override
+    public double getInnerStray() {return 7.d;}
+
+    @Override
+    public int getAttackDamage() {return 1;}
+
+    @Override
+    public double getAttackTimeout() {return .65d;}
+
+    @Override
+    public double getInRangeMoveTimeout() {return .225d;}
+
+    @Override
+    public double getAttackMoveTimeout() {return .75d;}
+
+    @Override
+    public double getWanderingMoveTimeout() {return 3.d;}
+
+    @Override
+    public Actor getTarget() {
+        return target;
+    }
+
+    @Override
+    public void setTarget(Actor target) {
+        this.target = target;
+    }
+
+    @Override
+    public int getAttackRange() {
+        return 7;
     }
 }

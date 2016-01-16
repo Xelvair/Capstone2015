@@ -6,9 +6,9 @@ public abstract class State {
     
     protected abstract void onTick(double timeDelta);
     
-    protected void onBlur(){}
-    protected void onFocus(){}
-    protected void onTerminate(){}
+    protected void  onBlur(){}
+    protected void  onFocus(){}
+    private void    onTerminate(){}
     
     public final boolean isFocus(){return isFocus;}
     public final boolean isBlur(){return !isFocus;}

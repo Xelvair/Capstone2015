@@ -1,45 +1,18 @@
 package capstone2015.messaging;
 
-public class Message {
-    public enum Type{
-        KeyEvent,               //A Lanterna key event has happened
-        PushIngameMenuState,    //Ingame menu should be displayed
-        PushHelpPageState,      //Help page should be displayed
-        PushLaunchGameState,    //Game launcher should be opened
-        TerminateGameState,     //GameState needs to be terminated
-        ReceivedDamage,         //Entity has received damage
-        PushNotification,       //New notification should be pushed
-        EntityMove,             //Entity wants to move
-        EntityMoveFailed,       //Entity was denied its move because of a collision
-        InflictDamage,          //When something is dealing damage on an area
-        AttemptKeyUsage,        //Key trying to open a door
-        Pickup,                 //Entity wants to pick something up
-        Drop,                   //Entity wants to drop an item
-        SpawnEffect,            //An effect entity should be spawned on the map
-        SpawnActor,             //An entity should be spawned on the map
-        AttemptTame,            //A taming attempt is being made
-        Tamed,                  //Creature tame was attempted
-        Terminate,              //Entity has terminated
-        GameWon,                //Game has been won
-        SaveGame,               //Game should be saved to file
-        LoadGame,               //Game should be loaded from file
-        PushSelectGamesaveState,//Push the savegame loader
-        PushUserTextInputState, //Push the user input reader
-        QuitToDesktop;          //Game has to close
-    }
-    
-    private Type type;
+public class Message {    
+    private int type;
     private Object msgObject;
     
-    public Message(Type type, Object msgObject){
+    public Message(int type, Object msgObject){
         this.type = type;
         this.msgObject = msgObject;
     }
-    public Message(Type type){
+    public Message(int type){
         this(type, null);
     }
     
-    public Type getType(){
+    public int getType(){
         return this.type;
     }
     

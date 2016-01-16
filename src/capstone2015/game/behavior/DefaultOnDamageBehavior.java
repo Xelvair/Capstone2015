@@ -2,9 +2,8 @@ package capstone2015.game.behavior;
 
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
+import capstone2015.game.GameMessage;
 import capstone2015.messaging.Message;
-import static capstone2015.messaging.Message.Type.*;
-import capstone2015.messaging.ReceivedDamageParams;
 
 public class DefaultOnDamageBehavior implements OnDamageBehavior{
     
@@ -18,7 +17,7 @@ public class DefaultOnDamageBehavior implements OnDamageBehavior{
             entity.getDamageIgnoreTimers().put(damagingEntity, DAMAGE_IGNORE_TIME);
              
             if(entity.getHealth() == 0){
-                entity.sendBusMessage(new Message(Terminate, entity));
+                entity.sendBusMessage(new Message(GameMessage.TERMINATE, entity));
                 entity.terminate();
             }
 

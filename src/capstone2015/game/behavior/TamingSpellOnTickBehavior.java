@@ -2,17 +2,16 @@ package capstone2015.game.behavior;
 
 import capstone2015.entity.Actor;
 import capstone2015.game.Direction;
+import capstone2015.game.GameMessage;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.AttemptTameParams;
 import capstone2015.messaging.EntityMoveParams;
 import capstone2015.messaging.Message;
-import static capstone2015.messaging.Message.Type.AttemptTame;
 import capstone2015.util.Util;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class TamingSpellOnTickBehavior implements OnTickBehavior{
@@ -23,7 +22,7 @@ public class TamingSpellOnTickBehavior implements OnTickBehavior{
     private Runnable tameCallback;
     private Actor tamer;
     
-    public TamingSpellOnTickBehavior(Map<String, Object> instantiationParams){
+    public TamingSpellOnTickBehavior(Actor actor, Map<String, Object> instantiationParams){
 
         flightDirection = Util.toDirection((Vec2i)instantiationParams.get("ShootDirection"));
         tameCallback = (Runnable)instantiationParams.get("TameCallback");
@@ -34,7 +33,7 @@ public class TamingSpellOnTickBehavior implements OnTickBehavior{
     public void invoke(Actor entity, double timeDelta) {       
         for(Message m : entity.getMessageBus()){
             switch(m.getType()){
-                case EntityMoveFailed:
+                case GameMessage.ENTITY_MOVE_FAILED:
                 {
                     Actor a = (Actor)m.getMsgObject();
                     if(a == entity){
@@ -96,7 +95,7 @@ public class TamingSpellOnTickBehavior implements OnTickBehavior{
             atp.tameCallback = (Boolean wasTamed) -> {
                 tameCallback.run();
             };        
-            entity.sendBusMessage(new Message(AttemptTame, atp));
+            entity.sendBusMessage(new Message(GameMessage.ATTEMPT_TAME, atp));
             entity.terminate();
         }
         
@@ -107,7 +106,7 @@ public class TamingSpellOnTickBehavior implements OnTickBehavior{
         emp.direction = flightDirection;
         emp.entity = entity;
 
-        entity.sendBusMessage(new Message(Message.Type.EntityMove, emp));
+        entity.sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
 
         entity.setMoveTimeout(TAMING_SPELL_MOVE_TIMEOUT);
     }

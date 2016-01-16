@@ -16,7 +16,7 @@ public class InputRecorder {
 
     public void tick(){
         for(Message m : messageBus){
-            if(m.getType() == Message.Type.KeyEvent){
+            if(m.getType() == GameMessage.KEY_EVENT){
                 Key key = (Key)m.getMsgObject();
 
                 switch(key.getKind()){

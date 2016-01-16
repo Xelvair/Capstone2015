@@ -2,6 +2,7 @@ package capstone2015.appstate;
 
 import capstone2015.state.State;
 import capstone2015.entity.EntityFactory;
+import capstone2015.game.GameMessage;
 import capstone2015.game.panel.HelpPanel;
 import capstone2015.game.panel.HowToPlayPanel;
 import capstone2015.game.panel.HudExplanationPanel;
@@ -60,7 +61,7 @@ public class HelpPageState extends State {
     protected void onTick(double timeDelta) {
         for(Message m : messageBus){
             switch(m.getType()){
-                case KeyEvent:
+                case GameMessage.KEY_EVENT:
                     Key key = (Key)m.getMsgObject();
                     switch(key.getKind()){
                         case ArrowLeft:

@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.game.GameMessage;
 import capstone2015.state.State;
 import capstone2015.game.panel.OptionPanel;
 import capstone2015.game.panel.TitleScreenPanel;
@@ -7,7 +8,6 @@ import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.Message;
-import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
@@ -69,19 +69,19 @@ public class MainMenu extends State{
             case Enter:
                 switch(optionPanel.getSelection()){
                     case 0:
-                        messageBus.enqueue(new Message(PushLaunchGameState));
+                        messageBus.enqueue(new Message(GameMessage.PUSH_LAUNCH_GAME_STATE));
                         break;
                     case 1:
                         Consumer<String> callback_func = (String s) -> {
                             if(s == null)
                                 return;
 
-                            messageBus.enqueue(new Message(Message.Type.LoadGame, s));
+                            messageBus.enqueue(new Message(GameMessage.LOAD_GAME, s));
                         };
-                        messageBus.enqueue(new Message(PushSelectGamesaveState, callback_func));
+                        messageBus.enqueue(new Message(GameMessage.PUSH_SELECT_GAMESAVE_STATE, callback_func));
                         break;
                     case 2:
-                        messageBus.enqueue(new Message(PushHelpPageState));
+                        messageBus.enqueue(new Message(GameMessage.PUSH_HELP_PAGE_STATE));
                         break;
                     case 3:
                         terminate();
@@ -96,7 +96,7 @@ public class MainMenu extends State{
         if(isFocus()){
             for(Message m : messageBus){
                 switch(m.getType()){
-                    case KeyEvent:
+                    case GameMessage.KEY_EVENT:
                         handleKeyEvent((Key)m.getMsgObject());
                         break;
                 }

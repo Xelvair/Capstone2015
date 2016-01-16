@@ -13,14 +13,11 @@ import capstone2015.game.behavior.OnTickBehavior;
 import capstone2015.game.behavior.OnWalkedOverBehavior;
 import capstone2015.geom.Vec2i;
 import capstone2015.graphics.TerminalChar;
-import capstone2015.shader.ShaderProgram;
-import capstone2015.util.Array2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiFunction;
 
 public class Actor extends MapEntity {
     protected OnWalkedOverBehavior onWalkedOverBehavior;
@@ -84,6 +81,10 @@ public class Actor extends MapEntity {
         return leader;
     }
     
+    public boolean hasLeader(){
+        return leader != null;
+    }
+    
     public double getTameMinChance(){
         return proto.actorProto.tameMinChance;
     }
@@ -130,6 +131,10 @@ public class Actor extends MapEntity {
     
     public void resetMoveTimeout(){
         moveTimeout = 0.d;
+    }
+    
+    public void capMoveTimeout(double cap){
+        moveTimeout = Math.min(moveTimeout, cap);
     }
 
     public void decreaseUseTimeout(double time){

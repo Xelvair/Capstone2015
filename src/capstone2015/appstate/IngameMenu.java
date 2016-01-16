@@ -1,10 +1,10 @@
 package capstone2015.appstate;
 
+import capstone2015.game.GameMessage;
 import capstone2015.state.State;
 import capstone2015.game.panel.OptionPanel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
-import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 
@@ -32,10 +32,10 @@ public class IngameMenu extends State{
     protected void onTick(double timeDelta) {
         for(Message m : messageBus){
             switch(m.getType()){
-                case QuitToDesktop:
+                case GameMessage.QUIT_TO_DESKTOP:
                     terminate();
                     break;
-                case KeyEvent:
+                case GameMessage.KEY_EVENT:
                     if(isBlur()){
                         break; //Dont check key events if we're not the top state
                     }
@@ -60,9 +60,9 @@ public class IngameMenu extends State{
                                         //Amend string for full qualified URI
                                         s = "./savegame/" + s + ".properties";
 
-                                        messageBus.enqueue(new Message(Message.Type.SaveGame, s));
+                                        messageBus.enqueue(new Message(GameMessage.SAVE_GAME, s));
                                     };
-                                    messageBus.enqueue(new Message(Message.Type.PushUserTextInputState, callback_func));
+                                    messageBus.enqueue(new Message(GameMessage.PUSH_USER_TEXT_INPUT_STATE, callback_func));
                                     break;
                                 }
                                 case 2:
@@ -71,21 +71,21 @@ public class IngameMenu extends State{
                                         if (s == null)
                                             return;
 
-                                        messageBus.enqueue(new Message(Message.Type.LoadGame, s));
+                                        messageBus.enqueue(new Message(GameMessage.LOAD_GAME, s));
                                         terminate();
                                     };
-                                    messageBus.enqueue(new Message(PushSelectGamesaveState, callback_func));
+                                    messageBus.enqueue(new Message(GameMessage.PUSH_SELECT_GAMESAVE_STATE, callback_func));
                                     break;
                                 }
                                 case 3:
-                                    messageBus.enqueue(new Message(Message.Type.PushHelpPageState));
+                                    messageBus.enqueue(new Message(GameMessage.PUSH_HELP_PAGE_STATE));
                                     break;
                                 case 4:
-                                    messageBus.enqueue(new Message(TerminateGameState));
+                                    messageBus.enqueue(new Message(GameMessage.TERMINATE_GAME_STATE));
                                     terminate();
                                     break;
                                 case 5:
-                                    messageBus.enqueue(new Message(Message.Type.QuitToDesktop));
+                                    messageBus.enqueue(new Message(GameMessage.QUIT_TO_DESKTOP));
                                     break;
                             }
                             break;

@@ -4,6 +4,7 @@ import capstone2015.entity.Actor;
 import static capstone2015.entity.ActorProto.TEAM_DUNGEON;
 import capstone2015.entity.EntityFactory;
 import capstone2015.game.Direction;
+import capstone2015.game.GameMessage;
 import static capstone2015.game.behavior.ArrowOnTickBehavior.ARROW_DAMAGE;
 import static capstone2015.game.behavior.ArrowOnTickBehavior.ARROW_MOVE_TIMEOUT;
 import capstone2015.geom.Vec2i;
@@ -22,7 +23,7 @@ public class FireBoltOnTickBehavior implements OnTickBehavior{
     public static final int DAMAGE = 1;
     public static final double MOVE_TIMEOUT = 0.1f;
     
-    public FireBoltOnTickBehavior(Map<String, Object> instantiationParams){
+    public FireBoltOnTickBehavior(Actor actor, Map<String, Object> instantiationParams){
         shootDirection = (Direction)instantiationParams.get("ShootDirection");
     }
     
@@ -30,7 +31,7 @@ public class FireBoltOnTickBehavior implements OnTickBehavior{
     public void invoke(Actor entity, double timeDelta) {
         for(Message m : entity.getMessageBus()){
             switch(m.getType()){
-                case EntityMoveFailed:
+                case GameMessage.ENTITY_MOVE_FAILED:
                 {
                     Actor a = (Actor)m.getMsgObject();
                     if(a == entity){
@@ -39,7 +40,7 @@ public class FireBoltOnTickBehavior implements OnTickBehavior{
                     }
                     break;
                 }
-                case ReceivedDamage:
+                case GameMessage.RECEIVED_DAMAGE:
                 {
                     ReceivedDamageParams rdp = (ReceivedDamageParams)m.getMsgObject();
                     if(rdp.damagingActor == entity){
@@ -57,7 +58,7 @@ public class FireBoltOnTickBehavior implements OnTickBehavior{
         idp.damagingEntity = entity;
         idp.teamId = entity.getTeamId();
 
-        entity.sendBusMessage(new Message(Message.Type.InflictDamage, idp));
+        entity.sendBusMessage(new Message(GameMessage.INFLICT_DAMAGE, idp));
 
         if(!entity.canMove())
             return;
@@ -66,7 +67,7 @@ public class FireBoltOnTickBehavior implements OnTickBehavior{
         emp.direction = shootDirection;
         emp.entity = entity;
 
-        entity.sendBusMessage(new Message(Message.Type.EntityMove, emp));
+        entity.sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
 
         entity.setMoveTimeout(MOVE_TIMEOUT);
     }

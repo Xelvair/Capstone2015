@@ -3,6 +3,7 @@ package capstone2015.game.behavior;
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityFactory;
 import capstone2015.entity.Item;
+import capstone2015.game.GameMessage;
 import capstone2015.game.Inventory;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.Message;
@@ -39,7 +40,7 @@ public class BowOnUseBehavior implements OnUseBehavior{
         sep.instantiationParams = instantiationParams;
         sep.parent = user;
 
-        user.sendBusMessage(new Message(Message.Type.SpawnActor, sep));
+        user.sendBusMessage(new Message(GameMessage.SPAWN_ACTOR, sep));
 
         arrow.terminate();
     }

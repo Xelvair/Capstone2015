@@ -1,5 +1,6 @@
 package capstone2015.appstate;
 
+import capstone2015.game.GameMessage;
 import capstone2015.state.State;
 import capstone2015.game.InputRecorder;
 import capstone2015.graphics.Panel;
@@ -32,7 +33,7 @@ public class UserTextInputState extends State{
     protected void onTick(double timeDelta) {
         for(Message m : messageBus){
             switch(m.getType()){
-                case KeyEvent:
+                case GameMessage.KEY_EVENT:
                     Key key = (Key)m.getMsgObject();
                     if(key.getKind() == Key.Kind.Enter)
                         onConfirmInput();

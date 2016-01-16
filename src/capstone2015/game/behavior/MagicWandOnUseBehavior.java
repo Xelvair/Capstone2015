@@ -3,6 +3,7 @@ package capstone2015.game.behavior;
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityFactory;
 import capstone2015.entity.Item;
+import capstone2015.game.GameMessage;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.SpawnActorParams;
@@ -37,7 +38,7 @@ public class MagicWandOnUseBehavior implements OnUseBehavior{
         sep.instantiationParams = instantiationParams;
         sep.parent = user;
 
-        user.sendBusMessage(new Message(Message.Type.SpawnActor, sep));
+        user.sendBusMessage(new Message(GameMessage.SPAWN_ACTOR, sep));
         
         item.setUseTimeout(MAGIC_WAND_USE_TIMEOUT);
     }

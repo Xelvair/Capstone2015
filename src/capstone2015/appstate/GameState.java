@@ -4,6 +4,7 @@ import capstone2015.state.State;
 import capstone2015.diagnostics.TimeStat;
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityBase;
+import capstone2015.game.GameMessage;
 import capstone2015.game.Map;
 import capstone2015.game.MapRenderer;
 import capstone2015.game.NotificationList;
@@ -24,7 +25,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game extends State{
+public class GameState extends State{
     public static final int NOTIFICATION_LIST_SIZE = 2;
     public static final int HUD_HEIGHT = 1;
     
@@ -34,7 +35,7 @@ public class Game extends State{
     private final NotificationList notifications = new NotificationList(NOTIFICATION_LIST_SIZE);
 
     
-    public Game(Screen screen, MessageBus messageBus, String mapFile){
+    public GameState(Screen screen, MessageBus messageBus, String mapFile){
         this.screen = screen;
         this.messageBus = messageBus;
         map = new Map(messageBus);
@@ -44,35 +45,35 @@ public class Game extends State{
     
     private void handleMessage(Message m){
         switch(m.getType()){
-            case QuitToDesktop:
+            case GameMessage.QUIT_TO_DESKTOP:
                 terminate();
                 break;
-            case KeyEvent:
+            case GameMessage.KEY_EVENT:
                 Key key = (Key)m.getMsgObject();
                 switch(key.getKind()){
                     case Escape:
                         if(isFocus()){
-                            messageBus.enqueue(new Message(Message.Type.PushIngameMenuState));
+                            messageBus.enqueue(new Message(GameMessage.PUSH_INGAME_MENU_STATE));
                         }
                         break;
                 }
                 break;
-            case ReceivedDamage:
+            case GameMessage.RECEIVED_DAMAGE:
                 onReceivedDamage((ReceivedDamageParams)m.getMsgObject());
                 break;
-            case Tamed:
+            case GameMessage.TAMED:
                 onTamed((TamedParams)m.getMsgObject());
                 break;
-            case TerminateGameState:
+            case GameMessage.TERMINATE_GAME_STATE:
                 terminate();
                 break;
-            case PushNotification:
+            case GameMessage.PUSH_NOTIFICATION:
                 onPushNotification((PushNotificationParams)m.getMsgObject());
                 break;
-            case GameWon:
+            case GameMessage.GAME_WON:
                 notifications.push("You unlock the door and exit the dungeon!", Color.YELLOW);
                 break;
-            case SaveGame:
+            case GameMessage.SAVE_GAME:
                 map.storeToProperties((String)m.getMsgObject());
                 break;                
         }

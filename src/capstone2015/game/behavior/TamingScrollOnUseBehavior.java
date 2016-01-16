@@ -3,6 +3,7 @@ package capstone2015.game.behavior;
 import capstone2015.entity.Actor;
 import capstone2015.entity.EntityFactory;
 import capstone2015.entity.Item;
+import capstone2015.game.GameMessage;
 import static capstone2015.game.behavior.MagicWandOnUseBehavior.MAGIC_WAND_USE_TIMEOUT;
 import capstone2015.geom.Vec2i;
 import capstone2015.messaging.Message;
@@ -43,7 +44,7 @@ public class TamingScrollOnUseBehavior implements OnUseBehavior{
         sep.instantiationParams = instantiationParams;
         sep.parent = user;
 
-        user.sendBusMessage(new Message(Message.Type.SpawnActor, sep));
+        user.sendBusMessage(new Message(GameMessage.SPAWN_ACTOR, sep));
         
         item.setUseTimeout(TAMING_SCROLL_USE_TIMEOUT);
     }

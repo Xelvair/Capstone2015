@@ -1,11 +1,11 @@
 package capstone2015.appstate;
 
+import capstone2015.game.GameMessage;
 import capstone2015.state.State;
 import capstone2015.game.panel.OptionPanel;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
-import static capstone2015.messaging.Message.Type.*;
 import capstone2015.messaging.MessageBus;
 import com.googlecode.lanterna.input.Key;
 import java.io.File;
@@ -61,7 +61,7 @@ public class LaunchGameState extends State{
                 break;
             case Enter:
                 String map_path = "./maps/" + maps[optionPanel.getSelection()] + ".properties";
-                messageBus.enqueue(new Message(LoadGame, map_path));
+                messageBus.enqueue(new Message(GameMessage.LOAD_GAME, map_path));
                 terminate();
                 break;
         }
@@ -71,7 +71,7 @@ public class LaunchGameState extends State{
     protected void onTick(double timeDelta) {
         for(Message m : messageBus){
             switch(m.getType()){
-                case KeyEvent:
+                case GameMessage.KEY_EVENT:
                     handleKeyEvent((Key)m.getMsgObject());
                     break;
             }
