@@ -1,7 +1,6 @@
 package capstone2015.game;
 
 import capstone2015.entity.Actor;
-import capstone2015.entity.states.ActorStateConfig;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
 import capstone2015.util.Util;
@@ -13,7 +12,6 @@ import java.util.stream.Collectors;
 public class ActorEventGenerator {
     private Actor actor;
     private MessageBus messageBus;
-    private ActorStateConfig config;
     
     private boolean previouslyInInnerStray = true;
     private boolean previouslyInOuterStray = true;
@@ -21,10 +19,9 @@ public class ActorEventGenerator {
     private List<Actor> actorsInOuterStrayRange = new LinkedList();
     private List<Actor> actorsInInnerStrayRange = new LinkedList();
     
-    public ActorEventGenerator(Actor actor, MessageBus messageBus, ActorStateConfig config){
+    public ActorEventGenerator(Actor actor, MessageBus messageBus){
         this.actor = actor;
         this.messageBus = messageBus;
-        this.config = config;
     }
     
     /**************************
@@ -50,14 +47,14 @@ public class ActorEventGenerator {
             
             if(actor.getLeader() != null){
                 Actor leader = actor.getLeader();
-                if(leader.getPos().deltaMagnitude(closest_enemy.getPos()) > config.getOuterStray()){
+                if(leader.getPos().deltaMagnitude(closest_enemy.getPos()) > actor.getOuterStray()){
                     return;
                 }
             }
             
             messageBus.enqueue(new Message(ActorMessage.CLOSEST_ENEMY_TICK, closest_enemy));
             
-            if(config.getTarget() == null || closest_enemy != config.getTarget()){
+            if(actor.getTarget() == null || closest_enemy != actor.getTarget()){
                 messageBus.enqueue(new Message(ActorMessage.NEW_CLOSEST_ENEMY, closest_enemy));
             }
         }
@@ -98,8 +95,8 @@ public class ActorEventGenerator {
         if(actor.getLeader() != null){
             double distance = actor.getPos().deltaMagnitude(actor.getLeader().getPos());
             
-            boolean is_in_inner_stray = distance <= config.getInnerStray();
-            boolean is_in_outer_stray = distance <= config.getOuterStray();
+            boolean is_in_inner_stray = distance <= actor.getInnerStray();
+            boolean is_in_outer_stray = distance <= actor.getOuterStray();
             
             if(!is_in_inner_stray && previouslyInInnerStray){
                 previouslyInInnerStray = false;
@@ -126,7 +123,7 @@ public class ActorEventGenerator {
     private void checkEnterLeaveInnerStray(){
         List<Actor> in_prev_inner_stray = actorsInInnerStrayRange;
         List<Actor> in_cur_inner_stray = actor.getView().getActors().stream().filter(
-                a -> a.getPos().deltaMagnitude(actor.getPos()) < config.getInnerStray()
+                a -> a.getPos().deltaMagnitude(actor.getPos()) < actor.getInnerStray()
         ).collect(Collectors.toList());
         
         /**************************
@@ -160,7 +157,7 @@ public class ActorEventGenerator {
         List<Actor> in_prev_outer_stray = actorsInOuterStrayRange;
         
         List<Actor> in_cur_outer_stray = actor.getView().getActors().stream().filter(
-                a -> a.getPos().deltaMagnitude(actor.getPos()) < config.getOuterStray()
+                a -> a.getPos().deltaMagnitude(actor.getPos()) < actor.getOuterStray()
         ).collect(Collectors.toList());
         
         /**************************

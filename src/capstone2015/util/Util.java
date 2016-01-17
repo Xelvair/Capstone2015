@@ -3,7 +3,6 @@ package capstone2015.util;
 import capstone2015.game.Direction;
 import capstone2015.geom.Vec2i;
 
-import java.util.Collection;
 import java.util.List;
 
 public class Util {

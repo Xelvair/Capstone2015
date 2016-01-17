@@ -13,8 +13,8 @@ import java.util.List;
 
 public class WanderingState extends ActorState{
     
-    public WanderingState(Actor actor, ActorStateConfig config) {
-        super(actor, config);
+    public WanderingState(Actor actor) {
+        super(actor);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class WanderingState extends ActorState{
                     emp.direction = dir;
                     getActor().sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
 
-                    getActor().setMoveTimeout(getConfig().getWanderingMoveTimeout());
+                    getActor().setMoveTimeout(getActor().getWanderingMoveTimeout());
 
                     break;
                 }

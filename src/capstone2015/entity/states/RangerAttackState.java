@@ -21,10 +21,10 @@ public class RangerAttackState extends ActorState{
     private LinkedList<Vec2i> path;
     private Vec2i lastTargetPos;
     
-    public RangerAttackState(Actor actor, ActorStateConfig config){
-        super(actor, config);
+    public RangerAttackState(Actor actor){
+        super(actor);
         
-        getActor().capMoveTimeout(config.getAttackMoveTimeout());
+        getActor().capMoveTimeout(actor.getAttackMoveTimeout());
     }
 
     @Override
@@ -35,15 +35,15 @@ public class RangerAttackState extends ActorState{
         /***************
          * If the target is on our side now, quit
          */
-        if(getConfig().getTarget().getTeamId() == getActor().getTeamId()){
+        if(getActor().getTarget().getTeamId() == getActor().getTeamId()){
             terminate();
         }
         
         /***************
          * Shoot at target or walk towards it
          */
-        Vec2i target_pos = getConfig().getTarget().getPos();
-        if(getConfig().getTarget().getPos().subtract(getActor().getPos()).isOrthogonal()){
+        Vec2i target_pos = getActor().getTarget().getPos();
+        if(getActor().getTarget().getPos().subtract(getActor().getPos()).isOrthogonal()){
             /*****************************
              * Do nothing if we can't attack yet
              */
@@ -64,7 +64,7 @@ public class RangerAttackState extends ActorState{
             msg_obj.instantiationParams = instantiation_params;
 
             getActor().sendBusMessage(new Message(GameMessage.SPAWN_ACTOR, msg_obj));
-            getActor().setUseTimeout(getConfig().getAttackTimeout());
+            getActor().setUseTimeout(getActor().getAttackTimeout());
             return;
         } else {
             /****************************
@@ -75,7 +75,7 @@ public class RangerAttackState extends ActorState{
 
             if(path == null || path.size() == 0) {
                 //Only recalculate path if path is empty or we're not already aiming for that entity
-                Traversable traversable = new RangerMapTraversableAdapter(getActor().getView(), getActor().getSolidType(), getConfig().getAttackRange());
+                Traversable traversable = new RangerMapTraversableAdapter(getActor().getView(), getActor().getSolidType(), getActor().getAttackRange());
                 path = AStar.find(traversable, getActor().getPos(), target_pos, 0.f);
                 
                 if(path == null){
@@ -112,6 +112,6 @@ public class RangerAttackState extends ActorState{
         emp.entity = getActor();
         emp.direction = dir;
         getActor().sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
-        getActor().setMoveTimeout(getConfig().getAttackMoveTimeout());
+        getActor().setMoveTimeout(getActor().getAttackMoveTimeout());
     }
 }

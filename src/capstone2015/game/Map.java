@@ -27,12 +27,19 @@ public class Map implements MapInterface{
         actors = new LinkedList<>();
     }
 
+    /****************************
+     * Removes the old player and adds a new one
+     * at the given coordinates
+     */
     public void resetPlayer(int x, int y){
         removePlayer();
         player = EntityFactory.createActor(EntityFactory.ID_PLAYER, x, y);
         add(player);
     }
 
+    /****************************
+     * Removed the player from the map
+     */
     public void removePlayer(){
         if(player != null){
           actors.remove(player);
@@ -40,10 +47,16 @@ public class Map implements MapInterface{
         }
     }
     
+    /****************************
+     * Returns the player
+     */
     public Actor getPlayer(){
         return player;
     }
 
+    /***************************
+     * Detects the file spec in use by a properties file
+     */
     private boolean isLegacySavegame(String fileName){
         FileInputStream file = null;
         try {
@@ -71,6 +84,10 @@ public class Map implements MapInterface{
         return is_legacy;
     }
 
+    /***************************
+     * Determines the file spec used by the file and loads it
+     * into the map
+     */
     public void loadFromProperties(String fileName){
         if(isLegacySavegame(fileName)){
             loadFromLegacyProperties(fileName);
@@ -79,6 +96,9 @@ public class Map implements MapInterface{
         }
     }
 
+    /***************************
+     * Loads a map witht the new properties file spec
+     */
     private void loadFromNewProperties(String fileName){
         Properties props = new Properties();
         try{
@@ -113,9 +133,11 @@ public class Map implements MapInterface{
             int actor_xpos = Integer.parseInt(props.getProperty(String.format("actors[%d].pos.x", i)));
             int actor_ypos = Integer.parseInt(props.getProperty(String.format("actors[%d].pos.y", i)));
             int actor_inv_size = Integer.parseInt(props.getProperty(String.format("actors[%d].inventory.count", i)));
+            int actor_level = Integer.parseInt(props.getProperty(String.format("actors[%d].level", i)));
 
             TreeMap<String, Object> inst_params = new TreeMap<>();
             inst_params.put("Health", actor_health);
+            inst_params.put("Level", actor_level);
 
             if(actor_inv_size > 0){
                 Inventory inv = new Inventory(actor_inv_size);
@@ -139,7 +161,10 @@ public class Map implements MapInterface{
             add(actor);
         }
     }
-
+    
+    /***************************
+     * Loads a map witht the legacy properties file spec
+     */
     private void loadFromLegacyProperties(String fileName){
       Properties props = new Properties();
       try{
@@ -206,6 +231,9 @@ public class Map implements MapInterface{
       mapName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
     }
 
+    /***************************
+     * Stores a map witht the new properties file spec
+     */
     public void storeToProperties(String fileName){
         FileOutputStream savefile = null;
         try {
@@ -235,6 +263,12 @@ public class Map implements MapInterface{
             props.setProperty(String.format("actors[%d].health", i), Integer.toString(a.getHealth()));
             props.setProperty(String.format("actors[%d].pos.x", i), Integer.toString(a.getPos().getX()));
             props.setProperty(String.format("actors[%d].pos.y", i), Integer.toString(a.getPos().getY()));
+            props.setProperty(String.format("actors[%d].level", i), Integer.toString(a.getLevel()));
+            
+            if(a.getLeader() == getPlayer()){
+                props.setProperty(String.format("actors[%d].leader", i), "PLAYER");
+            }
+            
             if(a.getInventory() != null) {
                 props.setProperty(String.format("actors[%d].inventory.count", i), Integer.toString(a.getInventory().size()));
 
@@ -266,6 +300,9 @@ public class Map implements MapInterface{
       return tilemap.height();
     }
 
+    /*****************************
+     * Called when a Move event was received
+     */
     private void onMove(Actor entity, Direction dir){
 
         Vec2i cur_pos = new Vec2i(entity.getXPos(), entity.getYPos());
@@ -283,6 +320,9 @@ public class Map implements MapInterface{
         }
     }
     
+    /*****************************
+     * Returns all actors that can be picked up at a certain location
+     */
     public ArrayList<Actor> getPickupableAt(Vec2i pos){
         return getPickupableAt(pos.getX(), pos.getY());
     }
@@ -300,6 +340,9 @@ public class Map implements MapInterface{
         return pickupable_actors;
     }
   
+    /*****************************
+     * Called when an InflictDamage event was received
+     */
     private void onInflictDamage(Actor damagingEntity, Vec2i position, int damage, int teamId){
         if(!this.inBounds(position.getX(), position.getY())){
             return;
@@ -320,6 +363,9 @@ public class Map implements MapInterface{
         }
     }
     
+    /*****************************
+     * Called when a Pickup event was received
+     */
     private void onPickup(Actor pickupper){
         int pickup_x = pickupper.getXPos();
         int pickup_y = pickupper.getYPos();
@@ -350,6 +396,9 @@ public class Map implements MapInterface{
         }
     }
     
+    /*****************************
+     * Called when a Drop event was received
+     */
     private void onDrop(Actor dropper){
         Inventory dropper_inv = dropper.getInventory();
         Item dropped_item = dropper_inv.getSelectedItem();
@@ -369,6 +418,9 @@ public class Map implements MapInterface{
         }
     }
     
+    /*****************************
+     * Called when an AttemptKeyUsage event was received
+     */
     private void onAttemptKeyUsage(AttemptKeyUsageParams akup){
         Actor user = akup.user;
         Item key = akup.key;
@@ -382,6 +434,9 @@ public class Map implements MapInterface{
         }
     }
 
+    /*****************************
+     * Called when a SpawnEffect event was received
+     */
     private void onSpawnEffect(SpawnEffectParams sep){
         TreeMap<String, Object> instantiation_params = new TreeMap<>();
         instantiation_params.put("RepresentOverride", sep.represent);
@@ -391,10 +446,17 @@ public class Map implements MapInterface{
         this.add(effect);
     }
 
+    /******************************
+     * Called when a SpawnActor event was received
+     * @param sep 
+     */
     private void onSpawnActor(SpawnActorParams sep){
         add(EntityFactory.createActor(sep.entityId, sep.position, sep.instantiationParams, sep.parent));
     }
     
+    /*****************************
+     * Called when an AttemptTame event was received
+     */
     private void onAttemptTame(AttemptTameParams atp){
         int tamed_hp = atp.tamedActor.getHealth();
         int tamed_hp_max = atp.tamedActor.getMaxHealth();
@@ -420,7 +482,7 @@ public class Map implements MapInterface{
             
             atp.tamedActor.setLeader(atp.tamerActor);
             atp.tamedActor.setTeamIdOverride(atp.tamerActor.getTeamId());
-            atp.tamedActor.setHealthPoints(atp.tamedActor.getMaxHealth() * 5);
+            atp.tamedActor.raiseLevel();
             atp.tamerActor.addFollower(atp.tamedActor);
             
         }
@@ -494,11 +556,17 @@ public class Map implements MapInterface{
         }
     }
 
+    /****************
+     * Adds an actor to the map
+     */
     public void add(Actor e){
         e.setMap(this);
         actors.add(e);
     }
     
+    /****************
+     * Returns the tile at a given position
+     */
     public Tile getTileAt(Vec2i pos){
         return getTileAt(pos.getX(), pos.getY());
     }
@@ -511,6 +579,9 @@ public class Map implements MapInterface{
         return tilemap.get(x, y);
     }
     
+    /*****************
+     * Returns the tile as well as the actors at a given position
+     */
     public ArrayList<MapEntity> getMapEntitiesAt(int x, int y){
       if(!tilemap.inBounds(x, y)){
         System.out.println("Map index out of bounds");
@@ -530,6 +601,9 @@ public class Map implements MapInterface{
       return local_entities;
     }
     
+    /***************************
+     * Returns the actors at a given position
+     */
     public ArrayList<Actor> getActorsAt(int x, int y){
         if(!tilemap.inBounds(x, y)){
           System.out.println("Map index out of bounds");
@@ -552,6 +626,9 @@ public class Map implements MapInterface{
         return actors;
     }
 
+    /********************
+     * Bounds checking
+     */
     public boolean inBounds(Vec2i pos) {
       return inBounds(pos.getX(), pos.getY());
     }

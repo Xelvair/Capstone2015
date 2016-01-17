@@ -17,10 +17,10 @@ public class MeleeAttackState extends ActorState{
     private LinkedList<Vec2i> path;
     private Vec2i lastTargetPos;
     
-    public MeleeAttackState(Actor actor, ActorStateConfig config) {
-        super(actor, config);
+    public MeleeAttackState(Actor actor) {
+        super(actor);
             
-        getActor().capMoveTimeout(config.getAttackMoveTimeout());
+        getActor().capMoveTimeout(actor.getAttackMoveTimeout());
     }
 
     @Override
@@ -31,7 +31,7 @@ public class MeleeAttackState extends ActorState{
         /***************
          * If the target is on our side now, quit
          */
-        if(getConfig().getTarget().getTeamId() == getActor().getTeamId()){
+        if(getActor().getTarget().getTeamId() == getActor().getTeamId()){
             terminate();
         }
 
@@ -40,18 +40,18 @@ public class MeleeAttackState extends ActorState{
          * else
          * go towards that spot if we can move
          */
-        if(getActor().getPos().deltaOrthoMagnitude(getConfig().getTarget().getPos()) == 1){
+        if(getActor().getPos().deltaOrthoMagnitude(getActor().getTarget().getPos()) == 1){
             if(!getActor().canUse())
                 return;
 
             InflictDamageParams msg_obj = new InflictDamageParams();
             msg_obj.damagingEntity = getActor();
-            msg_obj.position = getConfig().getTarget().getPos();
-            msg_obj.damage = getConfig().getAttackDamage();
+            msg_obj.position = getActor().getTarget().getPos();
+            msg_obj.damage = getActor().getAttackDamage();
             msg_obj.teamId = getActor().getTeamId();
 
             getActor().sendBusMessage(new Message(GameMessage.INFLICT_DAMAGE, msg_obj));
-            getActor().setUseTimeout(getConfig().getAttackTimeout());
+            getActor().setUseTimeout(getActor().getAttackTimeout());
             return;
         } else if(getActor().canMove()){
             /*********
@@ -60,11 +60,11 @@ public class MeleeAttackState extends ActorState{
             if(   path == null 
                || path.size() <= 0 
                || path.get(0).deltaOrthoMagnitude(getActor().getPos()) != 1 
-               || !lastTargetPos.equals(getConfig().getTarget().getPos())
+               || !lastTargetPos.equals(getActor().getTarget().getPos())
             ){
                 MapTraversableAdapter mta = new MapTraversableAdapter(getActor().getView(), getActor().getSolidType());
-                path = AStar.find(mta, getActor().getPos(), getConfig().getTarget().getPos(), 1.f);
-                lastTargetPos = new Vec2i(getConfig().getTarget().getPos());
+                path = AStar.find(mta, getActor().getPos(), getActor().getTarget().getPos(), 1.f);
+                lastTargetPos = new Vec2i(getActor().getTarget().getPos());
 
                 if(path == null){
                     terminate();
@@ -83,8 +83,8 @@ public class MeleeAttackState extends ActorState{
             emp.entity = getActor();
             emp.direction = dir;
             getActor().sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
-            getActor().setMoveTimeout(getConfig().getAttackMoveTimeout());
-            getActor().setUseTimeout(getConfig().getAttackTimeout());
+            getActor().setMoveTimeout(getActor().getAttackMoveTimeout());
+            getActor().setUseTimeout(getActor().getAttackTimeout());
         }
     }
 }

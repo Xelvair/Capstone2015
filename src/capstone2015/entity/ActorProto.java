@@ -26,10 +26,18 @@ public class ActorProto {
     public BiConsumer<Actor, Map<String, Object>> onInstantiationFunction;
     public int visionRadius;
     public boolean visionRevealedByDefault;
-    public int maxHealth;
+    public Object maxHealth; //int or int[] (for leveled creatures)
     public boolean pickupable;
     public int inventorySize;
     public int teamId;
     public double tameMinChance;
     public double tameMaxChance;
+    public double outerStray;
+    public double innerStray;
+    public Object attackDamage; //int or int[] (for leveled creatures)
+    public double attackTimeout;
+    public double getInRangeMoveTimeout;
+    public Object attackMoveTimeout; //double or double[] (for leveled creatures)
+    public double wanderingMoveTimeout;
+    public int attackRange; 
 }

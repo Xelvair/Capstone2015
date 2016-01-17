@@ -28,6 +28,7 @@ public class TutorialTracker extends Properties{
             this.setProperty("PickedUpWeapon", "0");
             this.setProperty("PickedUpKey", "0");
             this.setProperty("PickedUpBow", "0");
+            this.setProperty("PickedUpArrow", "0");
             this.setProperty("PickedUpConsumable", "0");
             this.setProperty("PickedUpTamingScroll", "0");
         }

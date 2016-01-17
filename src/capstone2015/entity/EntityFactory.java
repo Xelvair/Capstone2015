@@ -185,7 +185,7 @@ public class EntityFactory {
             actor.proto = e_proto;
             actor.messageBus = messageBus;
             actor.pos = new Vec2i(x, y);
-            actor.health = e_proto.actorProto.maxHealth;
+            actor.health = actor.getMaxHealth();
             actor.visionRadius = e_proto.actorProto.visionRadius;
 
             if(parent != null)
@@ -202,6 +202,8 @@ public class EntityFactory {
                 actor.inventory = (Inventory) instantiationParams.get("Inventory");
             if(instantiationParams.containsKey("TeamIdOverride"))
                 actor.setTeamIdOverride((int)instantiationParams.get("TeamIdOverride"));
+            if(instantiationParams.containsKey("Level"))
+                actor.setLevel((int)instantiationParams.get("Level"));
 
             /***********************************
              * Load behaviors
@@ -417,7 +419,7 @@ public class EntityFactory {
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('S', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
         ep.mapEntityProto.shaderType = SHADER_NONE;
-        ep.actorProto.maxHealth = 5;
+        ep.actorProto.maxHealth = new Integer[]{5, 15};
         ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = RattlesnakeOnTickBehavior.class;
@@ -432,6 +434,14 @@ public class EntityFactory {
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
         ep.actorProto.tameMinChance = 0.5f;
         ep.actorProto.tameMaxChance = 1.f;
+        ep.actorProto.outerStray = 12.d;
+        ep.actorProto.innerStray = 5.d;
+        ep.actorProto.attackDamage = new Integer[]{1, 2, 3};
+        ep.actorProto.attackTimeout = 0.5d;
+        ep.actorProto.getInRangeMoveTimeout = 0.175d;
+        ep.actorProto.attackMoveTimeout = new Double[]{0.225d, 0.175d};
+        ep.actorProto.wanderingMoveTimeout = 3.d;
+        ep.actorProto.attackRange = 1;
 
         entityProtos.put(ep.id, ep);
         
@@ -549,7 +559,9 @@ public class EntityFactory {
         ep.entityBaseProto.name = "Health Potion";
         ep.entityBaseProto.description = 
               "Upon drinking this potion, you will instantly be\n"
-            + "healed for 3 HP.";
+            + "healed for 3 HP.\n"
+            + "If you use this potion on one of your followers,\n"
+            + "it will heal them to their full HP.";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
@@ -850,7 +862,7 @@ public class EntityFactory {
         ep.entityBaseProto.represent = new TerminalChar('\u03D2', new Color(0, 110, 40), COLOR_SOIL);
         ep.entityBaseProto.name = "Fern";
         ep.entityBaseProto.description = 
-                  "It obstructs your view. But you're willing to take\n"
+                  "It obstructs your view. But you're willing to tolerate\n"
                 + "that disadvantage because you're someone who cares\n"
                 + "about the biologic stability of this place.";
         ep.mapEntityProto.isOpaque = true;
@@ -903,7 +915,7 @@ public class EntityFactory {
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('F', new Color(226, 88, 34), COLOR_FLOOR_HIDDEN);
         ep.mapEntityProto.shaderType = SHADER_NONE;
-        ep.actorProto.maxHealth = 9;
+        ep.actorProto.maxHealth = new Integer[]{8, 20};
         ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = FireImpOnTickBehavior.class;
@@ -918,6 +930,14 @@ public class EntityFactory {
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
         ep.actorProto.tameMinChance = 0.1f;
         ep.actorProto.tameMaxChance = 0.5f;
+        ep.actorProto.outerStray = 15.d;
+        ep.actorProto.innerStray = 7.d;
+        ep.actorProto.attackDamage = new Integer[]{1, 2, 3};
+        ep.actorProto.attackTimeout = 0.65d;
+        ep.actorProto.getInRangeMoveTimeout = 0.175d;
+        ep.actorProto.attackMoveTimeout = new Double[]{0.75d, 0.45d};
+        ep.actorProto.wanderingMoveTimeout = 3.d;
+        ep.actorProto.attackRange = 7;
 
         entityProtos.put(ep.id, ep);
         
@@ -973,8 +993,9 @@ public class EntityFactory {
                 "Attempts to tame a creature and make it fight for you.\n"
               + "The taming process can fail, the lower the tamed \n"
               + "creatures HP, the more likely it is that its taming will\n"
-              + "be successfull. Upon taming a creature,\n"
-              + "it regains its max HP.";
+              + "be successfull. Upon taming a creature, it regains\n"
+              + "its max HP, and its power level is raised, effectively\n"
+              + "making it stronger than the rest of its type.";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;

@@ -46,6 +46,9 @@ public class GameState extends State{
         notifications.push("You enter the dungeon...", Color.YELLOW);
     }
     
+    /************************
+     * Main messsage handler function
+     */
     private void handleMessage(Message m){
         switch(m.getType()){
             case GameMessage.QUIT_TO_DESKTOP:
@@ -85,6 +88,9 @@ public class GameState extends State{
         }
     }
     
+    /***************************
+     * Called when an item was picked up
+     */
     private void onPickedUp(PickedUpParams pup){
         if(pup.pickupper == map.getPlayer()){
             int item_id = pup.pickedUpItem.getProto().id;
@@ -97,7 +103,10 @@ public class GameState extends State{
                         "You picked up a consumable item!\n\n" +
                         "It has been added to your inventory in the lower right.\n" +
                         "Use the number keys to select the item, and then press F\n" + 
-                        "to use it."
+                        "to use it.\n\n" +
+                        "Some consumables can also be used on other creatures.\n" +
+                        "To do this, stand beside them, and use WASD to use the\n" +
+                        "consumable on the creature."
                 ));
             } else if (
                       (item_id == EntityFactory.ID_SWORD
@@ -138,12 +147,14 @@ public class GameState extends State{
                         "any one of the WASD keys to use it in the respective\n" +
                         "direction.\n\n" +
                         "Upon using a taming scroll on a creature, you will attempt\n" + 
-                        "to tame the creature. This process has a chance of failing.\n" +
+                        "to tame it. This process has a chance of failing.\n" +
                         "You can increase your taming chance by lowering the creatures\n" +
                         "HP until it is almost defeated.\n\n" + 
                         "If your taming attempt is successful, the creature will be added\n" +
                         "to your followers, its HP will be restored, and it will fight\n" + 
-                        "for you in the future."
+                        "for you in the future.\n\n" + 
+                        "Tamed creatures are also stronger than normal ones (denoted by a +),\n" +
+                        "so your follower should be able to win fights on his own!"
                 ));
             } else if (
                        item_id == EntityFactory.ID_ARROW
@@ -160,6 +171,9 @@ public class GameState extends State{
         }
     }
     
+    /************************
+     * Called when a taming attempt was made
+     */
     private void onTamed(TamedParams tp){
         if(tp.tamerActor == map.getPlayer()){
             if(tp.success){
@@ -170,6 +184,9 @@ public class GameState extends State{
         }
     }
     
+    /************************
+     * Called when something on the map received damage
+     */
     private void onReceivedDamage(ReceivedDamageParams msg_obj){
         /********************************************
          * Check if the player was damaged
@@ -314,6 +331,9 @@ public class GameState extends State{
         tutorialTracker.store();
     }
     
+    /**********************
+     * Draws the list of creatures led by the player
+     */
     private void drawFollowerList(){
         Actor player = map.getPlayer();
         
@@ -325,6 +345,9 @@ public class GameState extends State{
         }
     }
     
+    /*********************
+     * Generates the Rectangle for the are that will be drawn on the screen
+     */
     private Recti getPlayerRenderRect(){
         int left = 0;
         int top = 0;
@@ -340,6 +363,9 @@ public class GameState extends State{
         return new Recti(left, top, width, height);
     }
     
+    /**********************
+     * Draws the list of pickupables at the players location
+     */
     private void drawPickupableList(){
         Actor player = map.getPlayer();
         if(player != null){

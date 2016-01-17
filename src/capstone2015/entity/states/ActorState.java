@@ -5,18 +5,12 @@ import capstone2015.state.State;
 
 public abstract class ActorState extends State{
     private Actor actor;
-    private ActorStateConfig config;
     
-    protected ActorState(Actor actor, ActorStateConfig config){
+    protected ActorState(Actor actor){
         this.actor = actor;
-        this.config = config;
     }
     
     protected Actor getActor(){
         return actor;
-    }
-    
-    protected ActorStateConfig getConfig(){
-        return config;
     }
 }

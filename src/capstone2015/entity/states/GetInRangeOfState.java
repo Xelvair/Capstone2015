@@ -18,12 +18,12 @@ public class GetInRangeOfState extends ActorState{
     private Vec2i lastTargetPos;
     private LinkedList<Vec2i> path;
     
-    public GetInRangeOfState(Actor actor, ActorStateConfig config, double range) {
-        super(actor, config);
+    public GetInRangeOfState(Actor actor, double range) {
+        super(actor);
         
         this.range = range;
 
-        getActor().capMoveTimeout(getConfig().getInRangeMoveTimeout());
+        getActor().capMoveTimeout(actor.getGetInRangeMoveTimeout());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class GetInRangeOfState extends ActorState{
             /***********
              * If we're in range, exit
              */
-            if(getConfig().getTarget().getPos().deltaOrthoMagnitude(getActor().getPos()) <= range){
+            if(getActor().getTarget().getPos().deltaOrthoMagnitude(getActor().getPos()) <= range){
                 terminate();
                 return;
             }
@@ -46,11 +46,11 @@ public class GetInRangeOfState extends ActorState{
             /***********
              * If we have no path or it is invalid, regenerate
              */
-            if(lastTargetPos == null || !lastTargetPos.equals(getConfig().getTarget().getPos()) || path == null || path.isEmpty()){
+            if(lastTargetPos == null || !lastTargetPos.equals(getActor().getTarget().getPos()) || path == null || path.isEmpty()){
                 Random rand = new Random();
                 MapTraversableAdapter mta = new MapTraversableAdapter(getActor().getView(), getActor().getSolidType());
-                path = AStar.find(mta, getActor().getPos(), getConfig().getTarget().getPos(), (double)range);
-                lastTargetPos = new Vec2i(getConfig().getTarget().getPos());
+                path = AStar.find(mta, getActor().getPos(), getActor().getTarget().getPos(), (double)range);
+                lastTargetPos = new Vec2i(getActor().getTarget().getPos());
                 
                 if(path == null){
                     terminate();
@@ -74,6 +74,6 @@ public class GetInRangeOfState extends ActorState{
             emp.entity = getActor();
             emp.direction = dir;
             getActor().sendBusMessage(new Message(GameMessage.ENTITY_MOVE, emp));
-            getActor().setMoveTimeout(getConfig().getInRangeMoveTimeout());
+            getActor().setMoveTimeout(getActor().getGetInRangeMoveTimeout());
     }    
 }

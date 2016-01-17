@@ -42,6 +42,8 @@ public class Actor extends MapEntity {
     protected double moveTimeout = 0.f;
     protected double useTimeout = 0.f;
     protected List<Actor> followers = new LinkedList();
+    protected int level = 0;
+    protected Actor target = null;
     
     public void setMap(Map map){
         if(hasVision()){
@@ -56,12 +58,37 @@ public class Actor extends MapEntity {
         return followers;
     }
     
+    public void setTarget(Actor target){
+        this.target = target;
+    }
+    
+    public Actor getTarget(){
+        return target;
+    }
+    
     public void addFollower(Actor follower){
         followers.add(follower);
     }
     
     public void removeFollower(Actor follower){
         followers.remove(follower);
+    }
+    
+    public void setHealth(int health){
+        this.health = health;
+    }
+    
+    public void raiseLevel(){
+        level++;
+        setHealth(getMaxHealth());
+    }
+    
+    public void setLevel(int level){
+        this.level = level;
+    }
+    
+    public int getLevel(){
+        return level;
     }
     
     public void refreshFollowers(){
@@ -79,6 +106,14 @@ public class Actor extends MapEntity {
     
     public Actor getLeader(){
         return leader;
+    }
+    
+    @Override
+    public String getName(){
+        String name = this.proto.entityBaseProto.name;
+        for(int i = 0; i < getLevel(); ++i)
+            name += "+";
+        return name;
     }
     
     public boolean hasLeader(){
@@ -251,11 +286,6 @@ public class Actor extends MapEntity {
     }
 
     @Override
-    public String getName() {
-        return proto.entityBaseProto.name;
-    }
-
-    @Override
     public String getDescription() {
         return proto.entityBaseProto.description;
     }
@@ -295,17 +325,20 @@ public class Actor extends MapEntity {
         return health;
     }
 
-    public int getMaxHealth() {
-        return proto.actorProto.maxHealth;
-    }
-
-    public boolean isInvulnerable(){return proto.actorProto.maxHealth < 0;}
+    public boolean isInvulnerable(){return getMaxHealth() < 0;}
     
     public void heal(Item source, int heal) {
         if(onHealBehavior != null){
             onHealBehavior.invoke(this, source, heal);
         }
         health = Math.min(health + heal, getMaxHealth());
+    }
+    
+    public void healMax(Item source) {
+        if(onHealBehavior != null){
+            onHealBehavior.invoke(this, source, this.getMaxHealth() - this.getHealth());
+        }
+        health = getMaxHealth();
     }
 
     public void onTamed(boolean success, Actor tamer){
@@ -422,5 +455,82 @@ public class Actor extends MapEntity {
     @Override
     public int getShaderType(){
         return proto.mapEntityProto.shaderType;
+    }
+    
+    public double getOuterStray(){
+        return proto.actorProto.outerStray;
+    }
+    
+    public double getInnerStray(){
+        return proto.actorProto.innerStray;
+    }
+    
+    public double getAttackTimeout(){
+        return proto.actorProto.attackTimeout;
+    }
+    
+    public double getGetInRangeMoveTimeout(){
+        return proto.actorProto.getInRangeMoveTimeout;
+    }
+    
+    public int getAttackRange(){
+        return proto.actorProto.attackRange;
+    }
+    
+    /*************************
+     * LEVEL-DEPENDENT GETTERS
+     * The following functions enable setting an array of values
+     * for a given attribute, representing the value this attribute
+     * takes at a certain creature level
+     * 
+     * If a non-array value was set, this one will be returned
+     */
+    public double getWanderingMoveTimeout(){
+        return proto.actorProto.wanderingMoveTimeout;
+    }
+    
+        public int getMaxHealth() {
+        if(proto.actorProto.maxHealth instanceof Integer){
+            return (int)proto.actorProto.maxHealth;
+        } else if(proto.actorProto.maxHealth instanceof Integer[]){
+            Integer[] max_health_table = (Integer[])proto.actorProto.maxHealth;
+            
+            if(getLevel() >= max_health_table.length)
+                throw new RuntimeException("Creature level exceeds table!");
+        
+            return ((Integer[])proto.actorProto.maxHealth)[getLevel()];
+        } else {
+            throw new RuntimeException("Invalid type on actorProto.maxHealth!");
+        }
+    }
+    
+    public int getAttackDamage(){
+        if(proto.actorProto.attackDamage instanceof Integer){
+            return (int)proto.actorProto.attackDamage;
+        } else if(proto.actorProto.attackDamage instanceof Integer[]){
+            Integer[] attack_damage_table = (Integer[])proto.actorProto.attackDamage;
+            
+            if(getLevel() >= attack_damage_table.length)
+                throw new RuntimeException("Creature level exceeds table!");
+        
+            return ((Integer[])proto.actorProto.attackDamage)[getLevel()];
+        } else {
+            throw new RuntimeException("Invalid type on actorProto.attackDamage!");
+        }
+    }
+    
+    public double getAttackMoveTimeout(){
+        if(proto.actorProto.attackMoveTimeout instanceof Double){
+            return (int)proto.actorProto.attackMoveTimeout;
+        } else if(proto.actorProto.attackMoveTimeout instanceof Double[]){
+            Double[] attack_move_timeout_table = (Double[])proto.actorProto.attackMoveTimeout;
+            
+            if(getLevel() >= attack_move_timeout_table.length)
+                throw new RuntimeException("Creature level exceeds table!");
+        
+            return ((Double[])proto.actorProto.attackMoveTimeout)[getLevel()];
+        } else {
+            throw new RuntimeException("Invalid type on actorProto.attackMoveTimeout!");
+        }
     }
 }
