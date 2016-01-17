@@ -434,7 +434,7 @@ public class EntityFactory {
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
-        ep.actorProto.tameMinChance = 1.f;
+        ep.actorProto.tameMinChance = 0.5f;
         ep.actorProto.tameMaxChance = 1.f;
         ep.actorProto.outerStray = 12.d;
         ep.actorProto.innerStray = 5.d;
@@ -930,8 +930,8 @@ public class EntityFactory {
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
-        ep.actorProto.tameMinChance = 1.0f;
-        ep.actorProto.tameMaxChance = 1.0f;
+        ep.actorProto.tameMinChance = 0.1f;
+        ep.actorProto.tameMaxChance = 0.5f;
         ep.actorProto.outerStray = 15.d;
         ep.actorProto.innerStray = 7.d;
         ep.actorProto.attackDamage = 0; //Imp doesnt do damage directly
