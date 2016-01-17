@@ -92,7 +92,7 @@ public class MainMenu extends State{
     }
     
     @Override
-    protected void onTick(double timeDelta) {
+    public void onTick(double timeDelta) {
         if(isFocus()){
             for(Message m : messageBus){
                 switch(m.getType()){

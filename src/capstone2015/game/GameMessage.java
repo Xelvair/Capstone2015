@@ -22,9 +22,10 @@ public class GameMessage {
     public static final int PICKED_UP = 19;                     //An item was picked up
     public static final int TERMINATE = 20;                     //Entity has terminated
     public static final int GAME_WON = 21;                      //Game has been won
-    public static final int SAVE_GAME = 22;                     //Game should be saved to file
-    public static final int LOAD_GAME = 23;                     //Game should be loaded from file
-    public static final int PUSH_SELECT_GAMESAVE_STATE = 24;    //Push the savegame loader
-    public static final int PUSH_USER_TEXT_INPUT_STATE = 25;    //Push the user input reader
-    public static final int QUIT_TO_DESKTOP = 26;               //Game has to close
+    public static final int GAME_LOST = 22;                     //Game is lost
+    public static final int SAVE_GAME = 23;                     //Game should be saved to file
+    public static final int LOAD_GAME = 24;                     //Game should be loaded from file
+    public static final int PUSH_SELECT_GAMESAVE_STATE = 25;    //Push the savegame loader
+    public static final int PUSH_USER_TEXT_INPUT_STATE = 26;    //Push the user input reader
+    public static final int QUIT_TO_DESKTOP = 27;               //Game has to close
 }

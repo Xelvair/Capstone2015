@@ -4,12 +4,13 @@ import capstone2015.entity.*;
 
 import static capstone2015.entity.EntityFactory.ID_EXIT;
 
-import capstone2015.geom.Recti;
 import capstone2015.geom.Vec2i;
+import capstone2015.graphics.TerminalChar;
 import capstone2015.messaging.*;
 import capstone2015.messaging.PickedUpParams;
 
 import capstone2015.util.Array2D;
+import java.awt.Color;
 
 import java.io.*;
 import java.util.*;
@@ -100,6 +101,8 @@ public class Map implements MapInterface{
      * Loads a map witht the new properties file spec
      */
     private void loadFromNewProperties(String fileName){
+        List<Actor> player_followers = new LinkedList();
+        
         Properties props = new Properties();
         try{
             props.load(new FileInputStream(new File(fileName)));
@@ -134,10 +137,37 @@ public class Map implements MapInterface{
             int actor_ypos = Integer.parseInt(props.getProperty(String.format("actors[%d].pos.y", i)));
             int actor_inv_size = Integer.parseInt(props.getProperty(String.format("actors[%d].inventory.count", i)));
             int actor_level = Integer.parseInt(props.getProperty(String.format("actors[%d].level", i)));
-
+            
+            
+            String leader = props.getProperty(String.format("actors[%d].leader", i));
+            
             TreeMap<String, Object> inst_params = new TreeMap<>();
             inst_params.put("Health", actor_health);
             inst_params.put("Level", actor_level);
+            
+            if(props.getProperty(String.format("actors[%d].team_id", i)) != null){
+                inst_params.put("TeamIdOverride", Integer.parseInt(props.getProperty(String.format("actors[%d].team_id", i))));
+            }
+            
+            if(props.getProperty(String.format("actors[%d].represent", i)) != null){
+                String[] tokens = props.getProperty(String.format("actors[%d].represent", i)).split("-");
+                
+                if(tokens.length == 7){
+                    inst_params.put("RepresentOverride", new TerminalChar(
+                            tokens[0].charAt(0),
+                            new Color(
+                                    Integer.parseInt(tokens[1]), 
+                                    Integer.parseInt(tokens[2]), 
+                                    Integer.parseInt(tokens[3])
+                            ),
+                            new Color(
+                                    Integer.parseInt(tokens[4]), 
+                                    Integer.parseInt(tokens[5]), 
+                                    Integer.parseInt(tokens[6])
+                            )
+                    ));
+                }
+            }
 
             if(actor_inv_size > 0){
                 Inventory inv = new Inventory(actor_inv_size);
@@ -155,10 +185,22 @@ public class Map implements MapInterface{
 
             Actor actor = EntityFactory.createActor(actor_id, actor_xpos, actor_ypos, inst_params);
 
+            /***************
+             * Add followers to player
+             */
+            if(leader != null && leader.equals("PLAYER")){
+                player_followers.add(actor);
+            }
+            
             if(actor_id == EntityFactory.ID_PLAYER)
-                this.player = actor;
+                player = actor;
 
             add(actor);
+        }
+        
+        for(Actor a : player_followers){
+            System.out.println("SETTING LEADER");
+            a.setLeader(player);
         }
     }
     
@@ -265,6 +307,24 @@ public class Map implements MapInterface{
             props.setProperty(String.format("actors[%d].pos.y", i), Integer.toString(a.getPos().getY()));
             props.setProperty(String.format("actors[%d].level", i), Integer.toString(a.getLevel()));
             
+            if(a.isTeamIdOverridden()){
+                props.setProperty(String.format("actors[%d].team_id", i), Integer.toString(a.getTeamId()));
+            }
+            
+            if(a.isRepresentOverridden()){
+                TerminalChar represent = a.getRepresent();
+                props.setProperty(String.format("actors[%d].represent", i), String.format(
+                        "%c-%d-%d-%d-%d-%d-%d", 
+                        represent.getCharacter(),
+                        represent.getFGColor().getRed(),
+                        represent.getFGColor().getGreen(),
+                        represent.getFGColor().getBlue(),
+                        represent.getBGColor().getRed(),
+                        represent.getBGColor().getGreen(),
+                        represent.getBGColor().getBlue()
+               ));
+            }
+            
             if(a.getLeader() == getPlayer()){
                 props.setProperty(String.format("actors[%d].leader", i), "PLAYER");
             }
@@ -358,6 +418,10 @@ public class Map implements MapInterface{
                     rdp.damagingActor = damagingEntity;
                     rdp.damagedActor = e;
                     messageBus.enqueue(new Message(GameMessage.RECEIVED_DAMAGE, rdp));
+                    
+                    if(e == getPlayer() && e.getHealth() == 0){
+                        messageBus.enqueue(new Message(GameMessage.GAME_LOST));
+                    }
                 }
             }
         }

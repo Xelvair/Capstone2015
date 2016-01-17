@@ -20,30 +20,33 @@ public class RangerAttackState extends ActorState{
     
     private LinkedList<Vec2i> path;
     private Vec2i lastTargetPos;
+    private Actor target;
     
-    public RangerAttackState(Actor actor){
+    public RangerAttackState(Actor actor, Actor target){
         super(actor);
+        
+        this.target = target;
         
         getActor().capMoveTimeout(actor.getAttackMoveTimeout());
     }
 
     @Override
-    protected void onTick(double timeDelta) {
+    public void onTick(double timeDelta) {
         if(isBlur())
             return;
         
         /***************
          * If the target is on our side now, quit
          */
-        if(getActor().getTarget().getTeamId() == getActor().getTeamId()){
+        if(target.getTeamId() == getActor().getTeamId()){
             terminate();
         }
         
         /***************
          * Shoot at target or walk towards it
          */
-        Vec2i target_pos = getActor().getTarget().getPos();
-        if(getActor().getTarget().getPos().subtract(getActor().getPos()).isOrthogonal()){
+        Vec2i target_pos = target.getPos();
+        if(target.getPos().subtract(getActor().getPos()).isOrthogonal()){
             /*****************************
              * Do nothing if we can't attack yet
              */

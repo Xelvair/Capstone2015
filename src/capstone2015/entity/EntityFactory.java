@@ -204,6 +204,8 @@ public class EntityFactory {
                 actor.setTeamIdOverride((int)instantiationParams.get("TeamIdOverride"));
             if(instantiationParams.containsKey("Level"))
                 actor.setLevel((int)instantiationParams.get("Level"));
+            if(instantiationParams.containsKey("RepresentOverride"))
+                actor.setRepresentOverride((TerminalChar)instantiationParams.get("RepresentOverride"));
 
             /***********************************
              * Load behaviors
@@ -419,7 +421,7 @@ public class EntityFactory {
         ep.mapEntityProto.onWalkedOverBehaviorClass = null;
         ep.mapEntityProto.representInvisible = new TerminalChar('S', new Color(0, 153, 76), COLOR_FLOOR_HIDDEN);
         ep.mapEntityProto.shaderType = SHADER_NONE;
-        ep.actorProto.maxHealth = new Integer[]{5, 15};
+        ep.actorProto.maxHealth = new Integer[]{5, 15, 30};
         ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
         ep.actorProto.onMovedBehaviorClass = null;
         ep.actorProto.onTickBehaviorClass = RattlesnakeOnTickBehavior.class;
@@ -432,15 +434,15 @@ public class EntityFactory {
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
-        ep.actorProto.tameMinChance = 0.5f;
+        ep.actorProto.tameMinChance = 1.f;
         ep.actorProto.tameMaxChance = 1.f;
         ep.actorProto.outerStray = 12.d;
         ep.actorProto.innerStray = 5.d;
         ep.actorProto.attackDamage = new Integer[]{1, 2, 3};
         ep.actorProto.attackTimeout = 0.5d;
         ep.actorProto.getInRangeMoveTimeout = 0.175d;
-        ep.actorProto.attackMoveTimeout = new Double[]{0.225d, 0.175d};
-        ep.actorProto.wanderingMoveTimeout = 3.d;
+        ep.actorProto.attackMoveTimeout = new Double[]{0.225d, 0.175d, 0.125d};
+        ep.actorProto.wanderingMoveTimeout = 2.d;
         ep.actorProto.attackRange = 1;
 
         entityProtos.put(ep.id, ep);
@@ -928,15 +930,15 @@ public class EntityFactory {
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
-        ep.actorProto.tameMinChance = 0.1f;
-        ep.actorProto.tameMaxChance = 0.5f;
+        ep.actorProto.tameMinChance = 1.0f;
+        ep.actorProto.tameMaxChance = 1.0f;
         ep.actorProto.outerStray = 15.d;
         ep.actorProto.innerStray = 7.d;
-        ep.actorProto.attackDamage = new Integer[]{1, 2, 3};
-        ep.actorProto.attackTimeout = 0.65d;
+        ep.actorProto.attackDamage = 0; //Imp doesnt do damage directly
+        ep.actorProto.attackTimeout = new Double[]{0.65d, 0.325d, 0.1d};
         ep.actorProto.getInRangeMoveTimeout = 0.175d;
-        ep.actorProto.attackMoveTimeout = new Double[]{0.75d, 0.45d};
-        ep.actorProto.wanderingMoveTimeout = 3.d;
+        ep.actorProto.attackMoveTimeout = new Double[]{0.75d, 0.25d};
+        ep.actorProto.wanderingMoveTimeout = 2.d;
         ep.actorProto.attackRange = 7;
 
         entityProtos.put(ep.id, ep);

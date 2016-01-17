@@ -16,22 +16,25 @@ public class MeleeAttackState extends ActorState{
     
     private LinkedList<Vec2i> path;
     private Vec2i lastTargetPos;
+    private Actor target;
     
-    public MeleeAttackState(Actor actor) {
+    public MeleeAttackState(Actor actor, Actor target) {
         super(actor);
+        
+        this.target = target;
             
         getActor().capMoveTimeout(actor.getAttackMoveTimeout());
     }
 
     @Override
-    protected void onTick(double timeDelta) {
+    public void onTick(double timeDelta) {
         if(isBlur())
             return;
             
         /***************
          * If the target is on our side now, quit
          */
-        if(getActor().getTarget().getTeamId() == getActor().getTeamId()){
+        if(target.getTeamId() == getActor().getTeamId()){
             terminate();
         }
 
@@ -40,13 +43,13 @@ public class MeleeAttackState extends ActorState{
          * else
          * go towards that spot if we can move
          */
-        if(getActor().getPos().deltaOrthoMagnitude(getActor().getTarget().getPos()) == 1){
+        if(getActor().getPos().deltaOrthoMagnitude(target.getPos()) == 1){
             if(!getActor().canUse())
                 return;
 
             InflictDamageParams msg_obj = new InflictDamageParams();
             msg_obj.damagingEntity = getActor();
-            msg_obj.position = getActor().getTarget().getPos();
+            msg_obj.position = target.getPos();
             msg_obj.damage = getActor().getAttackDamage();
             msg_obj.teamId = getActor().getTeamId();
 
@@ -60,11 +63,11 @@ public class MeleeAttackState extends ActorState{
             if(   path == null 
                || path.size() <= 0 
                || path.get(0).deltaOrthoMagnitude(getActor().getPos()) != 1 
-               || !lastTargetPos.equals(getActor().getTarget().getPos())
+               || !lastTargetPos.equals(target.getPos())
             ){
                 MapTraversableAdapter mta = new MapTraversableAdapter(getActor().getView(), getActor().getSolidType());
-                path = AStar.find(mta, getActor().getPos(), getActor().getTarget().getPos(), 1.f);
-                lastTargetPos = new Vec2i(getActor().getTarget().getPos());
+                path = AStar.find(mta, getActor().getPos(), target.getPos(), 1.f);
+                lastTargetPos = new Vec2i(target.getPos());
 
                 if(path == null){
                     terminate();

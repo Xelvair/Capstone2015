@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class StateStack {
-    private final List<State> states = new ArrayList<>();
+public class StateStack<T extends State> {
+    private final List<T> states = new ArrayList<>();
     private boolean lockStatesList = false;
-    private final List<State> scheduledAddStates = new ArrayList<>();
+    private final List<T> scheduledAddStates = new ArrayList<>();
     /***********
      * Pushes a new state atop the others
      * @param state
      */
-    public void pushState(State state){
+    public void pushState(T state){
         if(lockStatesList){
             scheduledAddStates.add(state);
             return;
@@ -34,7 +34,7 @@ public class StateStack {
         if(lockStatesList)
             return;
         
-        Iterator<State> it = scheduledAddStates.iterator();
+        Iterator<T> it = scheduledAddStates.iterator();
         while(it.hasNext()){
             pushState(it.next());
             it.remove();
@@ -56,7 +56,7 @@ public class StateStack {
     }
     
     private void cleanStates(){
-        Iterator<State> it = states.iterator();
+        Iterator<T> it = states.iterator();
         
         while(it.hasNext()){
             State state = it.next();
@@ -70,7 +70,7 @@ public class StateStack {
      * Replace all states currently in the state stack with this one
      * @param state
      */
-    public void emplaceState(State state){
+    public void emplaceState(T state){
         /**
          * Send terminate event to all current states
          */

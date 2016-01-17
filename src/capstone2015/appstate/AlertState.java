@@ -22,7 +22,7 @@ public class AlertState extends State{
     }
     
     @Override
-    protected void onTick(double timeDelta) {
+    public void onTick(double timeDelta) {
         if(isBlur())
             return;
         

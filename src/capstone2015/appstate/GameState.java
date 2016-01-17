@@ -82,6 +82,9 @@ public class GameState extends State{
             case GameMessage.GAME_WON:
                 notifications.push("You unlock the door and exit the dungeon!", Color.YELLOW);
                 break;
+            case GameMessage.GAME_LOST:
+                notifications.push("You died!", Color.RED);
+                break;
             case GameMessage.SAVE_GAME:
                 map.storeToProperties((String)m.getMsgObject());
                 break;                
@@ -296,7 +299,7 @@ public class GameState extends State{
     }
     
     @Override
-    protected void onTick(double timeDelta) {
+    public void onTick(double timeDelta) {
         for(Message m : messageBus){
             handleMessage(m);
         }

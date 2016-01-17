@@ -132,6 +132,10 @@ public class Actor extends MapEntity {
         return getTameMaxChance() > 0.f;
     }
     
+    public boolean isTeamIdOverridden(){
+        return teamIdOverride != -1;
+    }
+    
     public void setTeamIdOverride(int teamId){
         teamIdOverride = teamId;
     }
@@ -316,6 +320,10 @@ public class Actor extends MapEntity {
     public void setRepresentOverride(TerminalChar representOverride){
         this.representOverride = representOverride;
     }
+    
+    public boolean isRepresentOverridden(){
+        return representOverride != null;
+    }
 
     public void disableRepresentOverride(){
         this.representOverride = null;
@@ -465,10 +473,6 @@ public class Actor extends MapEntity {
         return proto.actorProto.innerStray;
     }
     
-    public double getAttackTimeout(){
-        return proto.actorProto.attackTimeout;
-    }
-    
     public double getGetInRangeMoveTimeout(){
         return proto.actorProto.getInRangeMoveTimeout;
     }
@@ -521,7 +525,7 @@ public class Actor extends MapEntity {
     
     public double getAttackMoveTimeout(){
         if(proto.actorProto.attackMoveTimeout instanceof Double){
-            return (int)proto.actorProto.attackMoveTimeout;
+            return (double)proto.actorProto.attackMoveTimeout;
         } else if(proto.actorProto.attackMoveTimeout instanceof Double[]){
             Double[] attack_move_timeout_table = (Double[])proto.actorProto.attackMoveTimeout;
             
@@ -529,6 +533,21 @@ public class Actor extends MapEntity {
                 throw new RuntimeException("Creature level exceeds table!");
         
             return ((Double[])proto.actorProto.attackMoveTimeout)[getLevel()];
+        } else {
+            throw new RuntimeException("Invalid type on actorProto.attackMoveTimeout!");
+        }
+    }
+    
+    public double getAttackTimeout(){
+        if(proto.actorProto.attackTimeout instanceof Double){
+            return (double)proto.actorProto.attackTimeout;
+        } else if(proto.actorProto.attackTimeout instanceof Double[]){
+            Double[] attack_timeout_table = (Double[])proto.actorProto.attackTimeout;
+            
+            if(getLevel() >= attack_timeout_table.length)
+                throw new RuntimeException("Creature level exceeds table!");
+        
+            return ((Double[])proto.actorProto.attackTimeout)[getLevel()];
         } else {
             throw new RuntimeException("Invalid type on actorProto.attackMoveTimeout!");
         }

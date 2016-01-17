@@ -1,20 +1,28 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package capstone2015.appstate;
 
 import capstone2015.game.GameMessage;
-import capstone2015.state.State;
 import capstone2015.graphics.Panel;
 import capstone2015.graphics.Screen;
 import capstone2015.messaging.Message;
 import capstone2015.messaging.MessageBus;
+import capstone2015.state.State;
 import com.googlecode.lanterna.input.Key;
 import java.awt.Color;
 
-public class GameWonState extends State{
-
+/**
+ *
+ * @author Marvin
+ */
+public class GameLostState extends State{
     private Screen screen;
     private MessageBus messageBus;
     
-    public GameWonState(Screen screen, MessageBus messageBus){
+    public GameLostState(Screen screen, MessageBus messageBus){
         this.screen = screen;
         this.messageBus = messageBus;
     }
@@ -39,9 +47,9 @@ public class GameWonState extends State{
             }
         }
         
-        Panel p = Panel.borderPanel(30, 6, Color.YELLOW, Color.DARK_GRAY);
-        p.insertCenterHorizontally(Panel.textPanel("YOU WON!", Color.YELLOW, Color.DARK_GRAY), 2);
+        Panel p = Panel.borderPanel(30, 6, Color.RED, Color.DARK_GRAY);
+        p.insertCenterHorizontally(Panel.textPanel("YOU LOST!", Color.RED, Color.DARK_GRAY), 2);
         p.insertCenterHorizontally(Panel.textPanel("Press ENTER to Quit", Color.WHITE, Color.DARK_GRAY), 3);
         screen.insertCenter(p);
-    }    
+    }
 }

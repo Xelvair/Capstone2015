@@ -35,7 +35,7 @@ public class ActorProto {
     public double outerStray;
     public double innerStray;
     public Object attackDamage; //int or int[] (for leveled creatures)
-    public double attackTimeout;
+    public Object attackTimeout; //double or double[] (for leveled creatures);
     public double getInRangeMoveTimeout;
     public Object attackMoveTimeout; //double or double[] (for leveled creatures)
     public double wanderingMoveTimeout;

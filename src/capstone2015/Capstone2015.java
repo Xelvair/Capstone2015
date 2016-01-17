@@ -3,7 +3,9 @@ package capstone2015;
 import capstone2015.state.StateStack;
 import capstone2015.appstate.*;
 import capstone2015.diagnostics.TimeStat;
+import capstone2015.entity.Actor;
 import capstone2015.entity.EntityFactory;
+import capstone2015.entity.states.GetInRangeOfState;
 import capstone2015.game.GameMessage;
 import capstone2015.game.panel.DiagnosticsPanel;
 import capstone2015.graphics.Screen;
@@ -13,6 +15,7 @@ import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.terminal.swing.SwingTerminal;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.reflect.Constructor;
 import java.util.Map;
 
 import java.util.function.Consumer;
@@ -100,6 +103,9 @@ public class Capstone2015 {
                         break;
                     case GameMessage.GAME_WON:
                         appStates.pushState(new GameWonState(screen, messageBus));
+                        break;
+                    case GameMessage.GAME_LOST:
+                        appStates.pushState(new GameLostState(screen, messageBus));
                         break;
                     case GameMessage.LOAD_GAME:
                         appStates.pushState(new GameState(screen, messageBus, (String)m.getMsgObject()));

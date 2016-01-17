@@ -4,7 +4,7 @@ public abstract class State {
     private boolean isAlive = true;
     private boolean isFocus = false;
     
-    protected abstract void onTick(double timeDelta);
+    public abstract void onTick(double timeDelta);
     
     protected void  onBlur(){}
     protected void  onFocus(){}

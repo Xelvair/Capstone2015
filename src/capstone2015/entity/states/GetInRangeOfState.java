@@ -17,17 +17,19 @@ public class GetInRangeOfState extends ActorState{
     private double range;
     private Vec2i lastTargetPos;
     private LinkedList<Vec2i> path;
+    Actor target;
     
-    public GetInRangeOfState(Actor actor, double range) {
+    public GetInRangeOfState(Actor actor, Actor target, Double range) {
         super(actor);
         
+        this.target = target;
         this.range = range;
 
         getActor().capMoveTimeout(actor.getGetInRangeMoveTimeout());
     }
 
     @Override
-    protected void onTick(double timeDelta) {
+    public void onTick(double timeDelta) {
                    if(isBlur()){
                 return;
             }
@@ -38,7 +40,7 @@ public class GetInRangeOfState extends ActorState{
             /***********
              * If we're in range, exit
              */
-            if(getActor().getTarget().getPos().deltaOrthoMagnitude(getActor().getPos()) <= range){
+            if(target.getPos().deltaOrthoMagnitude(getActor().getPos()) <= range){
                 terminate();
                 return;
             }
@@ -46,11 +48,16 @@ public class GetInRangeOfState extends ActorState{
             /***********
              * If we have no path or it is invalid, regenerate
              */
-            if(lastTargetPos == null || !lastTargetPos.equals(getActor().getTarget().getPos()) || path == null || path.isEmpty()){
+            if(        lastTargetPos == null 
+                    || !lastTargetPos.equals(target.getPos()) 
+                    || path == null 
+                    || path.isEmpty() 
+                    || getActor().getPos().deltaOrthoMagnitude(path.peekFirst()) > 1
+            ){
                 Random rand = new Random();
                 MapTraversableAdapter mta = new MapTraversableAdapter(getActor().getView(), getActor().getSolidType());
-                path = AStar.find(mta, getActor().getPos(), getActor().getTarget().getPos(), (double)range);
-                lastTargetPos = new Vec2i(getActor().getTarget().getPos());
+                path = AStar.find(mta, getActor().getPos(), target.getPos(), (double)range);
+                lastTargetPos = new Vec2i(target.getPos());
                 
                 if(path == null){
                     terminate();

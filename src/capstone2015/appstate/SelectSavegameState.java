@@ -77,7 +77,7 @@ public class SelectSavegameState extends State{
     }
 
     @Override
-    protected void onTick(double timeDelta) {
+    public void onTick(double timeDelta) {
         for(Message m : messageBus){
             switch(m.getType()){
                 case GameMessage.KEY_EVENT:
