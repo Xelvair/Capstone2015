@@ -413,7 +413,11 @@ public class EntityFactory {
         ep.entityBaseProto.description = 
               "This dangerous creature can become very deadly \n"
             + "very quick if you come too close to it. Keep your\n"
-            + "distance, or be prepared for a fight.";
+            + "distance, or be prepared for a fight.\n\n"
+            + "Common Creature\n"
+            + "Damage: 1\n"
+            + "Min. Tame Chance: 50%\n"
+            + "Max. Tame Chance: 100%";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.NORMAL;
         ep.mapEntityProto.isEncounterNotified = false;
@@ -602,7 +606,9 @@ public class EntityFactory {
         ep.entityBaseProto.represent = new TerminalChar('\u019A', new Color(160, 160, 160), COLOR_FLOOR);
         ep.entityBaseProto.name = "Sword";
         ep.entityBaseProto.description =
-                "Swing it at your foes to deal damage.";
+                "Swing it at your foes to deal damage.\n\n"
+                + "Common Weapon\n"
+                + "Damage: 5\n";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
@@ -642,8 +648,10 @@ public class EntityFactory {
         ep.entityBaseProto.represent = new TerminalChar(')', new Color(160, 160, 160), COLOR_FLOOR);
         ep.entityBaseProto.name = "Bow";
         ep.entityBaseProto.description =
-                "Hurls arrows towards your enemies, provided you have any.\n\n"
-              + "Arrows, that is. You'll have plenty of enemies alright.";
+                "Hurls arrows towards your enemies, provided you have any.\n"
+              + "Arrows, that is. You'll have plenty of enemies alright.\n\n"
+              + "Common Weapon\n"
+              + "Damage: 3\n";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
@@ -789,7 +797,9 @@ public class EntityFactory {
         ep.entityBaseProto.name = "Magic Wand";
         ep.entityBaseProto.description =
                 "Shoots magic bolts at your enemies. The bolts will home\n"
-              + "in on your target.";
+              + "in on your target.\n\n"
+              + "Magic Weapon\n"
+              + "Damage: 1\n";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.FLUID;
         ep.mapEntityProto.isEncounterNotified = true;
@@ -909,7 +919,11 @@ public class EntityFactory {
               "An imp who made its way all the way from hell\n"
             + "to end up in this dungeon. In his frustration, it\n"
             + "has decided to unleash a fiery inferno on anyone\n"
-            + "who dares enter his vincinity.";
+            + "who dares enter his vincinity.\n\n"
+            + "Common Creature\n"
+            + "Damage: 1\n"
+            + "Min. Tame Chance: 10%\n"
+            + "Max. Tame Chance: 50%\n";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.NORMAL;
         ep.mapEntityProto.isEncounterNotified = false;
@@ -930,7 +944,7 @@ public class EntityFactory {
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
         ep.actorProto.tameMinChance = 0.1f;
-        ep.actorProto.tameMaxChance = 0.75f;
+        ep.actorProto.tameMaxChance = 0.5f;
         ep.actorProto.outerStray = 15.d;
         ep.actorProto.innerStray = 7.d;
         ep.actorProto.attackDamage = 0; //Imp doesnt do damage directly
@@ -1070,7 +1084,11 @@ public class EntityFactory {
         ep.entityBaseProto.represent = new TerminalChar('T', new Color(0, 0, 50), COLOR_FLOOR);
         ep.entityBaseProto.name = "Titan";
         ep.entityBaseProto.description = 
-              "A strong and frightening guardian of the dungeon.\n";
+            "A strong and frightening guardian of the dungeon.\n\n" +
+            "Rare Creature\n" +
+            "Damage: 3\n" +
+            "Min. Tame Chance: 1%\n" +
+            "Max. Tame Chance: 33%\n";
         ep.mapEntityProto.isOpaque = false;
         ep.mapEntityProto.solidType = SolidType.NORMAL;
         ep.mapEntityProto.isEncounterNotified = false;
@@ -1091,7 +1109,7 @@ public class EntityFactory {
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
         ep.actorProto.tameMinChance = 0.01f;
-        ep.actorProto.tameMaxChance = 0.5f;
+        ep.actorProto.tameMaxChance = 0.33f;
         ep.actorProto.outerStray = 12.d;
         ep.actorProto.innerStray = 5.d;
         ep.actorProto.attackDamage = new Integer[]{3, 7, 15};

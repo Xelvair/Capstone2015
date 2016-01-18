@@ -35,14 +35,16 @@ public class HelpPageState extends State {
                 EntityFactory.ID_ENTRY,
                 EntityFactory.ID_EXIT,
                 EntityFactory.ID_BONFIRE,
-                EntityFactory.ID_RATTLESNAKE,
                 EntityFactory.ID_PLAYER,
                 EntityFactory.ID_HEALTH_POTION,
                 EntityFactory.ID_SWORD,
                 EntityFactory.ID_BOW,
                 EntityFactory.ID_ARROW,
                 EntityFactory.ID_MAGIC_WAND,
-                EntityFactory.ID_TAMING_SCROLL
+                EntityFactory.ID_TAMING_SCROLL,
+                EntityFactory.ID_RATTLESNAKE,
+                EntityFactory.ID_FIRE_IMP,
+                EntityFactory.ID_TITAN
         };
 
         LinkedList<Panel> legend_panels = new LinkedList<>();
