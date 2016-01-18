@@ -544,7 +544,7 @@ public class EntityFactory {
         ep.actorProto.visionRadius = 12;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
-        ep.actorProto.inventorySize = 5;
+        ep.actorProto.inventorySize = 7;
         ep.actorProto.teamId = ActorProto.TEAM_PLAYER;
         ep.actorProto.tameMinChance = 0.f;
         ep.actorProto.tameMaxChance = 0.f;
