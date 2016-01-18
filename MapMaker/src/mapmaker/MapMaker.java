@@ -33,6 +33,7 @@ public class MapMaker {
     private static final Color COLOR_SOIL = new Color(50, 40, 15);
     private static final Color COLOR_FIRE_IMP = new Color(226, 88, 34);
     private static final Color COLOR_TAMING_SCROLL = new Color(180, 255, 255);
+    private static final Color COLOR_TITAN = new Color(0, 0, 50);
     
     public static final int ID_WALL = 0;
     public static final int ID_ENTRY = 1;
@@ -54,6 +55,7 @@ public class MapMaker {
     public static final int ID_SOIL = 18;
     public static final int ID_FIRE_IMP = 19;
     public static final int ID_TAMING_SCROLL = 21;
+    public static final int ID_TITAN = 23;
     
     private static TreeMap<Color, Integer> colorCodes = new TreeMap(new Comparator<Color>(){
         @Override
@@ -110,6 +112,7 @@ public class MapMaker {
         MapMaker.colorCodes.put(COLOR_SOIL, ID_SOIL);
         MapMaker.colorCodes.put(COLOR_FIRE_IMP, ID_FIRE_IMP);
         MapMaker.colorCodes.put(COLOR_TAMING_SCROLL, ID_TAMING_SCROLL);
+        MapMaker.colorCodes.put(COLOR_TITAN, ID_TITAN);
 
         
         File mapfile = new File(map_name);

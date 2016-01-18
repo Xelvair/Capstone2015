@@ -45,6 +45,8 @@ public class EntityFactory {
     public static final int ID_FIRE_BOLT = 20;
     public static final int ID_TAMING_SCROLL = 21;
     public static final int ID_TAMING_SPELL = 22;
+    public static final int ID_TITAN = 23;
+    public static final int ID_METEOR = 24;
     public static final int ID_EFFECT = 99;
     
     /*******************************
@@ -166,34 +168,34 @@ public class EntityFactory {
         return createActor(entityProtoId, x, y, new TreeMap<>(), parent);
     }
     public static Actor createActor(int entityProtoId, int x, int y, Map<String, Object> instantiationParams, EntityBase parent){
-        try{
-            EntityProto e_proto = getProto(entityProtoId);
+        EntityProto e_proto = getProto(entityProtoId);
 
-            if(
-                  e_proto.entityBaseProto == null
-                || e_proto.mapEntityProto == null
-                || e_proto.actorProto == null
-            ){
-                System.out.println("Failed to create Actor with id #" + entityProtoId);
-                return null;
-            }
+        if(
+              e_proto.entityBaseProto == null
+            || e_proto.mapEntityProto == null
+            || e_proto.actorProto == null
+        ){
+            System.out.println("Failed to create Actor with id #" + entityProtoId);
+            return null;
+        }
 
-            /***********************************
-             * Set members according to proto
-             */
-            Actor actor = new Actor();
-            actor.proto = e_proto;
-            actor.messageBus = messageBus;
-            actor.pos = new Vec2i(x, y);
-            actor.health = actor.getMaxHealth();
-            actor.visionRadius = e_proto.actorProto.visionRadius;
+        /***********************************
+         * Set members according to proto
+         */
+        Actor actor = new Actor();
+        actor.proto = e_proto;
+        actor.messageBus = messageBus;
+        actor.pos = new Vec2i(x, y);
+        actor.health = actor.getMaxHealth();
+        actor.visionRadius = e_proto.actorProto.visionRadius;
 
-            if(parent != null)
-                actor.parent = parent;
+        if(parent != null)
+            actor.parent = parent;
 
-            /***********************************
-             * Set members according to instantiation params
-             */
+        /***********************************
+         * Set members according to instantiation params
+         */
+        if(instantiationParams != null){
             if(instantiationParams.containsKey("Duration"))
                 actor.duration = (double) instantiationParams.get("Duration");
             if(instantiationParams.containsKey("Health"))
@@ -206,37 +208,34 @@ public class EntityFactory {
                 actor.setLevel((int)instantiationParams.get("Level"));
             if(instantiationParams.containsKey("RepresentOverride"))
                 actor.setRepresentOverride((TerminalChar)instantiationParams.get("RepresentOverride"));
-
-            /***********************************
-             * Load behaviors
-             */
-            actor.onMovedBehavior = adaptiveInstantiate(e_proto.actorProto.onMovedBehaviorClass, actor, instantiationParams);
-            actor.onTickBehavior = adaptiveInstantiate(e_proto.actorProto.onTickBehaviorClass, actor, instantiationParams);
-            actor.onWalkedOverBehavior = adaptiveInstantiate(e_proto.mapEntityProto.onWalkedOverBehaviorClass, actor, instantiationParams);
-            actor.onDamageBehavior = adaptiveInstantiate(e_proto.actorProto.onDamageBehaviorClass, actor, instantiationParams);
-            actor.onPickedUpItemBehavior = adaptiveInstantiate(e_proto.actorProto.onPickedUpItemBehaviorClass, actor, instantiationParams);
-            actor.onDroppedItemBehavior = adaptiveInstantiate(e_proto.actorProto.onDroppedItemBehaviorClass, actor, instantiationParams);
-            actor.onHealBehavior = adaptiveInstantiate(e_proto.actorProto.onHealBehaviorClass, actor, instantiationParams);
-            actor.onTamedBehavior = adaptiveInstantiate(e_proto.actorProto.onTamedBehaviorClass, actor, instantiationParams);
-
-            /***********************************
-             * If the actor has inventory space, instantiate an inventory
-             */
-            if(e_proto.actorProto.inventorySize > 0 && actor.inventory == null)
-                actor.inventory = new Inventory(e_proto.actorProto.inventorySize);
-
-            /***********************************
-             * At last, call the onInstantiationFunction to let the entity do its own thing
-             * with the custom data passed over instantiationParams
-             */
-            if(e_proto.actorProto.onInstantiationFunction != null)
-                e_proto.actorProto.onInstantiationFunction.accept(actor, instantiationParams);
-        
-            return actor;
-        } catch(Exception e){
-            System.out.println("Failed to create Actor with id #" + entityProtoId + ": " + e.getMessage());
-            return null;
         }
+
+        /***********************************
+         * Load behaviors
+         */
+        actor.onMovedBehavior = adaptiveInstantiate(e_proto.actorProto.onMovedBehaviorClass, actor, instantiationParams);
+        actor.onTickBehavior = adaptiveInstantiate(e_proto.actorProto.onTickBehaviorClass, actor, instantiationParams);
+        actor.onWalkedOverBehavior = adaptiveInstantiate(e_proto.mapEntityProto.onWalkedOverBehaviorClass, actor, instantiationParams);
+        actor.onDamageBehavior = adaptiveInstantiate(e_proto.actorProto.onDamageBehaviorClass, actor, instantiationParams);
+        actor.onPickedUpItemBehavior = adaptiveInstantiate(e_proto.actorProto.onPickedUpItemBehaviorClass, actor, instantiationParams);
+        actor.onDroppedItemBehavior = adaptiveInstantiate(e_proto.actorProto.onDroppedItemBehaviorClass, actor, instantiationParams);
+        actor.onHealBehavior = adaptiveInstantiate(e_proto.actorProto.onHealBehaviorClass, actor, instantiationParams);
+        actor.onTamedBehavior = adaptiveInstantiate(e_proto.actorProto.onTamedBehaviorClass, actor, instantiationParams);
+
+        /***********************************
+         * If the actor has inventory space, instantiate an inventory
+         */
+        if(e_proto.actorProto.inventorySize > 0 && actor.inventory == null)
+            actor.inventory = new Inventory(e_proto.actorProto.inventorySize);
+
+        /***********************************
+         * At last, call the onInstantiationFunction to let the entity do its own thing
+         * with the custom data passed over instantiationParams
+         */
+        if(e_proto.actorProto.onInstantiationFunction != null)
+            e_proto.actorProto.onInstantiationFunction.accept(actor, instantiationParams);
+
+        return actor;
     }
     
     public static Item createItem(int entityProtoId){
@@ -931,7 +930,7 @@ public class EntityFactory {
         ep.actorProto.inventorySize = 0;
         ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
         ep.actorProto.tameMinChance = 0.1f;
-        ep.actorProto.tameMaxChance = 0.5f;
+        ep.actorProto.tameMaxChance = 0.75f;
         ep.actorProto.outerStray = 15.d;
         ep.actorProto.innerStray = 7.d;
         ep.actorProto.attackDamage = 0; //Imp doesnt do damage directly
@@ -1051,6 +1050,86 @@ public class EntityFactory {
         ep.actorProto.onHealBehaviorClass = null;
         ep.actorProto.onTamedBehaviorClass = null;
         ep.actorProto.visionRadius = 1;
+        ep.actorProto.visionRevealedByDefault = false;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+        ep.actorProto.tameMinChance = 0.f;
+        ep.actorProto.tameMaxChance = 0.f;
+
+        entityProtos.put(ep.id, ep);
+        
+        /******************************************
+         * #23 - TITAN - ACTOR
+         */
+        ep = new EntityProto(ID_TITAN);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+        
+        ep.entityBaseProto.represent = new TerminalChar('T', new Color(0, 0, 50), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Titan";
+        ep.entityBaseProto.description = 
+              "A strong and frightening guardian of the dungeon.\n";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.NORMAL;
+        ep.mapEntityProto.isEncounterNotified = false;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar('T', new Color(0, 0, 50), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
+        ep.actorProto.maxHealth = new Integer[]{50, 80, 120};
+        ep.actorProto.onDamageBehaviorClass = DefaultOnDamageBehavior.class;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = TitanOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = DefaultOnTamedBehavior.class;
+        ep.actorProto.visionRadius = 10;
+        ep.actorProto.visionRevealedByDefault = true;
+        ep.actorProto.pickupable = false;
+        ep.actorProto.inventorySize = 0;
+        ep.actorProto.teamId = ActorProto.TEAM_DUNGEON;
+        ep.actorProto.tameMinChance = 0.01f;
+        ep.actorProto.tameMaxChance = 0.5f;
+        ep.actorProto.outerStray = 12.d;
+        ep.actorProto.innerStray = 5.d;
+        ep.actorProto.attackDamage = new Integer[]{3, 7, 15};
+        ep.actorProto.attackTimeout = .5d;
+        ep.actorProto.getInRangeMoveTimeout = 0.175d;
+        ep.actorProto.attackMoveTimeout = new Double[]{0.45d, 0.225d, 0.125d};
+        ep.actorProto.wanderingMoveTimeout = 2.d;
+        ep.actorProto.attackRange = 1;
+
+        entityProtos.put(ep.id, ep);
+        
+        /*********************************************
+         * #24 - METEOR - ACTOR
+         */
+
+        ep = new EntityProto(ID_METEOR);
+        ep.entityBaseProto = new EntityBaseProto();
+        ep.mapEntityProto = new MapEntityProto();
+        ep.actorProto = new ActorProto();
+
+        ep.entityBaseProto.represent = new TerminalChar(' ', new Color(255, 0, 0), COLOR_FLOOR);
+        ep.entityBaseProto.name = "Titan's Meteor";
+        ep.entityBaseProto.description =
+                "Rains down on you and deals damage!.";
+        ep.mapEntityProto.isOpaque = false;
+        ep.mapEntityProto.solidType = SolidType.FLUID;
+        ep.mapEntityProto.isEncounterNotified = true;
+        ep.mapEntityProto.onWalkedOverBehaviorClass = null;
+        ep.mapEntityProto.representInvisible = new TerminalChar(' ', new Color(255, 0, 0), COLOR_FLOOR_HIDDEN);
+        ep.mapEntityProto.shaderType = SHADER_NONE;
+        ep.actorProto.maxHealth = -1;
+        ep.actorProto.onMovedBehaviorClass = null;
+        ep.actorProto.onTickBehaviorClass = MeteorOnTickBehavior.class;
+        ep.actorProto.onPickedUpItemBehaviorClass = null;
+        ep.actorProto.onDroppedItemBehaviorClass = null;
+        ep.actorProto.onHealBehaviorClass = null;
+        ep.actorProto.onTamedBehaviorClass = null;
+        ep.actorProto.visionRadius = 0;
         ep.actorProto.visionRevealedByDefault = false;
         ep.actorProto.pickupable = false;
         ep.actorProto.inventorySize = 0;

@@ -258,6 +258,7 @@ public class Map implements MapInterface{
             case EntityFactory.ID_MAGIC_WAND:
             case EntityFactory.ID_FIRE_IMP:
             case EntityFactory.ID_TAMING_SCROLL:
+            case EntityFactory.ID_TITAN:
                 add(EntityFactory.createActor(tile_id, xcoord, ycoord));
                 tilemap.set(xcoord, ycoord, EntityFactory.createTile(EntityFactory.ID_FLOOR));
                 break;
@@ -631,10 +632,12 @@ public class Map implements MapInterface{
     /****************
      * Returns the tile at a given position
      */
+    @Override
     public Tile getTileAt(Vec2i pos){
         return getTileAt(pos.getX(), pos.getY());
     }
     
+    @Override
     public Tile getTileAt(int x, int y){
         if(!tilemap.inBounds(x, y)){
             System.out.println("Map index out of bounds");
@@ -646,6 +649,7 @@ public class Map implements MapInterface{
     /*****************
      * Returns the tile as well as the actors at a given position
      */
+    @Override
     public ArrayList<MapEntity> getMapEntitiesAt(int x, int y){
       if(!tilemap.inBounds(x, y)){
         System.out.println("Map index out of bounds");
@@ -668,6 +672,7 @@ public class Map implements MapInterface{
     /***************************
      * Returns the actors at a given position
      */
+    @Override
     public ArrayList<Actor> getActorsAt(int x, int y){
         if(!tilemap.inBounds(x, y)){
           System.out.println("Map index out of bounds");
@@ -693,10 +698,12 @@ public class Map implements MapInterface{
     /********************
      * Bounds checking
      */
+    @Override
     public boolean inBounds(Vec2i pos) {
       return inBounds(pos.getX(), pos.getY());
     }
     
+    @Override
     public boolean inBounds(int x, int y){
       return tilemap.inBounds(x, y);
     }

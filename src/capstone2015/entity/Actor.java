@@ -44,6 +44,7 @@ public class Actor extends MapEntity {
     protected List<Actor> followers = new LinkedList();
     protected int level = 0;
     protected Actor target = null;
+    protected int shaderTypeOverride = -1;
     
     public void setMap(Map map){
         if(hasVision()){
@@ -462,7 +463,18 @@ public class Actor extends MapEntity {
 
     @Override
     public int getShaderType(){
-        return proto.mapEntityProto.shaderType;
+        if(shaderTypeOverride != -1)
+            return shaderTypeOverride;
+        else
+            return proto.mapEntityProto.shaderType;
+    }
+    
+    public void resetShaderTypeOverride(){
+        shaderTypeOverride = -1;
+    }
+    
+    public void setShaderTypeOverride(int shaderType){
+        this.shaderTypeOverride = shaderType;
     }
     
     public double getOuterStray(){
